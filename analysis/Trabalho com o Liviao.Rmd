@@ -1,0 +1,51 @@
+---
+title: "Discourse and Deforestation in the Amazon - Silva and Sposito"
+author: "Henrique Sposito"
+date: "11/10/2020"
+output: html_document
+---
+
+# Premise and Research Question
+
+
+# Literature Review
+
+
+# Hypothesis 
+
+
+# Methodology and Data
+
+```
+library(stm)
+library(quanteda)
+library(ggplot2)
+
+dp <- corpus(Discursos_Presidenciais, text_field = "text")
+
+summary(dp)
+
+kwic(dp, "Amazônia")
+
+kwic(dp, "floresta Amazônica")
+
+kwic (dp, c("desflorestamento", "desflorestação", "desmatamento", "Amazônia", "floresta Amazônica", "desmate", "preservação"))
+
+stw <- readLines("C:/Users/h-spo/Downloads/stopwords.txt")
+
+dp1 <- dfm(dp, remove = c(stopwords("portuguese"), stw)), remove_punct = TRUE, remove_url = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, tolower=TRUE)
+
+topfeatures(dp1, n = 1000)
+
+# Amazon name is refreed to 1064 times (ranks around 950). 
+
+dp1 <- dfm_wordstem(dp1, language = "portuguese")
+
+toks <- tokens(dp1) 
+
+data <- tokens_select(toks, selection = "remove", min_nchar = 3)
+
+
+
+
+```
