@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1633016363936.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "795539761",
+    "id" : "DEB441FC",
+    "lastKnownWriteTime" : 1633016673,
+    "last_content_update" : 1633016673,
+    "path" : "~/GitHub/amazondef/Outline.Rmd",
+    "project_path" : "Outline.Rmd",
+    "properties" : {
+        "cursorPosition" : "12,15",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
