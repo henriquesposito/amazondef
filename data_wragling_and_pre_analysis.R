@@ -4,37 +4,57 @@
 library(dplyr)
 library(stringr)
 
-# Load data
-BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds") # your path might differ
+# # Get Data, join and save into repository
+# # This portion explains how/where data was gathered and wrangled before it was saved into the package.
+# # It is commented out as it is here for transparency rather than reproduciability.
+# # Please contact authors for access to original datasets for reproduction.
+#
+# # Load BR_oral from AP repository
+# load("~/GitHub/authenticity_performances/data/BR_oral.rda") # your path my differ here
+# # Select only some variables
+# BR_oral <- BR_oral %>%
+#   dplyr::select("presid", "date", "party", "text") %>%
+#   rename(president = "presid", year = "date")
+#
+# # Wrangle data
+# # Get exact dates 
+# BR_oral$date <- poldis::extract_date(BR_oral$text)
+# # There are a lot of NAs... It seems some dates in text are missing the year...
+# # Get titles (first sentence)
+# BR_oral$title <- poldis::extract_title(BR_oral$text)
+# # For dates that are missing the year, let's complete them!
+# d <- BR_oral$title
+# d <- stringr::str_extract(d, "(\\S+)\\s*DE\\s*(\\S+)")
+# d <- paste0(d, "-", BR_oral$year)
+# d <- gsub(" DE ", "-", d)
+# # load months data from poldis
+# load("~/GitHub/poldis/R/sysdata.rda") # your path might differ
+# months <- as.data.frame(months)
+# for (k in seq_len(nrow(months))) {
+#   d <- gsub(paste0(months$months[k]),
+#               paste0(months$number[k]),
+#               d, ignore.case = TRUE,
+#               perl = T)
+# }
+# d <- stringr::str_replace_all(d, "NA-", "?-?-")
+# d <- ifelse(stringr::str_detect(d, "[A-Z]|[a-z]"), paste0("?-?-", BR_oral$year), d)
+# # Let's complete our dates column now
+# BR_oral$date <- ifelse(is.na(BR_oral$date), d, BR_oral$date)
+# 
+# # Merge with data fro missing ttexts from January 2020 until october 2021
+# BR_speeches_2020_21 <- read_excel("C:/Users/h-spo/Desktop/BR_speeches_2020-21.xlsx")
+# BR_speeches_2020_21 <- BR_speeches_2020_21 %>%
+#   dplyr::rename(prsident = "President", year = "Year", text = "Text", date = "Date", title = "Title")
+# BR_speeches_2020_21$party <- NA_character_ # Bolsonaro does not have a party anymore
+# BR_speeches_2020_21$date <- as.character(BR_speeches_2020_21$date)
+# BR_speeches_2020_21 <- BR_speeches_2020_21[order(BR_speeches_2020_21$date),]
+# 
+# # Join and save dataset for use
+# BR_Presidential_Speeches <- dplyr::full_join(BR_oral, BR_speeches_2020_21)
+# saveRDS(BR_Presidential_Speeches, file = "BR_Presidential_Speeches.Rds")
 
-# Wrangle data
-# Get exact dates 
-BR_Presidential_Speeches$date <- poldis::extract_date(BR_Presidential_Speeches$text)
-# There are a lot of NAs... It seems some dates in texta re missing the year.
-# Get titles (first sentence)
-BR_Presidential_Speeches$title <- poldis::extract_title(BR_Presidential_Speeches$text)
-
-# For dates that are missing the year, let's complete them!
-d <- BR_Presidential_Speeches$title
-d <- stringr::str_extract(d, "(\\S+)\\s*DE\\s*(\\S+)")
-d <- paste0(d, "-", BR_Presidential_Speeches$year)
-d <- gsub(" DE ", "-", d)
-# load months data from poldis
-load("~/GitHub/poldis/R/sysdata.rda") # your path might differ
-months <- as.data.frame(months)
-for (k in seq_len(nrow(months))) {
-  d <- gsub(paste0(months$months[k]),
-              paste0(months$number[k]),
-              d, ignore.case = TRUE,
-              perl = T)
-}
-d <- stringr::str_replace_all(d, "NA-", "?-?-")
-d <- ifelse(stringr::str_detect(d, "[A-Z]|[a-z]"), paste0("?-?-", BR_Presidential_Speeches$year), d)
-# Let's complete our dates column now
-BR_Presidential_Speeches$date <- ifelse(is.na(BR_Presidential_Speeches$date),
-                                        d, BR_Presidential_Speeches$date)
-
-min(BR_Presidential_Speeches$date)
+# Get location
+BR_Presidential_Speeches$location <- poldis::extract_location(BR_Presidential_Speeches$title)
 
 # Text Cleaning
 
