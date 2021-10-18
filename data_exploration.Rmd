@@ -12,11 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load Data and Filter it for Amazon related texts
 
 ```{r}
+library(dplyr)
 BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
-BR_Presidential_Speeches <- head(BR_Presidential_Speeches)
-BR_Presidential_Speeches$amazon <- poldis::context("Amazon|Amazonica|Amazonia|Amazonas", var = BR_Presidential_Speeches$text
-                                                   )
-
+BR_Presidential_Speeches$amazon <- poldis::context("Amazon|Amazonica|Amazonia|Amazonas", var = BR_Presidential_Speeches$text, level = "sentences")
+Amazon_speeches <-dplyr::filter(BR_Presidential_Speeches, grepl("Amazon|Amazonica|Amazonia|Amazonas", text))
 ```
 
 
