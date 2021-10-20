@@ -31,6 +31,7 @@ plot(Amazon_speeches$year, as.factor(Amazon_speeches$year), type = "b",
 ```{r term frequency, warning=FALSE, message=FALSE}
 library(tm)
 library(tidytext)
+library(kableExtra)
 # Make text lower case
 Amazon_speeches$text <- tolower(Amazon_speeches$text)
 
@@ -68,23 +69,28 @@ amazon_presid_t <- tm::VCorpus(DataframeSource(amazon_presid)) %>%
   tidy() %>% 
   unnest_tokens(word, text) %>%
   count(id, word, sort = TRUE)
-Sarney <- head(dplyr::filter(amazon_presid_t, id == "Sarney"), 30) %>%  mutate(Sarney = word) %>% select(Sarney)
-Collor <- head(dplyr::filter(amazon_presid_t, id == "Collor"), 30) %>%  mutate(Collor = word) %>% select(Collor)
-Itamar <- head(dplyr::filter(amazon_presid_t, id == "Itamar"), 30) %>%  mutate(Itamar = word) %>% select(Itamar)
+Sarney <- head(dplyr::filter(amazon_presid_t, id == "Sarney"), 30) %>%
+  mutate(Sarney = word) %>% select(Sarney)
+Collor <- head(dplyr::filter(amazon_presid_t, id == "Collor"), 30) %>%
+  mutate(Collor = word) %>% select(Collor)
+Itamar <- head(dplyr::filter(amazon_presid_t, id == "Itamar"), 30) %>%
+  mutate(Itamar = word) %>% select(Itamar)
 FHC <- head(dplyr::filter(amazon_presid_t, id == "FHC"), 30) %>%  mutate(FHC = word) %>% select(FHC)
 Lula <- head(dplyr::filter(amazon_presid_t, id == "Lula"), 30) %>%  mutate(Lula = word) %>% select(Lula)
 Dilma <- head(dplyr::filter(amazon_presid_t, id == "Dilma"), 30) %>%  mutate(Dilma = word) %>% select(Dilma)
 Temer <- head(dplyr::filter(amazon_presid_t, id == "Temer"), 30) %>%  mutate(Temer = word) %>% select(Temer)
-Bolsonaro <- head(dplyr::filter(amazon_presid_t, id == "Bolsonaro"), 30) %>%  mutate(Bolsonaro = word) %>% select(Bolsonaro)
+Bolsonaro <- head(dplyr::filter(amazon_presid_t, id == "Bolsonaro"), 30) %>%
+  mutate(Bolsonaro = word) %>% select(Bolsonaro)
 f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro)
-f_speaker # Not very infomartive either...
+f_speaker <- kableExtra::kbl(f_speaker, caption = "Top 10 Words Per President") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+f_speaker # not super informative ...
 ```
 
 ## Simple LDA model by speakers
 
 ```{r lda, warning=FALSE, message=FALSE}
 library(topicmodels)
-library(kableExtra)
 # Fit a simple LDA model
 # Please note that we randomly set a K = 10 (10 cluster topics)
 amazon_lda <- topicmodels::LDA(amazon_dtm, k = 10, control = list(seed = 1234))
@@ -99,7 +105,8 @@ topten_topic <- aggregate(amazon_lda10$term, list(amazon_lda10$topic), paste, co
   rename(Topic = "Group.1", Terms = "x") %>% 
   kableExtra::kbl(caption = "Top 10 Words per Topic for Prsidential Speeches Mentioning the Amazon") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
-topten_topic # "Meio ambiente" (environment) appears only in topic 7 ...
+topten_topic # "ambiente" (environment) appears only in topic 7 ...
+# Agriculture, on the other hand, is the first cluster...
 
 # Let's get the gamma (percent of topic in document for speakers)
 amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
@@ -110,7 +117,7 @@ amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
 amazon_lda_presid$gamma <- round(amazon_lda_presid$gamma, digits = 4)
 amazon_lda_presid <- kableExtra::kbl(amazon_lda_presid, caption = "Top 2 Topics Per Speaker") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
-amazon_lda_presid # Only Dilma, Sarney and Collor associated with topic that mentions "meio ambiente".
+amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
 ```
 
 
@@ -119,6 +126,7 @@ amazon_lda_presid # Only Dilma, Sarney and Collor associated with topic that men
 ```{r sentiment, warning=FALSE, message=FALSE}
 library(ggplot2)
 library(stringr)
+# library(poldis)
 # Load internal sentiment dictionaries from poldis
 Afinn_pt <- poldis:::Afinn_pt
 nrc_portuguese <- poldis:::nrc_portuguese
@@ -148,7 +156,7 @@ ggplot(amazon_sent_af, aes(x = reorder(date2, as.numeric(year)), y = value , fil
        y = "",
        title = "Sentiment in Presidential Speeches about the Amazon",
        caption = "Afinn sentiment lexicon")
-# FHC and Lula more positive about in speeches about the Amazon than others...
+# Lula more positive about in speeches surrounding the Amazon than others...
 
 # Get NRC per speaker
 amazon_sent_nrc <- inner_join(amazon_sent_wf, nrc_portuguese, by = "word") %>%
@@ -159,13 +167,15 @@ amazon_sent_nrc <- inner_join(amazon_sent_wf, nrc_portuguese, by = "word") %>%
          date2 = stringr::str_extract(id, "[0-9]{2}$"))
 
 # Plot NRC
-ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(date)), y = value, fill = sentiment)) +
+ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = value, fill = sentiment)) +
   geom_bar(position="stack", stat="identity") +
   theme(axis.text.x=element_text(angle=90,hjust=1,vjust=1)) +
   labs(x = "",
        y = "",
        title = "Sentiment in Presidential Speeches about the Amazon",
-       caption = "NRC sentiment lexicon")
+       caption = "NRC sentiment lexicon") +
+  coord_flip() +
+  expand_limits(y=c(0, 1000))
 ```
 
 ## Does location matter?
