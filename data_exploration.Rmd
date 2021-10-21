@@ -176,6 +176,45 @@ ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = value, fill =
        caption = "NRC sentiment lexicon") +
   coord_flip() +
   expand_limits(y=c(0, 1000))
+# Lula 2010 appears to have spoken more and used more "carried" words related to certain sentiment according to dictionary in texts mentioning the Amazon.
 ```
 
 ## Does location matter?
+
+```{r}
+# Location was added with poldis::extraxt_location(), still needs to be improved...
+summary(as.factor(Amazon_speeches$location))
+
+# Let's code the Amzonian states as "local"; the other Brazilian states as "nacional";
+# and the ones delivered outside Brazil as "international".
+Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins", location) ~ "local", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Maranhao|Minas Gerais|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "national", grepl("Argentina|Chile|China|Colombia|Cuba|European|France|Hamburg|India|Israel|Jamaica|Nicaragua|Oman|ONU|Panama|Peru|Portugal|Senegal|Suriname", location) ~ "international"))
+Amazon_lc$stage <- stringr::str_replace_na(Amazon_lc$stage, "Non Identified")
+summary(as.factor(Amazon_lc$stage)) # A lot of international observations ...
+
+# Let's try an simple LDA model again
+Amazon_lc <- mutate(Amazon_lc, doc_id = stage) %>% arrange(doc_id, text)
+amazon_lcc <- tm::VCorpus(DataframeSource(Amazon_lc))
+amazon_dtm_lc  <- DocumentTermMatrix(amazon_lcc)
+amazon_lda_lc <- topicmodels::LDA(amazon_dtm_lc, k = 20, control = list(seed = 1234)) # set k = 20
+amazon_lda_lcc <- tidy(amazon_lda_lc, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_lc <- aggregate(amazon_lda_lcc$term, list(amazon_lda_lcc$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x")
+
+# Get stage and merge tables
+amazon_lda_lcs <- tidy(amazon_lda_lc, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:8) %>% # get the top 3 topics per location
+  arrange(document) %>% 
+  select(-gamma) %>% 
+  distinct()
+amazon_lda_topic <- aggregate(amazon_lda_lcs$document, list(amazon_lda_lcs$topic), paste, collapse = ", ") %>% rename(Topic = "Group.1", Stage = "x") 
+amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") %>%
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_topic # Do you see anything interesting?
+```
