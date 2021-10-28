@@ -1,0 +1,297 @@
+---
+title: "Amazon in Presidential Speeches in Brazil: data exploration for contexts"
+author: "Henrique Sposito and Livio Silva-Muller"
+date: "10/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Data and Filter it for Amazon related portions in texts
+
+```{r amazon, warning=FALSE, message=FALSE}
+library(dplyr)
+library(stringi)
+library(tm)
+
+# Load data
+BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+# Subset for text matches
+Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
+# Remove accents and extra spaces
+Amazon_speeches$text <- stringi::stri_trans_general(Amazon_speeches$text, id = "Latin-ASCII")
+# Make all lower case
+Amazon_speeches$text <- tolower(Amazon_speeches$text)
+# Remove extra white spaces
+Amazon_speeches$text <- tm::stripWhitespace(Amazon_speeches$text)
+# Get only the pertinent text chunks
+Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
+# Transform into a single text per row...
+Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
+# Plot number of speeches that mention Amazon normalized
+freq_year <- data.frame(year = names(summary(as.factor(Amazon_speeches$year))),
+                        freq = as.numeric(summary(as.factor(Amazon_speeches$year)))/
+                          as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
+plot(freq_year$year, freq_year$freq, type = "b",
+     main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
+     sub = "Normalized by the number of speeches per year in broader dataset",
+     xlab = "Year", ylab = "Frequency")
+```
+
+We start by getting the dataset and subsetting it for the texts that mention the strings "Amazon" in it as a word or parts of words. Then, we us `{poldis}` to get the context for each mention of the "Amazon", by default one sentence before and one sentence after the sentence in which the word "Amazon" is used.
+
+From the plot, the proportion of speeches that mention the word "Amazon" increase in frequency, in relation to the number of speeches per year in broader dataset, in the 1989 (?), around 1992 (Rion Conference), from 2005 to 2010 (Lula and preservation legislation turn), and after 2016 (deforestation rates increasing and international attention).
+
+## Clean text and get most frequent terms overall, and by speaker, in time
+
+```{r term frequency, warning=FALSE, message=FALSE}
+library(tidytext)
+library(kableExtra)
+library(stringr)
+library(wordcloud)
+library(RColorBrewer)
+
+# Rename variables to adapt to text analysis packages' expectations
+Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
+
+# Remove stopwords and punctuation
+Amazon_speeches$text <- tm::removePunctuation(Amazon_speeches$text)
+Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
+                                        c(tm::stopwords("pt"), "nao", "amazonas",
+                                          "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
+                                          "no", "hoje", "presidente", "governador", "regiao", 
+                                          "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
+                                          "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
+                                          "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
+                                          "cumprimentar", "gente", "estado", "querido", "queria",
+                                          "todos", "brasil"))
+Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
+
+# Transform into corpus
+Amazon_speeches <- Amazon_speeches %>%
+  dplyr::mutate(doc_id = president) %>%
+  arrange(doc_id, text)
+amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
+
+# Get 30 most frequent words overall
+amazon_dtm  <- DocumentTermMatrix(amazon_corpus)
+amazon_dtmm <- as.matrix(amazon_dtm)
+amazon_f <- data.frame(term = names(colSums(amazon_dtmm)),
+                       freq = colSums(amazon_dtmm))
+amazon_f <- amazon_f[order(amazon_f$freq, decreasing = T),]
+rownames(amazon_f) <- NULL
+amazon_f30 <- data.frame(head(amazon_f, 30))
+amazon_f30
+# Just plot in a wordcloud for words
+set.seed(1234)
+wordcloud(words = amazon_f$term, freq = amazon_f$freq, min.freq = 50,
+          max.words=200, random.order = FALSE, rot.per=0.35, 
+          colors = brewer.pal(8, "Dark2"))
+
+# Let's see if bigrams help us more here
+tamazon <- tidytext::tidy(amazon_corpus) %>%
+  unnest_tokens(bigram, text , token = "ngrams", n = 2) %>%
+  dplyr::count(bigram, sort = TRUE) %>%
+  ungroup()
+tamazon
+# A plot in a wordcloud for bigrams
+set.seed(1234)
+wordcloud(words = tamazon$bigram, freq = tamazon$n, min.freq = 20,
+          max.words=200, random.order = FALSE, rot.per=0.35, 
+          colors = brewer.pal(8, "Dark2"))
+
+# Let's get the 30 most frequent term by speaker
+amazon_presid <- aggregate(Amazon_speeches$text, list(Amazon_speeches$president), paste, collapse = " ") %>%
+  rename(doc_id = "Group.1", text = "x")
+amazon_presid_t <- tm::VCorpus(DataframeSource(amazon_presid)) %>%
+  tidy() %>% 
+  unnest_tokens(word, text) %>%
+  count(id, word, sort = TRUE)
+Sarney <- head(dplyr::filter(amazon_presid_t, id == "Sarney"), 30) %>%
+  mutate(Sarney = word) %>% select(Sarney)
+Collor <- head(dplyr::filter(amazon_presid_t, id == "Collor"), 30) %>%
+  mutate(Collor = word) %>% select(Collor)
+Itamar <- head(dplyr::filter(amazon_presid_t, id == "Itamar"), 30) %>%
+  mutate(Itamar = word) %>% select(Itamar)
+FHC <- head(dplyr::filter(amazon_presid_t, id == "FHC"), 30) %>%  mutate(FHC = word) %>% select(FHC)
+Lula <- head(dplyr::filter(amazon_presid_t, id == "Lula"), 30) %>%  mutate(Lula = word) %>% select(Lula)
+Dilma <- head(dplyr::filter(amazon_presid_t, id == "Dilma"), 30) %>%  mutate(Dilma = word) %>% select(Dilma)
+Temer <- head(dplyr::filter(amazon_presid_t, id == "Temer"), 30) %>%  mutate(Temer = word) %>% select(Temer)
+Bolsonaro <- head(dplyr::filter(amazon_presid_t, id == "Bolsonaro"), 30) %>%
+  mutate(Bolsonaro = word) %>% select(Bolsonaro)
+f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro) %>% 
+  kableExtra::kbl(caption = "Top 10 Words Per President") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+f_speaker
+```
+
+After cleaning the text we start by getting word frequencies. Although qord frequencies do not seem very helpful, more interesting patterns start to appear with bigrams 82 words that appear together) as we see, for example, "meio ambiente" (environemnt) appear central alongside references to the Amazonian forest, the tax free zone in Manaus (capital of the Amazonas state), and references to other countries (outros paises).
+
+When it comes to the 30 most frequent words per speaker, we see more interesting patterns as words such as development (all presdidents but Temer), integration (Collor and Itamar), security (Temer), deforestation (Lula, Dilma, and Temer), among others.
+
+## Simple LDA model by speakers
+
+```{r lda, warning=FALSE, message=FALSE}
+library(topicmodels)
+
+# Fit a simple LDA model
+# Please note that we randomly set a K = 10 (10 cluster = topics)
+amazon_lda <- topicmodels::LDA(amazon_dtm, k = 10, control = list(seed = 1234))
+
+# Get the top 10 words per topic
+amazon_lda10 <- tidy(amazon_lda, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_topic <- aggregate(amazon_lda10$term, list(amazon_lda10$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x") %>% 
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Prsidential Speeches Mentioning the Amazon") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+topten_topic
+
+# Let's get the gamma (percent of topic in document for speakers)
+amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:2) %>% # get the top 3 topics per speaker
+  arrange(document) %>%
+  mutate(gamma = round(gamma, 3)) %>%
+  distinct() %>% 
+  rename (president = document) %>% 
+  kableExtra::kbl(caption = "Top 2 Topics Per Speaker") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
+```
+
+When it comes to the LDA (Latent Dirichlet allocation), which is a model for estimating the mixture of words associated with a topic (cluster) and determining the probabilities of topics in each document, we start to see some interesting patterns (for more information on LDA and R approches [here](https://www.tidytextmining.com/index.html)). We set the number of clusters to be found (topics) at 10, randomly. We, then, select the top ten words coded for each topic. The first three topics relate to themes of security, development, and integration. The fourth topic relates to themes of deforestation and sustainable devolopment. Topics five to nine appear to relate to themes of politics, energy, and geography. The last topic appears to relate to themes of preservation of the Amazonian forest.
+
+Once the clusters are extracted, we can indicate, probabilisticly, how presidents' discourse fall within a topic. We see that, for example, Lula's discourses about the Amazon often is clusteres with themes of development and of deforestation. At the same time, Bolsonaro's discourses about the Amazon often is clusteres with themes of integration, energy, and the military forces. Sarney engaged with themes of preservation, while Cardoso engages with themes related to energy and integration. Others as Rousseff and Temer appear to engage with themes of geography, politics, energy; while Collor an Itamar appear to engage with themes of security, development, and integration.
+
+## Get, and compare, sentiment in time for speakers (afinn and NRC)
+
+```{r sentiment, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(stringr)
+# library(poldis)
+
+# Load internal sentiment dictionaries from poldis
+Afinn_pt <- poldis:::Afinn_pt
+nrc_portuguese <- poldis:::nrc_portuguese
+
+# Aggregate by president and year and transform into a corpus
+amazon_sent <- mutate(Amazon_speeches, doc_id = paste0(doc_id, "_", year))
+amazon_sent <- aggregate(amazon_sent$text, list(amazon_sent$doc_id), paste, collapse =" ") %>%
+  rename(doc_id = "Group.1", text = "x") %>% 
+  mutate(char = nchar(text))
+amazon_sent_wf <- VCorpus(DataframeSource(amazon_sent)) %>%
+  tidy() %>%
+  unnest_tokens(word, text) %>%
+  count(id, word, sort = TRUE)
+
+# Get afinn sentiment
+amazon_sent_af <- inner_join(amazon_sent_wf, Afinn_pt, by = "word") %>%
+  group_by(id) %>%
+  summarize(value = sum(n)) %>%
+  mutate(year = stringr::str_extract(id, "[0-9]{4}"),
+         president = stringr::str_remove_all(id, "_[0-9]{4}"),
+         date2 = stringr::str_extract(id, "[0-9]{2}$"),
+         nvalue = value/amazon_sent$char)
+
+# Plot Afinn sentiment in time for speeches about the Amazon
+ggplot(amazon_sent_af, aes(x = reorder(date2, as.numeric(year)), y = nvalue , fill = president)) +
+  geom_line(aes(group = president)) +
+  geom_point(size = 5, shape = 21) +
+  labs(x = "",
+       y = "",
+       title = "Sentiment in Presidential Speeches about the Amazon",
+       subtitle = "Normalized by the number of characters in text for speaker",
+       caption = "Afinn sentiment lexicon")
+
+# Get NRC per speaker
+amazon_sent_nrc <- inner_join(amazon_sent_wf, nrc_portuguese, by = "word") %>%
+  filter(sentiment != "positive", sentiment != "negative") %>% 
+  # removing positive and negative for more informative results
+  group_by(id, sentiment) %>%
+  summarize(value = sum(n)) %>%
+  mutate(year = stringr::str_extract(id, "[0-9]{4}"),
+         president = stringr::str_remove_all(id, "_[0-9]{4}"),
+         date2 = stringr::str_extract(id, "[0-9]{2}$"))
+# Normalize (first you have to multiple each speaker value 8 times)
+char <- select(amazon_sent, -text) %>% rename(id = doc_id)
+amazon_sent_nrc <- left_join(amazon_sent_nrc, char, by = "id") %>%
+  mutate(nvalue = (value/char)*100000)
+
+# Plot NRC
+ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = nvalue, fill = sentiment)) +
+  geom_bar(position="stack", stat="identity") +
+  theme(axis.text.x=element_text(angle=90,hjust=1,vjust=1)) +
+  labs(x = "",
+       y = "",
+       title = "Sentiment in Presidential Speeches about the Amazon",
+       subtitle = "Normalized by the number of characters in text for speaker",
+       caption = "NRC sentiment lexicon") +
+  coord_flip() +
+  expand_limits(y=c(0, 1000))
+```
+
+The Afinn sentiment lexicon gets to the polarity of certain words coded by assigning a value to them, positive and negative. The scores are normalized by the number of characters in text data for speaker per year. This allow us to compare the average use of charged words coded for with the sentiment lexicon for each speaker per year. We see in the plot, for example, that Sarney from 1985-87 employs more positive words coded for sentiment on speeches that mention the Amazon than other presidents. The same can be said about Bolsonaro who used more positively charged words on average than other presidents when speaking about the Amazon according to the lexicon. Other presidents, as Cardoso, Rousseff and Lula appear more consistent in time in regards to the average polarity of terms used in Amazonian related discourses than Teme, Collor, and Itamar.
+
+The NRC sentiment lexicon codes different sentiment for certain words. The scores for each of the sentiments soded also are normalized by the number of characters in text data for speaker per year. This allow us to compare the sentiments used according to the sentiment lexicon for each speaker per year. We see in the plot, that Lula in the early 2000s used many words coded for "trust" when speaking about the Amazon on average than other presidents/years. As well, Itamar in 1992 appeared to use more words coded for "anger" and "fear" on average than other presidents/years. 
+
+## Does location matter?
+
+```{r}
+# Location was added with poldis::extraxt_location(), still needs to be improved...
+summary(as.factor(Amazon_speeches$location))
+
+# Let's code the Amzonian states as "local"; the other Brazilian states as "nacional";
+# and the ones delivered outside Brazil as "international".
+Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
+summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...
+# Just a comparison with the proprtion of speeches per stage on the broader dataset
+stages <- mutate(BR_Presidential_Speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
+stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
+                         Amazon_speeches = paste0(round(as.numeric(summary(as.factor(Amazon_lc$stage))/861)*100, 2)," %"),
+                         All_speeches = paste0(round(as.numeric(summary(as.factor(stages$stage))/6088)*100, 2)," %"))
+
+# Let's try an simple LDA model again
+Amazon_lc <- mutate(Amazon_lc, doc_id = stage) %>% arrange(doc_id, text)
+amazon_lcc <- tm::VCorpus(DataframeSource(Amazon_lc))
+amazon_dtm_lc  <- DocumentTermMatrix(amazon_lcc)
+amazon_lda_lc <- topicmodels::LDA(amazon_dtm_lc, k = 10, control = list(seed = 1234)) # set k = 10
+amazon_lda_lcc <- tidy(amazon_lda_lc, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_lc <- aggregate(amazon_lda_lcc$term, list(amazon_lda_lcc$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x")
+
+# Get stage and merge tables
+amazon_lda_lcs <- tidy(amazon_lda_lc, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:3) %>% # get the top 3 topics per location
+  arrange(document) %>% 
+  select(-gamma) %>% 
+  distinct()
+amazon_lda_topic <- aggregate(amazon_lda_lcs$document, list(amazon_lda_lcs$topic), paste, collapse = ", ") %>% rename(Topic = "Group.1", Stage = "x") 
+amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") %>%
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_topic
+```
+
+The summary table illustrates that, as expected, more speeches that mention the Amazon proportionaly take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes ot internationa settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches.
+
+We can also get the themes by setting for each of the ten topics (clusters) generated with the LDA. We see, for example, that some fo the themes related to cooperation and integration appear in Amazonian States and Non Identified stages (topic 2). While themes related to developement, deforestation, and sustainability appear in International stages (topic 4). Interestingly, themes related to preservation of the forest appear in Amazonian states and Non Amazonian States.
+
+# Let's try and categorize the texts into a category...
+
+```{r narratives}
+# Amazon_speeches <- dplyr::mutate(Amazon_speeches, narrative = case_when(grepl("", text) ~ "", grepl("", text) ~ "", grepl("", text) ~ ""))
+# summary(as.factor(Amazon_lc$narrative))
+```

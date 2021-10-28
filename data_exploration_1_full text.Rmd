@@ -1,6 +1,6 @@
 ---
-title: "Amazon in Presidential Speeches in Brazil (Inductive Analysis)"
-author: "Henrique Sposito"
+title: "Amazon in Presidential Speeches in Brazil: data exploration for full texts"
+author: "Henrique Sposito and Livio Silva-Muller"
 date: "10/15/2021"
 output: html_document
 ---
@@ -14,8 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r amazon, warning=FALSE, message=FALSE}
 library(dplyr)
 BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
-# BR_Presidential_Speeches$amazon <- poldis::context("Amazon|Amazonica|Amazonia|Amazonas", var = BR_Presidential_Speeches$text, level = "sentences")
-# This takes a while to run, but we get context for all matches in dataset as a variable in dataset!
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches,
                                  grepl("Amazôn|Amazon|amazôn|amazon", text))
 # 861 speeches mention words related to Amazon
@@ -24,7 +22,6 @@ plot(Amazon_speeches$year, as.factor(Amazon_speeches$year), type = "b",
      main = "Presidential Speeches about the Amazon in Time in Brazil",
      xlab = "Year", ylab = "Frequency") # simple plot, but interesting!
 ```
-
 
 ## Clean text and get most frequent terms overall, and by speaker, in time
 
@@ -127,6 +124,7 @@ amazon_lda_presid # Only Collor associated with topic cluster that mentions "amb
 library(ggplot2)
 library(stringr)
 # library(poldis)
+
 # Load internal sentiment dictionaries from poldis
 Afinn_pt <- poldis:::Afinn_pt
 nrc_portuguese <- poldis:::nrc_portuguese
@@ -218,3 +216,6 @@ amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") 
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 amazon_lda_topic # Do you see anything interesting?
 ```
+
+This is where I stop since, overall, this appears not to be very helpful ...
+But how about we try the a similar script with only the matches themselves instead of full texts?
