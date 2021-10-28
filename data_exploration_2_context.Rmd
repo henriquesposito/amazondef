@@ -243,7 +243,7 @@ The NRC sentiment lexicon codes different sentiment for certain words. The score
 
 ## Does location matter?
 
-```{r}
+```{r location, warning=FALSE, message=FALSE}
 # Location was added with poldis::extraxt_location(), still needs to be improved...
 summary(as.factor(Amazon_speeches$location))
 
@@ -291,7 +291,7 @@ We can also get the themes by setting for each of the ten topics (clusters) gene
 
 # Let's try and categorize the texts into a category...
 
-```{r narratives}
+```{r narratives, warning=FALSE, message=FALSE}
 # Amazon_speeches <- dplyr::mutate(Amazon_speeches, narrative = case_when(grepl("", text) ~ "", grepl("", text) ~ "", grepl("", text) ~ ""))
 # summary(as.factor(Amazon_lc$narrative))
 ```
