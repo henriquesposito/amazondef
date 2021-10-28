@@ -245,10 +245,8 @@ The NRC sentiment lexicon codes different sentiment for certain words. The score
 
 ```{r location, warning=FALSE, message=FALSE}
 # Location was added with poldis::extraxt_location(), still needs to be improved...
-summary(as.factor(Amazon_speeches$location))
-
-# Let's code the Amzonian states as "local"; the other Brazilian states as "nacional";
-# and the ones delivered outside Brazil as "international".
+# To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
+# Let's code the Amzonian states, the other Brazilian states, and speeches delivered outside Brazil.
 Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
 summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...
 # Just a comparison with the proprtion of speeches per stage on the broader dataset
@@ -256,6 +254,7 @@ stages <- mutate(BR_Presidential_Speeches, stage = case_when(grepl("Amazonas|Par
 stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
                          Amazon_speeches = paste0(round(as.numeric(summary(as.factor(Amazon_lc$stage))/861)*100, 2)," %"),
                          All_speeches = paste0(round(as.numeric(summary(as.factor(stages$stage))/6088)*100, 2)," %"))
+stage_rate
 
 # Let's try an simple LDA model again
 Amazon_lc <- mutate(Amazon_lc, doc_id = stage) %>% arrange(doc_id, text)

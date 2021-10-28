@@ -1928,147 +1928,8 @@ ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = nvalue, fill 
 <div id="does-location-matter" class="section level2">
 <h2>Does location matter?</h2>
 <pre class="r"><code># Location was added with poldis::extraxt_location(), still needs to be improved...
-summary(as.factor(Amazon_speeches$location))</code></pre>
-<pre><code>##                                                                                                                                                                                       
-##                                                                                                                                                                                     2 
-##  Bem, o que e grave, o que e importante e que, alem de ser gaucho, eu sou torcedor do Internacional e isso por conta do Olivio Dutra, mas eu respeito muito o Gremio, porque o Gremio 
-##                                                                                                                                                                                     1 
-##                                                                                                                      Sabe como e que meu coracao fica quando me chamam de &quot;meu lindo&quot; 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                  Acre 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                               Alagoas 
-##                                                                                                                                                                                     4 
-##                                                                                                                                                                                 Amapa 
-##                                                                                                                                                                                     4 
-##                                                                                                                                                                              Amazonas 
-##                                                                                                                                                                                    25 
-##                                                                                                                                                                             Argentina 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                                 Bahia 
-##                                                                                                                                                                                     8 
-##                                                                                                                                                                               Belgium 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                               Bolivia 
-##                                                                                                                                                                                     8 
-##                                                                                                                                                                                Brazil 
-##                                                                                                                                                                                   187 
-##                                                                                                                                                                                 Ceará 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                                 Chile 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                 China 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                              Colombia 
-##                                                                                                                                                                                     9 
-##                                                                                                                                                                                  Cuba 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                      Democratic Republic of the Congo 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                               Denmark 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                   Dir 
-##                                                                                                                                                                                    18 
-##                                                                                                                                                                      Distrito Federal 
-##                                                                                                                                                                                   169 
-##                                                                                                                                                                               Ecuador 
-##                                                                                                                                                                                     8 
-##                                                                                                                                                                        Espirito Santo 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                                France 
-##                                                                                                                                                                                     9 
-##                                                                                                                                                                                 Goias 
-##                                                                                                                                                                                     7 
-##                                                                                                                                                                               Hamburg 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                 India 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                         Iran_Islamic Republic of Iran 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                                Israel 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                 Italy 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                               Jamaica 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                 Japan 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                    mais que um parceiro, um irmao em  
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                              Maranhao 
-##                                                                                                                                                                                     6 
-##                                                                                                                                                                           Mato Grosso 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                          Minas Gerais 
-##                                                                                                                                                                                     7 
-##                                                                                                                                                                                    NA 
-##                                                                                                                                                                                   101 
-##                                                                                                                                                                             Nicaragua 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                Norway 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                  Oman 
-##                                                                                                                                                                                     4 
-##                                                                                                                                                                                   ONU 
-##                                                                                                                                                                                    14 
-##                                                                                                                                                                                Panama 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                  Para 
-##                                                                                                                                                                                    88 
-##                                                                                                                                                                               Paraiba 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                Parana 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                            Pernambuco 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                                  Peru 
-##                                                                                                                                                                                    13 
-##                                                                                                                                                                                 Piaui 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                              Portugal 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                     Republic of Korea 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                        Rio de Janeiro 
-##                                                                                                                                                                                    22 
-##                                                                                                                                                                   Rio Grande do Norte 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                     Rio Grande do Sul 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                              Rondonia 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                               Roraima 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                        Santa Catarina 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                             Sao Paulo 
-##                                                                                                                                                                                    28 
-##                                                                                                                                                                               Sergipe 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                                  Sind 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                                 Spain 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                             St. Lucia 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                              Suriname 
-##                                                                                                                                                                                     6 
-##                                                                                                                                                                                Sweden 
-##                                                                                                                                                                                     2 
-##                                                                                                                                                                           Switzerland 
-##                                                                                                                                                                                     1 
-##                                                                                                                                                                             Tocantins 
-##                                                                                                                                                                                     5 
-##                                                                                                                                                                        United Kingdom 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                              United States of America 
-##                                                                                                                                                                                     9 
-##                                                                                                                                                                               Uruguay 
-##                                                                                                                                                                                     3 
-##                                                                                                                                                                             Venezuela 
-##                                                                                                                                                                                    13</code></pre>
-<pre class="r"><code># Let&#39;s code the Amzonian states as &quot;local&quot;; the other Brazilian states as &quot;nacional&quot;;
-# and the ones delivered outside Brazil as &quot;international&quot;.
+# To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
+# Let&#39;s code the Amzonian states, the other Brazilian states, and speeches delivered outside Brazil.
 Amazon_lc &lt;- mutate(Amazon_speeches, stage = case_when(grepl(&quot;Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao&quot;, location) ~ &quot;Amazonian States&quot;, grepl(&quot;Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe&quot;, location) ~ &quot;Non Amazonian States&quot;, grepl(&quot;NA&quot;, location) ~ &quot;Non Identified&quot;, !grepl(&quot;Amazonian States|Non Amazonian States|Non Identified&quot;, location) ~ &quot;International&quot;))
 summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...</code></pre>
 <pre><code>##     Amazonian States        International Non Amazonian States 
@@ -2080,8 +1941,13 @@ stages &lt;- mutate(BR_Presidential_Speeches, stage = case_when(grepl(&quot;Amaz
 stage_rate &lt;- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
                          Amazon_speeches = paste0(round(as.numeric(summary(as.factor(Amazon_lc$stage))/861)*100, 2),&quot; %&quot;),
                          All_speeches = paste0(round(as.numeric(summary(as.factor(stages$stage))/6088)*100, 2),&quot; %&quot;))
-
-# Let&#39;s try an simple LDA model again
+stage_rate</code></pre>
+<pre><code>##                  Stage Amazon_speeches All_speeches
+## 1     Amazonian States         16.26 %       9.74 %
+## 2        International         18.82 %      21.45 %
+## 3 Non Amazonian States         53.19 %      58.77 %
+## 4       Non Identified         11.73 %      10.04 %</code></pre>
+<pre class="r"><code># Let&#39;s try an simple LDA model again
 Amazon_lc &lt;- mutate(Amazon_lc, doc_id = stage) %&gt;% arrange(doc_id, text)
 amazon_lcc &lt;- tm::VCorpus(DataframeSource(Amazon_lc))
 amazon_dtm_lc  &lt;- DocumentTermMatrix(amazon_lcc)
