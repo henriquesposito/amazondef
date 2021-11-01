@@ -1,7 +1,7 @@
 ---
 title: "Amazon in Presidential Speeches in Brazil: data exploration for contexts"
 author: "Henrique Sposito and Livio Silva-Muller"
-date: "10/28/2021"
+date: "10/29/2021"
 output: html_document
 ---
 
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(stringi)
 library(tm)
+library(ggplot2)
 
 # Load data
 BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
@@ -30,19 +31,46 @@ Amazon_speeches$text <- tm::stripWhitespace(Amazon_speeches$text)
 Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
 # Transform into a single text per row...
 Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
-# Plot number of speeches that mention Amazon normalized
-freq_year <- data.frame(year = names(summary(as.factor(Amazon_speeches$year))),
-                        freq = as.numeric(summary(as.factor(Amazon_speeches$year)))/
+
+# In case you want to sample a few ramdom text observations by president
+# sample_pres <- Amazon_speeches %>% group_by(president) %>% sample_n(8) %>% select(president, year, ccontext)
+
+# Create a littale frequencies data frame
+freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeches$year)))),
+                        freq = as.numeric(summary(as.factor(Amazon_speeches$year))),
+                        freqn = as.numeric(summary(as.factor(Amazon_speeches$year)))/
                           as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
+
+# Simple plot of the frequncy of speeches that mention Amazon since 1985
 plot(freq_year$year, freq_year$freq, type = "b",
+     main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
+     xlab = "Year", ylab = "Frequency")
+
+# Plot number of speeches that mention Amazon normalized by the number of speeches per year in broader data
+plot(freq_year$year, freq_year$freqn, type = "b",
      main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
      sub = "Normalized by the number of speeches per year in broader dataset",
      xlab = "Year", ylab = "Frequency")
+
+# Also, let's load the data on annual rates of deforestation in the Brazilian Amazon per year
+amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year")
+ggplot(freq_year, aes(x = year)) +
+    geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
+    geom_line(aes(y = `area km²`/100, color = "Annual deforestation (km²/100)")) +
+      labs(x = "Year",
+       y = "",
+       title = "Presidential Speeches that Mention the Amazon since 1985 in Brazil",
+       subtitle = "Compared to annual deforestation rates since 1988",
+       caption = "Frequencies are normalized by the number of speeches per year in dataset",
+       color = "Legend")
 ```
 
-We start by getting the dataset and subsetting it for the texts that mention the strings "Amazon" in it as a word or parts of words. Then, we us `{poldis}` to get the context for each mention of the "Amazon", by default one sentence before and one sentence after the sentence in which the word "Amazon" is used.
+We start by subsetting the broad dataset it for the texts that mention the strings "Amazon" in it as a word or parts of words. Then, we us `{poldis}` to get the context for each mention of the "Amazon", by default one sentence before and one sentence after the sentence in which the string "Amazon" is matched.
 
-From the plot, the proportion of speeches that mention the word "Amazon" increase in frequency, in relation to the number of speeches per year in broader dataset, in the 1989 (?), around 1992 (Rion Conference), from 2005 to 2010 (Lula and preservation legislation turn), and after 2016 (deforestation rates increasing and international attention).
+From the first plot, the proportion of speeches that mention the word "Amazon" increase in frequency in 1989 (possibly related to Amazon Fires coverage from the New York Times see [here](https://www.nytimes.com/1988/08/12/world/vast-amazon-fires-man-made-linked-to-global-warming.html) and [here](https://www.nytimes.com/1989/03/23/world/brazil-smarting-from-the-outcry-over-the-amazon-charges-foreign-plot.html)), around 1992 (likely related to the Rio Conference), from 2005 to 2010 (possibly related to the "preservation" legislation turn under the Lula Administration), and after 2016 (possibly related to increasing deforestation rates and international attention). Notice that the frequency is normalized by the number of speeches per year in the broader dataset.
+
+The second plot also compares mentions of Amazon and annual deforestation rates for the Brazilian Amazon [here](http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates). We see that for later years (2005 and afterwards), it appears that as deforestation rates go down or up we also see, often, these trends reflected in the proportional frequency to which discourses about the Amazon takes place.
 
 ## Clean text and get most frequent terms overall, and by speaker, in time
 
@@ -127,9 +155,9 @@ f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro) %
 f_speaker
 ```
 
-After cleaning the text we start by getting word frequencies. Although qord frequencies do not seem very helpful, more interesting patterns start to appear with bigrams 82 words that appear together) as we see, for example, "meio ambiente" (environemnt) appear central alongside references to the Amazonian forest, the tax free zone in Manaus (capital of the Amazonas state), and references to other countries (outros paises).
+After cleaning the text we start by getting word frequencies. Although word frequencies do not seem very helpful, more interesting patterns start to appear with bigrams 82 words that appear together) as we see, for example, "meio ambiente" (environment) appear central alongside references to the Amazonian forest, the tax free zone in Manaus (capital of the state of Amazonas), and references to other countries ("outros paises").
 
-When it comes to the 30 most frequent words per speaker, we see more interesting patterns as words such as development (all presdidents but Temer), integration (Collor and Itamar), security (Temer), deforestation (Lula, Dilma, and Temer), among others.
+When it comes to the 30 most frequent words per speaker, we see more interesting patterns as words such as development (all presidents but Temer), integration (Collor and Itamar), security (Temer), deforestation (Lula, Dilma, and Temer), among others.
 
 ## Simple LDA model by speakers
 
@@ -148,7 +176,7 @@ amazon_lda10 <- tidy(amazon_lda, matrix = "beta") %>%
   arrange(topic)
 topten_topic <- aggregate(amazon_lda10$term, list(amazon_lda10$topic), paste, collapse=", ") %>%
   rename(Topic = "Group.1", Terms = "x") %>% 
-  kableExtra::kbl(caption = "Top 10 Words per Topic for Prsidential Speeches Mentioning the Amazon") %>%
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Presidential Speeches Mentioning the Amazon") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 topten_topic
 
@@ -166,14 +194,13 @@ amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
 amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
 ```
 
-When it comes to the LDA (Latent Dirichlet allocation), which is a model for estimating the mixture of words associated with a topic (cluster) and determining the probabilities of topics in each document, we start to see some interesting patterns (for more information on LDA and R approches [here](https://www.tidytextmining.com/index.html)). We set the number of clusters to be found (topics) at 10, randomly. We, then, select the top ten words coded for each topic. The first three topics relate to themes of security, development, and integration. The fourth topic relates to themes of deforestation and sustainable devolopment. Topics five to nine appear to relate to themes of politics, energy, and geography. The last topic appears to relate to themes of preservation of the Amazonian forest.
+When it comes to the LDA (Latent Dirichlet allocation), which is a model for estimating the mixture of words associated with a topic (cluster) and determining the probabilities of topics in each document, we start to see some interesting patterns (for more information on LDA and R approaches [here](https://www.tidytextmining.com/index.html)). We set the number of clusters to be found (topics) at 10, randomly. We, then, select the top ten words coded for each topic. The first three topics relate to themes of security, development, and integration. The fourth topic relates to themes of deforestation and sustainable development. Topics five to nine appear to relate to themes of politics, energy, and geography. The last topic appears to relate to themes of preservation of the Amazonian forest.
 
-Once the clusters are extracted, we can indicate, probabilisticly, how presidents' discourse fall within a topic. We see that, for example, Lula's discourses about the Amazon often is clusteres with themes of development and of deforestation. At the same time, Bolsonaro's discourses about the Amazon often is clusteres with themes of integration, energy, and the military forces. Sarney engaged with themes of preservation, while Cardoso engages with themes related to energy and integration. Others as Rousseff and Temer appear to engage with themes of geography, politics, energy; while Collor an Itamar appear to engage with themes of security, development, and integration.
+Once the clusters are extracted, we can indicate, probabilistically, how presidents' discourse fall within a topic. We see that, for example, Lula's discourses about the Amazon often is clustered with themes of development and of deforestation. At the same time, Bolsonaro's discourses about the Amazon often is clustered with themes of integration, energy, and the military forces. Sarney engaged with themes of preservation, while Cardoso engages with themes related to energy and integration. Others as Rousseff and Temer appear to engage with themes of geography, politics, energy; while Collor an Itamar appear to engage with themes of security, development, and integration.
 
-## Get, and compare, sentiment in time for speakers (afinn and NRC)
+## Get, and compare, sentiment in time for speakers (Afinn and NRC)
 
 ```{r sentiment, warning=FALSE, message=FALSE}
-library(ggplot2)
 library(stringr)
 # library(poldis)
 
@@ -237,9 +264,9 @@ ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = nvalue, fill 
   expand_limits(y=c(0, 1000))
 ```
 
-The Afinn sentiment lexicon gets to the polarity of certain words coded by assigning a value to them, positive and negative. The scores are normalized by the number of characters in text data for speaker per year. This allow us to compare the average use of charged words coded for with the sentiment lexicon for each speaker per year. We see in the plot, for example, that Sarney from 1985-87 employs more positive words coded for sentiment on speeches that mention the Amazon than other presidents. The same can be said about Bolsonaro who used more positively charged words on average than other presidents when speaking about the Amazon according to the lexicon. Other presidents, as Cardoso, Rousseff and Lula appear more consistent in time in regards to the average polarity of terms used in Amazonian related discourses than Teme, Collor, and Itamar.
+The Afinn sentiment lexicon gets to the polarity of certain words coded by assigning a value to them, positive and negative. The scores are normalized by the number of characters in text data for speaker per year. This allow us to compare the average use of charged words coded for with the sentiment lexicon for each speaker per year. We see in the plot, for example, that Sarney from 1985-87 employs more positive words coded for sentiment on speeches that mention the Amazon than other presidents. The same can be said about Bolsonaro who used more positively charged words on average than other presidents when speaking about the Amazon according to the lexicon. Other presidents, as Cardoso, Rousseff and Lula appear more consistent in time in regards to the average polarity of terms used in Amazonian related discourses than Temer, Collor, and Itamar.
 
-The NRC sentiment lexicon codes different sentiment for certain words. The scores for each of the sentiments soded also are normalized by the number of characters in text data for speaker per year. This allow us to compare the sentiments used according to the sentiment lexicon for each speaker per year. We see in the plot, that Lula in the early 2000s used many words coded for "trust" when speaking about the Amazon on average than other presidents/years. As well, Itamar in 1992 appeared to use more words coded for "anger" and "fear" on average than other presidents/years. 
+The NRC sentiment lexicon codes different sentiment for certain words. The scores for each of the sentiments coded also are normalized by the number of characters in text data for speaker per year. This allow us to compare the sentiments used according to the sentiment lexicon for each speaker per year. We see in the plot, that Lula in the early 2000s used many words coded for "trust" when speaking about the Amazon on average than other presidents/years. As well, Itamar in 1992 appeared to use more words coded for "anger" and "fear" on average than other presidents/years. 
 
 ## Does location matter?
 
@@ -247,7 +274,7 @@ The NRC sentiment lexicon codes different sentiment for certain words. The score
 # Location was added with poldis::extraxt_location(), still needs to be improved...
 # To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
 # Let's code the Amzonian states, the other Brazilian states, and speeches delivered outside Brazil.
-Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
+Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian_States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non_Amazonian_States", grepl("NA", location) ~ "Non_Identified", !grepl("Amazonian_States|Non_Amazonian_States|Non_Identified", location) ~ "International"))
 summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...
 # Just a comparison with the proprtion of speeches per stage on the broader dataset
 stages <- mutate(BR_Presidential_Speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
@@ -282,15 +309,84 @@ amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") 
   kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 amazon_lda_topic
+
+
 ```
 
-The summary table illustrates that, as expected, more speeches that mention the Amazon proportionaly take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes ot internationa settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches.
+The summary table illustrates that, as expected, more speeches that mention the Amazon proportionally take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes ot international settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches.
 
-We can also get the themes by setting for each of the ten topics (clusters) generated with the LDA. We see, for example, that some fo the themes related to cooperation and integration appear in Amazonian States and Non Identified stages (topic 2). While themes related to developement, deforestation, and sustainability appear in International stages (topic 4). Interestingly, themes related to preservation of the forest appear in Amazonian states and Non Amazonian States.
+We can also get the themes by setting for each of the ten topics (clusters) generated with the LDA. We see, for example, that some of the themes related to cooperation and integration appear in Amazonian States and Non Identified stages (topic 2). While themes related to development, deforestation, and sustainability appear in International stages (topic 4). Interestingly, themes related to preservation of the forest appear in Amazonian states and Non Amazonian States.
 
-# Let's try and categorize the texts into a category...
+# Let's try and categorize the texts into narratives ...
+
+In this preliminary approach we attempt to count and show correlations between coded narratives, presidents, and stages.
 
 ```{r narratives, warning=FALSE, message=FALSE}
-# Amazon_speeches <- dplyr::mutate(Amazon_speeches, narrative = case_when(grepl("", text) ~ "", grepl("", text) ~ "", grepl("", text) ~ ""))
-# summary(as.factor(Amazon_lc$narrative))
+# Create the dictionary
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito")
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
+conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest")
+anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|agricultura|producao de gado") # This appears harder to operationalize than others...
+
+# Create a variable for each and count matches
+Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
+Amazon_speeches$development <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", development))
+Amazon_speeches$conservation <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", conservation))
+Amazon_speeches$anti_environmentalism <- stringr::str_count(Amazon_speeches$text,
+                                                            paste0("(?i)", anti_environmentalism))
+Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speeches$development == 0 & 
+                                  Amazon_speeches$conservation == 0 & 
+                                  Amazon_speeches$anti_environmentalism == 0, 1, 0)
+
+# Visualize correlations
+ggplot(Amazon_speeches, aes(x = year)) +
+  geom_line(aes(y = sovereignty, color = "Sovereignty")) +
+  geom_line(aes(y =  development, color = "Development")) +
+  geom_line(aes(y =  conservation, color = "Conservation")) +
+  geom_line(aes(y =  anti_environmentalism, color = "Anti_environmentalism")) +
+      labs(x = "Year",
+       y = "",
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil",
+       color = "Narrative")
+
+# Narrative per president, frequency table
+pres_narratives <- Amazon_speeches %>%
+  select(-c(context, text, fulltext, year, party, date, title, doc_id, location)) %>%
+  group_by(president) %>%
+  summarise(across(everything(), sum))
+kableExtra::kbl(pres_narratives, caption = "Narratives per President in Brazil") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Same frequency table but normalized by the numbers of speeches in broader dataset
+pres_narratives_n <- pres_narratives %>%
+  mutate(n_speeches = summary(as.factor(BR_Presidential_Speeches$president))) %>%
+  mutate(across(c(2:6), .fns = ~./n_speeches)) %>%
+  select(-n_speeches) %>%
+  mutate_if(is.numeric, round, digits = 2)
+kableExtra::kbl(pres_narratives_n, caption = "Narratives per President in Brazil (normalized)") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Table by stage
+stage_narratives <- Amazon_speeches %>%
+  mutate(stage = Amazon_lc$stage) %>%
+  select(-c(context, text, fulltext, year, party, date, title, doc_id, location, president)) %>%
+  group_by(stage) %>%
+  summarise(across(everything(), sum))
+kableExtra::kbl(stage_narratives, caption = "Narratives per President in Brazil") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Table by stage, normalized
+stage_narratives_n <- stage_narratives %>%
+  mutate(n_stages = summary(as.factor(Amazon_lc$stage))) %>%
+  mutate(across(c(2:6), .fns = ~./n_stages)) %>%
+  select(-n_stages) %>%
+  mutate_if(is.numeric, round, digits = 2)
+kableExtra::kbl(stage_narratives_n, caption = "Narratives per President in Brazil (normalized)") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 ```
+
+While the dictionary of terms needs to be greatly expanded to operationalize narratives in discourse, we see that some narratives appear more than others in certain periods, often in unexpected years. This is specially puzzling as conservationism narratives peak in the late 1980s, sovereignty narratives in the mid 1990s and development narratives in the early 2000s. 
+
+Moreover, as the first few plots at the beginning of the document illustrated, Amazon related speeches during the Sarney administration were salient as a proportional of the general numbers of speeches for the president in the dataset. at the same time. we see that Sarney engages with narratives of sovereignty, development, and conservation. Other presidents as Itamar and Cardoso engage overwhelmingly with development related narratives, while Collor and Bolsonaro engage with conservation (though, at least in the case of Bolsonaro, I believe the dictionary is matching negative cases and it needs be improved...).
+
+When it comes to stage, all narratives are proportionally more salient within Amazonian states, as it would be expected. Anti-environmentalism appears slightly less in international stages in comparison to others.
