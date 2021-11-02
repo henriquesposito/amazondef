@@ -94,7 +94,16 @@ Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
                                           "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
                                           "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
                                           "cumprimentar", "gente", "estado", "querido", "queria",
-                                          "todos", "brasil"))
+                                          "todos", "brasil", "companheiro", "senhores", "site", 
+                                          "companheiras", "companheiros", "companheira",
+                                          "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
+                                          "grosso", "rio", "ministro", "ministra", "josé", "paulo", "pará", "acre", "roraima",
+                                          "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
+                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso", "janeiro",
+                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite",
+                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "porto", "bahia", "é",
+                                          "lá", "et", "in"))
+
 Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
 
 # Transform into corpus
