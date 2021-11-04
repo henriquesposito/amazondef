@@ -1,0 +1,279 @@
+---
+title: "Amazonian Narratives in Presidential Discourse (1985 to 2020)"
+author: "Henrique Sposito & Livio Silva-Muller"
+date: "11/4/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(stringi)
+library(tm)
+library(ggplot2)
+
+# Load data
+#BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+#amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") #livio's path
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
+
+
+# Subset for text matches
+Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
+# Remove accents and extra spaces
+Amazon_speeches$text <- stringi::stri_trans_general(Amazon_speeches$text, id = "Latin-ASCII")
+# Make all lower case
+Amazon_speeches$text <- tolower(Amazon_speeches$text)
+# Remove extra white spaces
+Amazon_speeches$text <- tm::stripWhitespace(Amazon_speeches$text)
+# Get only the pertinent text chunks
+Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
+# Transform into a single text per row...
+Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
+
+```
+
+
+```{r setup, include=FALSE}
+# Rename variables to adapt to text analysis packages' expectations
+Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
+
+# Remove stop words and punctuation
+Amazon_speeches$text <- tm::removePunctuation(Amazon_speeches$text)
+Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
+                                        c(tm::stopwords("pt"), "nao", "amazonas",
+                                          "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
+                                          "no", "hoje", "presidente", "governador", "regiao", 
+                                          "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
+                                          "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
+                                          "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
+                                          "cumprimentar", "gente", "estado", "querido", "queria",
+                                          "todos", "brasil", "companheiro", "senhores",
+                                          "companheiras", "companheiros", "companheira",
+                                          "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
+                                          "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
+                                          "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
+                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
+                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite site",
+                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "bahia", "é",
+                                          "lá", "et", "in"))
+
+Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
+
+# Transform into corpus
+Amazon_speeches <- Amazon_speeches %>%
+  dplyr::mutate(doc_id = president) %>%
+  arrange(doc_id, text)
+amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE, message=FALSE, warning=FALSE}
+
+freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeches$year)))),
+                        freq = as.numeric(summary(as.factor(Amazon_speeches$year))),
+                        freqn = as.numeric(summary(as.factor(Amazon_speeches$year)))/
+                          as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
+
+plot(freq_year$year, freq_year$freqn, type = "b",
+     main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
+     sub = "Normalized by the number of speeches per year",
+     xlab = "Year", ylab = "Frequency")
+
+freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year") 
+ggplot(freq_year, aes(x = year)) +
+    geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
+    geom_line(aes(y = `area km²`/100, color = "Annual deforestation (km²/100)")) +
+      labs(x = "Year",
+       y = "",
+       title = "Presidential Speeches that Mention the Amazon since 1985 in Brazil",
+       subtitle = "Compared to annual deforestation rates since 1988",
+       caption = "Frequencies normalized by the number of speeches per year in dataset",
+       color = "Legend")
+
+```
+
+
+```{r location, warning=FALSE, message=FALSE}
+# Location was added with poldis::extraxt_location(), still needs to be improved...
+# To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
+# Let's code the Amazonian states, the other Brazilian states, and speeches delivered outside Brazil.
+Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian_States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non_Amazonian_States", grepl("NA", location) ~ "Non_Identified", !grepl("Amazonian_States|Non_Amazonian_States|Non_Identified", location) ~ "International"))
+summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...
+# Just a comparison with the proportion of speeches per stage on the broader dataset
+stages <- mutate(BR_Presidential_Speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
+stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
+                         Amazon_speeches = paste0(round(as.numeric(summary(as.factor(Amazon_lc$stage))/861)*100, 2)," %"),
+                         All_speeches = paste0(round(as.numeric(summary(as.factor(stages$stage))/6088)*100, 2)," %"))
+stage_rate
+```
+
+```{r top words by speaker, warning=FALSE, message=FALSE}
+
+# Get 30 most frequent words overall
+amazon_dtm  <- DocumentTermMatrix(amazon_corpus)
+amazon_dtmm <- as.matrix(amazon_dtm)
+amazon_f <- data.frame(term = names(colSums(amazon_dtmm)),
+                       freq = colSums(amazon_dtmm))
+amazon_f <- amazon_f[order(amazon_f$freq, decreasing = T),]
+rownames(amazon_f) <- NULL
+amazon_f30 <- data.frame(head(amazon_f, 30))
+amazon_f30
+
+# Just plot in a wordcloud for words
+set.seed(1234)
+wordcloud(words = amazon_f$term, freq = amazon_f$freq, min.freq = 50,
+          max.words=200, random.order = FALSE, rot.per=0.35, 
+          colors = brewer.pal(8, "Dark2"))
+
+# Let's see if bigrams help us more here
+tamazon <- tidytext::tidy(amazon_corpus) %>%
+  unnest_tokens(bigram, text , token = "ngrams", n = 2) %>%
+  dplyr::count(bigram, sort = TRUE) %>%
+  ungroup()
+tamazon
+
+# A plot in a wordcloud for bigrams
+set.seed(1234)
+wordcloud(words = tamazon$bigram, freq = tamazon$n, min.freq = 20,
+          max.words=200, random.order = FALSE, rot.per=0.35, 
+          colors = brewer.pal(8, "Dark2"))
+
+# Let's get the 30 most frequent term by speaker
+amazon_presid <- aggregate(Amazon_speeches$text, list(Amazon_speeches$president), paste, collapse = " ") %>%
+  rename(doc_id = "Group.1", text = "x")
+amazon_presid_t <- tm::VCorpus(DataframeSource(amazon_presid)) %>%
+  tidy() %>% 
+  unnest_tokens(word, text) %>%
+  count(id, word, sort = TRUE)
+Sarney <- head(dplyr::filter(amazon_presid_t, id == "Sarney"), 30) %>%
+  mutate(Sarney = word) %>% select(Sarney)
+Collor <- head(dplyr::filter(amazon_presid_t, id == "Collor"), 30) %>%
+  mutate(Collor = word) %>% select(Collor)
+Itamar <- head(dplyr::filter(amazon_presid_t, id == "Itamar"), 30) %>%
+  mutate(Itamar = word) %>% select(Itamar)
+FHC <- head(dplyr::filter(amazon_presid_t, id == "FHC"), 30) %>%  mutate(FHC = word) %>% select(FHC)
+Lula <- head(dplyr::filter(amazon_presid_t, id == "Lula"), 30) %>%  mutate(Lula = word) %>% select(Lula)
+Dilma <- head(dplyr::filter(amazon_presid_t, id == "Dilma"), 30) %>%  mutate(Dilma = word) %>% select(Dilma)
+Temer <- head(dplyr::filter(amazon_presid_t, id == "Temer"), 30) %>%  mutate(Temer = word) %>% select(Temer)
+Bolsonaro <- head(dplyr::filter(amazon_presid_t, id == "Bolsonaro"), 30) %>%
+  mutate(Bolsonaro = word) %>% select(Bolsonaro)
+f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro) %>% 
+  kableExtra::kbl(caption = "Top 30 Words Per President") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+f_speaker
+```
+
+```{r lda, warning=FALSE, message=FALSE}
+library(topicmodels)
+
+# Fit a simple LDA model
+# Please note that we randomly set a K = 10 (10 cluster = topics)
+amazon_lda <- topicmodels::LDA(amazon_dtm, k = 10, control = list(seed = 1234))
+
+# Get the top 10 words per topic
+amazon_lda10 <- tidy(amazon_lda, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_topic <- aggregate(amazon_lda10$term, list(amazon_lda10$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x") %>% 
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Presidential Speeches Mentioning the Amazon") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+topten_topic
+
+# Let's get the gamma (percent of topic in document for speakers)
+amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:2) %>% # get the top 3 topics per speaker
+  arrange(document) %>%
+  mutate(gamma = round(gamma, 3)) %>%
+  distinct() %>% 
+  rename (president = document) %>% 
+  kableExtra::kbl(caption = "Top 2 Topics Per Speaker") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
+```
+
+```{r narratives, warning=FALSE, message=FALSE, echo=TRUE}
+# Create the dictionary
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito")
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
+conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest")
+anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|agricultura|producao de gado|ambientalistas") # This appears harder to operationalize than others...
+```
+
+```{r narratives, warning=FALSE, message=FALSE, echo=FALSE}
+
+# Create a variable for each and count matches
+Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
+Amazon_speeches$development <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", development))
+Amazon_speeches$conservation <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", conservation))
+Amazon_speeches$anti_environmentalism <- stringr::str_count(Amazon_speeches$text,
+                                                            paste0("(?i)", anti_environmentalism))
+Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speeches$development == 0 & 
+                                  Amazon_speeches$conservation == 0 & 
+                                  Amazon_speeches$anti_environmentalism == 0, 1, 0)
+
+# Visualize correlations
+ggplot(Amazon_speeches, aes(x = year)) +
+  geom_line(aes(y = sovereignty, color = "Sovereignty")) +
+  geom_line(aes(y =  development, color = "Development")) +
+  geom_line(aes(y =  conservation, color = "Conservation")) +
+  geom_line(aes(y =  anti_environmentalism, color = "Anti_environmentalism")) +
+      labs(x = "Year",
+       y = "",
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil",
+       color = "Narrative")
+
+# Narrative per president, frequency table
+pres_narratives <- Amazon_speeches %>%
+  select(-c(context, text, fulltext, year, party, date, title, doc_id, location)) %>%
+  group_by(president) %>%
+  summarise(across(everything(), sum))
+kableExtra::kbl(pres_narratives, caption = "Narratives per President in Brazil") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Same frequency table but normalized by the numbers of speeches in broader dataset
+pres_narratives_n <- pres_narratives %>%
+  mutate(n_speeches = summary(as.factor(BR_Presidential_Speeches$president))) %>%
+  mutate(across(c(2:6), .fns = ~./n_speeches)) %>%
+  select(-n_speeches) %>%
+  mutate_if(is.numeric, round, digits = 2)
+kableExtra::kbl(pres_narratives_n, caption = "Narratives per President in Brazil (normalized)") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Table by stage
+stage_narratives <- Amazon_speeches %>%
+  mutate(stage = Amazon_lc$stage) %>%
+  select(-c(context, text, fulltext, year, party, date, title, doc_id, location, president)) %>%
+  group_by(stage) %>%
+  summarise(across(everything(), sum))
+kableExtra::kbl(stage_narratives, caption = "Narratives per President in Brazil") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+
+# Table by stage, normalized
+stage_narratives_n <- stage_narratives %>%
+  mutate(n_stages = summary(as.factor(Amazon_lc$stage))) %>%
+  mutate(across(c(2:6), .fns = ~./n_stages)) %>%
+  select(-n_stages) %>%
+  mutate_if(is.numeric, round, digits = 2)
+kableExtra::kbl(stage_narratives_n, caption = "Narratives per President in Brazil (normalized)") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+```
+
