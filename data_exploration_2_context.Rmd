@@ -339,6 +339,8 @@ We can also get the themes by setting for each of the ten topics (clusters) gene
 In this preliminary approach we attempt to count and show correlations between coded narratives, presidents, and stages.
 
 ```{r narratives, warning=FALSE, message=FALSE}
+library(tidyr)
+
 # Create the dictionary
 sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito")
 development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
