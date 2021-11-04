@@ -18,7 +18,9 @@ library(tm)
 library(ggplot2)
 
 # Load data
-BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+#BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") #livio's path
+
 # Subset for text matches
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
 # Remove accents and extra spaces
@@ -32,16 +34,16 @@ Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text,
 # Transform into a single text per row...
 Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
 
-# In case you want to sample a few ramdom text observations by president
+# In case you want to sample a few random text observations by president
 # sample_pres <- Amazon_speeches %>% group_by(president) %>% sample_n(8) %>% select(president, year, ccontext)
 
-# Create a littale frequencies data frame
+# Create a little frequencies data frame
 freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeches$year)))),
                         freq = as.numeric(summary(as.factor(Amazon_speeches$year))),
                         freqn = as.numeric(summary(as.factor(Amazon_speeches$year)))/
                           as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
 
-# Simple plot of the frequncy of speeches that mention Amazon since 1985
+# Simple plot of the frequency of speeches that mention Amazon since 1985
 plot(freq_year$year, freq_year$freq, type = "b",
      main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
      xlab = "Year", ylab = "Frequency")
@@ -53,7 +55,9 @@ plot(freq_year$year, freq_year$freqn, type = "b",
      xlab = "Year", ylab = "Frequency")
 
 # Also, let's load the data on annual rates of deforestation in the Brazilian Amazon per year
-amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+#amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
+
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year")
 ggplot(freq_year, aes(x = year)) +
     geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
@@ -94,14 +98,14 @@ Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
                                           "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
                                           "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
                                           "cumprimentar", "gente", "estado", "querido", "queria",
-                                          "todos", "brasil", "companheiro", "senhores", "site", 
+                                          "todos", "brasil", "companheiro", "senhores",
                                           "companheiras", "companheiros", "companheira",
                                           "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
-                                          "grosso", "rio", "ministro", "ministra", "josé", "paulo", "pará", "acre", "roraima",
+                                          "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
                                           "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
-                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso", "janeiro",
-                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite",
-                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "porto", "bahia", "é",
+                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
+                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite site",
+                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "bahia", "é",
                                           "lá", "et", "in"))
 
 Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
@@ -121,6 +125,7 @@ amazon_f <- amazon_f[order(amazon_f$freq, decreasing = T),]
 rownames(amazon_f) <- NULL
 amazon_f30 <- data.frame(head(amazon_f, 30))
 amazon_f30
+
 # Just plot in a wordcloud for words
 set.seed(1234)
 wordcloud(words = amazon_f$term, freq = amazon_f$freq, min.freq = 50,
@@ -133,6 +138,7 @@ tamazon <- tidytext::tidy(amazon_corpus) %>%
   dplyr::count(bigram, sort = TRUE) %>%
   ungroup()
 tamazon
+
 # A plot in a wordcloud for bigrams
 set.seed(1234)
 wordcloud(words = tamazon$bigram, freq = tamazon$n, min.freq = 20,
