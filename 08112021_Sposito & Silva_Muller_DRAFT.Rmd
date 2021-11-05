@@ -17,26 +17,31 @@ library(kableExtra)
 library(stringr)
 library(wordcloud)
 library(RColorBrewer)
+library(tidyr)
+
 
 # Load data
 #BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
 #amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+#Amazon_speeches <- readRDS("~/GitHub/amazondef/amazon_speeches.Rds")
 BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") #livio's path
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
+Amazon_speeches <- readRDS("~/Documents/GitHub/amazondef/amazon_speeches.Rds") #livio's path
 
 
 # Subset for text matches
-Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
+#Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
 # Remove accents and extra spaces
-Amazon_speeches$text <- stringi::stri_trans_general(Amazon_speeches$text, id = "Latin-ASCII")
+#Amazon_speeches$text <- stringi::stri_trans_general(Amazon_speeches$text, id = "Latin-ASCII")
 # Make all lower case
-Amazon_speeches$text <- tolower(Amazon_speeches$text)
+#Amazon_speeches$text <- tolower(Amazon_speeches$text)
 # Remove extra white spaces
-Amazon_speeches$text <- tm::stripWhitespace(Amazon_speeches$text)
+#Amazon_speeches$text <- tm::stripWhitespace(Amazon_speeches$text)
 # Get only the pertinent text chunks
-Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
+#Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
 # Transform into a single text per row...
-Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
+#Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
+#saveRDS(Amazon_speeches, file="amazon_speeches.rds")
 
 ```
 
@@ -80,11 +85,6 @@ amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -226,15 +226,17 @@ Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speech
                                   Amazon_speeches$anti_environmentalism == 0, 1, 0)
 
 # Visualize correlations
-ggplot(Amazon_speeches, aes(x = year)) +
-  geom_line(aes(y = sovereignty, color = "Sovereignty")) +
-  geom_line(aes(y =  development, color = "Development")) +
-  geom_line(aes(y =  conservation, color = "Conservation")) +
-  geom_line(aes(y =  anti_environmentalism, color = "Anti_environmentalism")) +
-      labs(x = "Year",
+am_narratives <- Amazon_speeches %>%
+  select(-c(context, text, fulltext, president, party, date, title, doc_id, location)) %>%
+  tidyr::pivot_longer(sovereignty:other) %>% 
+  group_by(year, name) %>% 
+  summarise(value = sum(value)) %>% 
+  rename(narrative = name)
+ggplot(am_narratives, aes(x = year, y = value , fill = narrative)) +
+  geom_line(aes(group = narrative, color = narrative), size = 1) +
+  labs(x = "Year",
        y = "",
-       title = "Narratives in Presidential Speeches per year since 1985 in Brazil",
-       color = "Narrative")
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")
 
 # Narrative per president, frequency table
 pres_narratives <- Amazon_speeches %>%

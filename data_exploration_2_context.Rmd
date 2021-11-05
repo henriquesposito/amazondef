@@ -16,10 +16,12 @@ library(dplyr)
 library(stringi)
 library(tm)
 library(ggplot2)
+remotes::install_github("henriquesposito/poldis")
+library(poldis)
 
 # Load data
-#BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
-BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") #livio's path
+BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+#BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") # Livio's path
 
 # Subset for text matches
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("Amazôn|Amazon|amazôn|amazon", text))
@@ -55,8 +57,8 @@ plot(freq_year$year, freq_year$freqn, type = "b",
      xlab = "Year", ylab = "Frequency")
 
 # Also, let's load the data on annual rates of deforestation in the Brazilian Amazon per year
-#amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
-amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
+amazon_def_year <- readRDS("~/GitHub/amazondef/amazon_def_year.Rds")
+# amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
 
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year")
 ggplot(freq_year, aes(x = year)) +
@@ -101,12 +103,14 @@ Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
                                           "todos", "brasil", "companheiro", "senhores",
                                           "companheiras", "companheiros", "companheira",
                                           "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
-                                          "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
-                                          "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
-                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
-                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite site",
-                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "bahia", "é",
-                                          "lá", "et", "in"))
+                                          "grosso","ministro", "ministra", "josé", "pará", "acre",
+                                          "roraima", "manaus", "rondônia", "ministros", "luiz", 
+                                          "antonio", "vou", "eduardo braga", "rio de janeiro",
+                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", 
+                                          "mato grosso", "outro", "onde", "discurso", "parte", 
+                                          "anos", "cada", "todo", "porto velho", "visite site",
+                                          "site secretaria", "minas gerais", "lula silva", "inácio lula",
+                                          "amapa", "bahia", "é", "lá", "et", "in"))
 
 Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
 
@@ -324,8 +328,6 @@ amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") 
   kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 amazon_lda_topic
-
-
 ```
 
 The summary table illustrates that, as expected, more speeches that mention the Amazon proportionally take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes ot international settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches.
@@ -337,6 +339,8 @@ We can also get the themes by setting for each of the ten topics (clusters) gene
 In this preliminary approach we attempt to count and show correlations between coded narratives, presidents, and stages.
 
 ```{r narratives, warning=FALSE, message=FALSE}
+library(tidyr)
+
 # Create the dictionary
 sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito")
 development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
@@ -354,15 +358,17 @@ Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speech
                                   Amazon_speeches$anti_environmentalism == 0, 1, 0)
 
 # Visualize correlations
-ggplot(Amazon_speeches, aes(x = year)) +
-  geom_line(aes(y = sovereignty, color = "Sovereignty")) +
-  geom_line(aes(y =  development, color = "Development")) +
-  geom_line(aes(y =  conservation, color = "Conservation")) +
-  geom_line(aes(y =  anti_environmentalism, color = "Anti_environmentalism")) +
-      labs(x = "Year",
+am_narratives <- Amazon_speeches %>%
+  select(-c(context, text, fulltext, president, party, date, title, doc_id, location)) %>%
+  tidyr::pivot_longer(sovereignty:other) %>% 
+  group_by(year, name) %>% 
+  summarise(value = sum(value)) %>% 
+  rename(narrative = name)
+ggplot(am_narratives, aes(x = year, y = value , fill = narrative)) +
+  geom_line(aes(group = narrative, color = narrative), size = 1) +
+  labs(x = "Year",
        y = "",
-       title = "Narratives in Presidential Speeches per year since 1985 in Brazil",
-       color = "Narrative")
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")
 
 # Narrative per president, frequency table
 pres_narratives <- Amazon_speeches %>%
