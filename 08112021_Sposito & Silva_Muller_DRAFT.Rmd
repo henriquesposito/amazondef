@@ -5,13 +5,18 @@ date: "11/4/2021"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup I, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(stringi)
 library(tm)
 library(ggplot2)
+library(tidytext)
+library(kableExtra)
+library(stringr)
+library(wordcloud)
+library(RColorBrewer)
 
 # Load data
 #BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
@@ -36,7 +41,7 @@ Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) p
 ```
 
 
-```{r setup, include=FALSE}
+```{r setup II, include=FALSE}
 # Rename variables to adapt to text analysis packages' expectations
 Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
 
@@ -55,7 +60,7 @@ Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
                                           "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
                                           "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
                                           "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
-                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
+                                          "rio grande do sul", "rio grande do norte", "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
                                           "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite site",
                                           "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "bahia", "é",
                                           "lá", "et", "in"))
@@ -112,7 +117,6 @@ ggplot(freq_year, aes(x = year)) +
 # To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
 # Let's code the Amazonian states, the other Brazilian states, and speeches delivered outside Brazil.
 Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian_States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non_Amazonian_States", grepl("NA", location) ~ "Non_Identified", !grepl("Amazonian_States|Non_Amazonian_States|Non_Identified", location) ~ "International"))
-summary(as.factor(Amazon_lc$stage)) # A lot of missing observations still ...
 # Just a comparison with the proportion of speeches per stage on the broader dataset
 stages <- mutate(BR_Presidential_Speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Minas Gerais|Espirito Santo|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "Non Amazonian States", grepl("NA", location) ~ "Non Identified", !grepl("Amazonian States|Non Amazonian States|Non Identified", location) ~ "International"))
 stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
@@ -133,24 +137,12 @@ rownames(amazon_f) <- NULL
 amazon_f30 <- data.frame(head(amazon_f, 30))
 amazon_f30
 
-# Just plot in a wordcloud for words
-set.seed(1234)
-wordcloud(words = amazon_f$term, freq = amazon_f$freq, min.freq = 50,
-          max.words=200, random.order = FALSE, rot.per=0.35, 
-          colors = brewer.pal(8, "Dark2"))
-
 # Let's see if bigrams help us more here
 tamazon <- tidytext::tidy(amazon_corpus) %>%
   unnest_tokens(bigram, text , token = "ngrams", n = 2) %>%
   dplyr::count(bigram, sort = TRUE) %>%
   ungroup()
 tamazon
-
-# A plot in a wordcloud for bigrams
-set.seed(1234)
-wordcloud(words = tamazon$bigram, freq = tamazon$n, min.freq = 20,
-          max.words=200, random.order = FALSE, rot.per=0.35, 
-          colors = brewer.pal(8, "Dark2"))
 
 # Let's get the 30 most frequent term by speaker
 amazon_presid <- aggregate(Amazon_speeches$text, list(Amazon_speeches$president), paste, collapse = " ") %>%
@@ -210,12 +202,15 @@ amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
 amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
 ```
 
-```{r narratives, warning=FALSE, message=FALSE, echo=TRUE}
+```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
+
 # Create the dictionary
-sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito")
+
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|dono|nossa")
 development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
 conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest")
 anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|agricultura|producao de gado|ambientalistas") # This appears harder to operationalize than others...
+
 ```
 
 ```{r narratives, warning=FALSE, message=FALSE, echo=FALSE}
