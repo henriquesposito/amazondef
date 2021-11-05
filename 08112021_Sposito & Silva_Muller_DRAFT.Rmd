@@ -1,9 +1,30 @@
 ---
 title: "Amazonian Narratives in Presidential Discourse (1985 to 2020)"
 author: "Henrique Sposito & Livio Silva-Muller"
-date: "11/4/2021"
+date: "11/11/2021"
 output: pdf_document
 ---
+# 1 Introduction
+
+> Quote 1  
+> Quote 2  
+
+# 2 Grounding Amazonian narratives in the literature
+
+## 2.1 The Brazilian Amazon in social sciences: where is culture and discourse?
+
+## 2.2 Performing Amazonian narratives: environmental historigraphy and ideal types
+
+*Sovereignty*  
+
+*Developmentalism* 
+
+*Conservationism* 
+
+*Anti social-environmentalism* 
+
+# 3 Operationalizing Amazonian narratives: data and methods
+# 4 Preliminary Analysis
 
 ```{r setup I, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -45,7 +66,6 @@ Amazon_speeches <- readRDS("~/Documents/GitHub/amazondef/amazon_speeches.Rds") #
 
 ```
 
-
 ```{r setup II, include=FALSE}
 # Rename variables to adapt to text analysis packages' expectations
 Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
@@ -80,13 +100,7 @@ amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
 
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r pressure, echo=FALSE, message=FALSE, warning=FALSE}
+```{r speech frequencies, echo=FALSE, message=FALSE, warning=FALSE}
 
 freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeches$year)))),
                         freq = as.numeric(summary(as.factor(Amazon_speeches$year))),
@@ -102,17 +116,16 @@ freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year")
 ggplot(freq_year, aes(x = year)) +
     geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
     geom_line(aes(y = `area km²`/100, color = "Annual deforestation (km²/100)")) +
-      labs(x = "Year",
-       y = "",
-       title = "Presidential Speeches that Mention the Amazon since 1985 in Brazil",
+      labs(x = "",
+       y = "Relative share of speeches per year",
+       title = "Presidential Speeches mentioning the Amazon (1985-2020)",
        subtitle = "Compared to annual deforestation rates since 1988",
        caption = "Frequencies normalized by the number of speeches per year in dataset",
-       color = "Legend")
+       color = "")
 
 ```
 
-
-```{r location, warning=FALSE, message=FALSE}
+```{r location, echo=FALSE, warning=FALSE, message=FALSE}
 # Location was added with poldis::extraxt_location(), still needs to be improved...
 # To see the variable summary, please run: `summary(as.factor(Amazon_speeches$location))`
 # Let's code the Amazonian states, the other Brazilian states, and speeches delivered outside Brazil.
@@ -125,7 +138,7 @@ stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
 stage_rate
 ```
 
-```{r top words by speaker, warning=FALSE, message=FALSE}
+```{r top words by speaker, echo=FALSE, warning=FALSE, message=FALSE}
 
 # Get 30 most frequent words overall
 amazon_dtm  <- DocumentTermMatrix(amazon_corpus)
@@ -169,7 +182,7 @@ f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro) %
 f_speaker
 ```
 
-```{r lda, warning=FALSE, message=FALSE}
+```{r lda, warning=FALSE, echo=FALSE, message=FALSE}
 library(topicmodels)
 
 # Fit a simple LDA model
@@ -213,7 +226,7 @@ anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|
 
 ```
 
-```{r narratives, warning=FALSE, message=FALSE, echo=FALSE}
+```{r narratives, echo=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
 
 # Create a variable for each and count matches
 Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
@@ -274,3 +287,4 @@ kableExtra::kbl(stage_narratives_n, caption = "Narratives per President in Brazi
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 ```
 
+# 5 Bibliography
