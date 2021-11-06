@@ -110,10 +110,15 @@ freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeche
                         freqn = as.numeric(summary(as.factor(Amazon_speeches$year)))/
                           as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
 
-plot(freq_year$year, freq_year$freqn, type = "b",
-     main = "Presidential Speeches mentioning the Amazon since 1985 in Brazil",
-     sub = "Normalized by the number of speeches per year",
-     xlab = "", ylab = "Frequency")
+ggplot(freq_year, aes(year, freqn))+
+    geom_line()+
+    geom_point()+
+    geom_smooth(method=lm, color="#bab86c") +
+      labs(x = "",
+       y = "Relative share of speeches per year",
+       title = "Presidential speeches mentioning the Amazon (1985-2020)",
+       caption = "Frequencies normalized by the number of speeches per year in dataset",
+       color = "")
 
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year") 
 ggplot(freq_year, aes(x = year)) +
@@ -123,7 +128,6 @@ ggplot(freq_year, aes(x = year)) +
        y = "Relative share of speeches per year",
        title = "Presidential Speeches mentioning the Amazon (1985-2020)",
        subtitle = "Compared to annual deforestation rates since 1988",
-       caption = "Frequencies normalized by the number of speeches per year in dataset",
        color = "")
 
 ```
