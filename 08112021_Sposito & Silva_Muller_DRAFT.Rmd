@@ -2,7 +2,9 @@
 title: "Amazonian Narratives in Presidential Discourse (1985 to 2020)"
 author: "Henrique Sposito & Livio Silva-Muller"
 date: "11/11/2021"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 # 1 Introduction
 
@@ -24,6 +26,7 @@ output: pdf_document
 *Anti social-environmentalism* 
 
 # 3 Operationalizing Amazonian narratives: data and methods
+
 # 4 Preliminary Analysis
 
 ```{r setup I, include=FALSE}
@@ -47,7 +50,7 @@ library(tidyr)
 #Amazon_speeches <- readRDS("~/GitHub/amazondef/amazon_speeches.Rds")
 BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/BR_Presidential_Speeches.Rds") #livio's path
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/amazon_def_year.Rds") #livio's path
-Amazon_speeches <- readRDS("~/Documents/GitHub/amazondef/amazon_speeches.Rds") #livio's path
+Amazon_speeches <- readRDS("~/Documents/GitHub/amazondef/amazon_speeches.Rds") #livio's path to load data after poldis
 
 
 # Subset for text matches
@@ -108,9 +111,9 @@ freq_year <- data.frame(year = as.numeric(names(summary(as.factor(Amazon_speeche
                           as.numeric(summary(as.factor(BR_Presidential_Speeches$year))))
 
 plot(freq_year$year, freq_year$freqn, type = "b",
-     main = "Presidential Speeches that mention the Amazon since 1985 in Brazil",
+     main = "Presidential Speeches mentioning the Amazon since 1985 in Brazil",
      sub = "Normalized by the number of speeches per year",
-     xlab = "Year", ylab = "Frequency")
+     xlab = "", ylab = "Frequency")
 
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year") 
 ggplot(freq_year, aes(x = year)) +
