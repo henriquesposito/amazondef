@@ -88,10 +88,10 @@ Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
                                           "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
                                           "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
                                           "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
-                                          "rio grande do sul", "rio grande do norte", "sao paulo", "então", "pouco", "pode", "sul", "norte", "mato grosso",
-                                          "outro", "onde", "discurso", "parte", "anos", "cada", "todo", "porto velho", "visite site",
-                                          "site secretaria", "minas gerais", "lula silva", "inácio lula", "amapa", "bahia", "é",
-                                          "lá", "et", "in"))
+                                          "rio grande do sul", "rio grande do norte", "sao paulo", "então", "pouco", "pode", "sul",
+                                          "norte", "mato grosso","outro", "onde", "discurso", "parte", "anos", "cada", "todo", 
+                                          "porto velho", "visite site", "site secretaria", "minas gerais", "lula silva", 
+                                          "inácio lula", "amapa", "bahia", "é", "lá", "et", "in", "httpwww"))
 
 Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
 
@@ -208,7 +208,7 @@ topten_topic
 amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
   arrange(desc(gamma)) %>%
   group_by(document) %>%
-  filter(row_number() %in% 1:2) %>% # get the top 3 topics per speaker
+  filter(row_number() %in% 1:2) %>% # get the top 2 topics per speaker
   arrange(document) %>%
   mutate(gamma = round(gamma, 3)) %>%
   distinct() %>% 
@@ -223,9 +223,9 @@ amazon_lda_presid # Only Collor associated with topic cluster that mentions "amb
 # Create the dictionary
 
 sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|dono|nossa")
-development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto")
-conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest")
-anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|agricultura|producao de gado|ambientalistas") # This appears harder to operationalize than others...
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integrar|integracao|zona franca|transamazonica|madeira|porto|madeireira|produzir")
+conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest|cooperaçao|protecao|proteger")
+anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|agricultura|producao de gado|ambientalistas|ong|xiita") # This appears harder to operationalize than others...
 
 ```
 
@@ -252,15 +252,8 @@ ggplot(am_narratives, aes(x = year, y = value , fill = narrative)) +
   geom_line(aes(group = narrative, color = narrative), size = 1) +
   labs(x = "Year",
        y = "",
-       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")
-
-# Narrative per president, frequency table
-pres_narratives <- Amazon_speeches %>%
-  select(-c(context, text, fulltext, year, party, date, title, doc_id, location)) %>%
-  group_by(president) %>%
-  summarise(across(everything(), sum))
-kableExtra::kbl(pres_narratives, caption = "Narratives per President in Brazil") %>%
-  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")+
+    facet_wrap(~narrative)
 
 # Same frequency table but normalized by the numbers of speeches in broader dataset
 pres_narratives_n <- pres_narratives %>%
