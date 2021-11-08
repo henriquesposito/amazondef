@@ -261,6 +261,9 @@ library(topicmodels)
 
 # Fit a simple LDA model
 # Please note that we randomly set a K = 10 (10 cluster = topics)
+
+amazon_dtm  <- DocumentTermMatrix(amazon_corpus)
+amazon_dtmm <- as.matrix(amazon_dtm)
 amazon_lda <- topicmodels::LDA(amazon_dtm, k = 10, control = list(seed = 1234))
 
 # Get the top 10 words per topic
