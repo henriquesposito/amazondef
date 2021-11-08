@@ -1,13 +1,14 @@
 ---
 title: "Amazonian Narratives in Presidential Discourse (1985 to 2020)"
 author:
-    - Henrique Sposito^[Phd Candidate, The Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
-    - Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
+- Henrique Sposito^[Phd Candidate, The Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
+- Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
 date: "11th of November of 2021"
 output:
+  pdf_document: default
+  word_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 # 1 Introduction
@@ -82,7 +83,7 @@ The broad dataset is then subset to contain only speeches that mention the word 
 
 # 4 Exploratory analysis
 
-In the following, we will show our work in progress in terms of the empirical analysis. At the moment, we are trying to figure out what methods we will actually use and why. The number of speeches mentioning the Amazon (n=861), is not high enough to justify certain machine learning approaches as manually coding a fraction. We tested more inductive approaches (topic modelling), and it seems to work well, but at the same time the text volume is too small to justify. As there are other factors we are interested add ( e.g. a measure of intensity, how (a)permissive and  (b)explicit is the discourse), we think a combination of manual coding and more quantitative approach might help.
+In the following, we will show our work in progress in terms of the empirical analysis. At the moment, we are trying to figure out what methods we will actually use and why. The number of speeches mentioning the Amazon (n=861), is not high enough to justify certain machine learning approaches as manually coding a fraction. We tested more inductive approaches (topic modelling), and it seems to work well, but at the same time the text volume is too small to justify. As there are other factors we are interested at (e.g. a measure of intensity, how (a)permissive and  (b)explicit is the discourse), we think a combination of manual coding and more quantitative approach might help.
 
 ```{r setup I, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -336,7 +337,8 @@ anti_environmentalism <- ("preservamos demais|nao vamos demarcar|demarcar menos|
 
 ```
 
-Shifting our methodological strategy from an inductive approach to a more deductive and theoretically driven analysis of the text, leads similar results.We operationalize our narratives by deductively creating four groups of words (dictionaries) and assigning each contextualized mention to the Amazon to a narrative. The dictionaries are presented in the code chunk below.
+Shifting our methodological strategy from an inductive approach to a more deductive and theoretically driven analysis of the text, leads similar results.We operationalize our narratives by deductively creating four groups of words (dictionaries) and assigning each contextualized mention to the Amazon to a narrative. The dictionaries are presented in the code chunk above. Our narratives approach, while still empirically weak, already shows some interesting trends (table 4, table 5, and narratives plots; below). First, the 1988 NYC pictures of the Amazon burning piked all narratives during the Sarney presidency. Second, while Lula was the president that most performed conservation narratives until 2010, Bolsonaro mobilized sovereignty narratives strongly. Third, generally the developmentalist narrative have decreased along time but has appeared most frequently during the Lula mandate, suggesting sustainable development was at its highest in those years. Fourth, while the anti socio-environmentalist narrative was generally not so frequent (this might be an identification problem or that it is simply a sub-type of the developmentalist narrative), it was present across all speakers with Bolsonaro using it the most. 
+
 
 ```{r narratives, echo=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -397,7 +399,6 @@ kableExtra::kbl(stage_narratives_n, caption = "Narratives per President in Brazi
   kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
 ```
 
-Our narratives approach, while still empirically weak, already shows some interesting trends (table 4, table 5, and narratives plots). First, the 1988 NYC pictures of the Amazon burning piked all narratives during the Sarney presidency. Second, while Lula was the president that most performed conservation narratives until 2010, Bolsonaro mobilized sovereignty narratives strongly. Third, generally the developmentalist narrative have decreased along time but has appeared most frequently during the Lula mandate, suggesting sustainable development was at its highest in those years. Fourth, while the anti socio-environmentalist narrative was generally not so frequent (this might be an identification problem or that it is simply a sub-type of the developmentalist narrative), it was present across all speakers with Bolsonaro using it the most. 
 
 # 5 Bibliography
 
