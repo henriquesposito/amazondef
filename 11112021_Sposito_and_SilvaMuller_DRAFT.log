@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.25)  8 NOV 2021 12:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.25)  8 NOV 2021 15:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -581,7 +581,7 @@ File: l3backend-pdftex.def 2021-10-18 L3 backend support: PDF output (pdfTeX)
 LaTeX Warning: Label `tab:lda' multiply defined.
 
 
-LaTeX Warning: Label `tab:narratives' multiply defined.
+LaTeX Warning: Label `tab:narratives II' multiply defined.
 
 )
 \openout1 = `11112021_Sposito_and_SilvaMuller_DRAFT.aux'.
@@ -741,7 +741,7 @@ ies I-1.pdf Graphic file (type pdf)
 <use 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech frequenci
 es I-1.pdf>
 Package pdftex.def Info: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-la
-tex/speech frequencies I-1.pdf  used on input line 542.
+tex/speech frequencies I-1.pdf  used on input line 541.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech frequencies I
 I-1.pdf, id=80, 469.755pt x 325.215pt>
@@ -750,91 +750,96 @@ ies II-1.pdf Graphic file (type pdf)
 <use 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech frequenci
 es II-1.pdf>
 Package pdftex.def Info: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-la
-tex/speech frequencies II-1.pdf  used on input line 544.
+tex/speech frequencies II-1.pdf  used on input line 543.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [6 <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech frequenc
-ies I-1.pdf>]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
-69.
-(/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
-File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
+ies I-1.pdf>] [7pdfTeX warning (ext4): destination with the same identifier (na
+me{table.1}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.599 
+       <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech freq
+uencies II-1.pdf>]
 <11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/top words by speaker
- I-1.pdf, id=96, 469.755pt x 433.62pt>
+ I-1.pdf, id=107, 469.755pt x 433.62pt>
 File: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/top words by sp
 eaker I-1.pdf Graphic file (type pdf)
 <use 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/top words by spe
 aker I-1.pdf>
 Package pdftex.def Info: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-la
-tex/top words by speaker I-1.pdf  used on input line 590.
+tex/top words by speaker I-1.pdf  used on input line 600.
 (pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
-[7 <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/speech frequenc
-ies II-1.pdf>] [8 <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/
-top words by speaker I-1.pdf>] [9]
-Overfull \hbox (11.59293pt too wide) in paragraph at lines 618--683
+[8 <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/top words by sp
+eaker I-1.pdf>]
+Overfull \hbox (11.59293pt too wide) in paragraph at lines 611--676
  [][] 
  []
 
-[10pdfTeX warning (ext4): destination with the same identifier (name{table.1}) 
-has been already used, duplicate ignored
+[9pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
+as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.684 \end{landscape}
+l.677 \end{landscape}
                      ]
-Overfull \hbox (29.64265pt too wide) in paragraph at lines 697--722
+Overfull \hbox (26.83781pt too wide) in paragraph at lines 690--715
  [][] 
  []
 
-[11pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
+[10pdfTeX warning (ext4): destination with the same identifier (name{table.3}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.815 \end{Shaded}
-                  
+l.786 \newpage
+              
 
 
 ]
-<11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives-1.pdf, id
-=133, 469.755pt x 325.215pt>
-File: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives-1.pd
-f Graphic file (type pdf)
-<use 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives-1.pdf
->
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 7
+89.
+(/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives I-1.pdf, 
+id=128, 469.755pt x 325.215pt>
+File: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives I-1.
+pdf Graphic file (type pdf)
+<use 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives I-1.p
+df>
 Package pdftex.def Info: 11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-la
-tex/narratives-1.pdf  used on input line 836.
+tex/narratives I-1.pdf  used on input line 828.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[12pdfTeX warning (ext4): destination with the same identifier (name{table.3}) 
+[11pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.863 \end{table}
-                 ] [13pdfTeX warning (ext4): destination with the same identifi
-er (name{table.4}) has been already used, duplicate ignored
+l.855 \end{table}
+                 ] [12pdfTeX warning (ext4): destination with the same identifi
+er (name{table.5}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.893 
-      pdfTeX warning (ext4): destination with the same identifier (name{table.5
+l.885 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.6
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.893 
-       <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives-
-1.pdf>] [14] [15] (./11112021_Sposito_and_SilvaMuller_DRAFT.aux)
+l.885 
+       <./11112021_Sposito_and_SilvaMuller_DRAFT_files/figure-latex/narratives 
+I-1.pdf>] [13] [14] (./11112021_Sposito_and_SilvaMuller_DRAFT.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `11112021_Sposito_and_SilvaMuller_DRAFT.out' 
 has not changed.
-(rerunfilecheck)             Checksum: FE7845AF121743FC0F450C6B397B8B6B;1998.
+(rerunfilecheck)             Checksum: 8DA5035C78D5AF2FCCF4EE13AAB892E4;2175.
  ) 
 Here is how much of TeX's memory you used:
- 12186 strings out of 480539
- 183462 string characters out of 5901723
- 510040 words of memory out of 5000000
- 29538 multiletter control sequences out of 15000+600000
+ 12187 strings out of 480539
+ 183559 string characters out of 5901723
+ 510096 words of memory out of 5000000
+ 29539 multiletter control sequences out of 15000+600000
  460440 words of font info for 73 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 60i,12n,66p,552b,365s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,12n,66p,552b,356s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec
 .enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm
 -ts1.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/publi
@@ -848,11 +853,11 @@ inyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Libr
 ary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-mull
 er/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/liviosil
 va-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on 11112021_Sposito_and_SilvaMuller_DRAFT.pdf (15 pages, 324791 
+Output written on 11112021_Sposito_and_SilvaMuller_DRAFT.pdf (14 pages, 322592 
 bytes).
 PDF statistics:
- 242 PDF objects out of 1000 (max. 8388607)
- 193 compressed objects within 2 object streams
+ 239 PDF objects out of 1000 (max. 8388607)
+ 191 compressed objects within 2 object streams
  38 named destinations out of 1000 (max. 500000)
  77 words of extra memory for PDF output out of 10000 (max. 10000000)
 
