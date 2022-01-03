@@ -61,3 +61,14 @@
 # # Get location
 # BR_Presidential_Speeches$location <- poldis::extract_location(BR_Presidential_Speeches$title)
 # saveRDS(BR_Presidential_Speeches, file = "BR_Presidential_Speeches.Rds")
+#
+# # # Merge with data fro missing texts from October 2020 until December 2021
+# Speeches_BR_oct_dec_21 <- read_excel("C:/Users/h-spo/Desktop/Speeches_BR_oct-dec-21.xlsx")
+# Speeches_BR_oct_dec_21$party <- NA_character_ # Bolsonaro does not have a party anymore
+# Speeches_BR_oct_dec_21$date <- as.character(Speeches_BR_oct_dec_21$date)
+# Speeches_BR_oct_dec_21$location <- poldis::extract_location(Speeches_BR_oct_dec_21$title)
+# Speeches_BR_oct_dec_21 <- Speeches_BR_oct_dec_21[order(Speeches_BR_oct_dec_21$date),]
+# 
+# # # Join and save dataset for use
+# BR_Presidential_Speeches <- dplyr::full_join(BR_Presidential_Speeches, Speeches_BR_oct_dec_21)
+# saveRDS(BR_Presidential_Speeches, file = "BR_Presidential_Speeches.Rds")
