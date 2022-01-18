@@ -71,4 +71,19 @@
 # 
 # # # Join and save dataset for use
 # BR_Presidential_Speeches <- dplyr::full_join(BR_Presidential_Speeches, Speeches_BR_oct_dec_21)
+# Get missing locations
+# BR_Presidential_Speeches$location <- ifelse(grepl("^NA$", BR_Presidential_Speeches$location),
+#                                             poldis::extract_location(BR_Presidential_Speeches$text),
+#                                             BR_Presidential_Speeches$location)
+# BR_Presidential_Speeches$location <- ifelse(grepl("", BR_Presidential_Speeches$location),
+#                                             poldis::extract_location(BR_Presidential_Speeches$text),
+#                                             BR_Presidential_Speeches$location)
+# BR_Presidential_Speeches$location <- ifelse(grepl("Dir", BR_Presidential_Speeches$location),
+#                                             poldis::extract_location(BR_Presidential_Speeches$location),
+#                                             BR_Presidential_Speeches$location)
+# BR_Presidential_Speeches$location <- ifelse(grepl("Sind", BR_Presidential_Speeches$location),
+#                                             poldis::extract_location(BR_Presidential_Speeches$location),
+#                                             BR_Presidential_Speeches$location)
+# summary(as.factor(BR_Presidential_Speeches$location))
+# 
 # saveRDS(BR_Presidential_Speeches, file = "BR_Presidential_Speeches.Rds")
