@@ -5,9 +5,9 @@ author:
 - Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
 date: "11/11/2021"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 # 1 Introduction
@@ -179,6 +179,9 @@ ggplot(freq_year, aes(year, freqn))+
 
 ```{r speech frequencies II, echo=FALSE, message=FALSE, warning=FALSE}
 
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year") 
 ggplot(freq_year, aes(x = year)) +
     geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
@@ -188,7 +191,9 @@ ggplot(freq_year, aes(x = year)) +
        title = "Presidential Speeches mentioning the Amazon (1985-2020)",
        subtitle = "Compared to annual deforestation rates since 1988",
        color = "")+
-       theme(legend.position ="bottom")
+       theme(legend.position ="bottom")+
+        scale_colour_manual(values=cbbPalette)
+
 
 ```
 
@@ -207,7 +212,7 @@ stage_rate <- data.frame(Stage = names(summary(as.factor(Amazon_lc$stage))),
 knitr::kable(stage_rate, caption= "Speeches by stage")
 ```
 
-  The summary table illustrates that more speeches that mention the Amazon proportionally take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes to international settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches. We find this counter-intuitive, as many scholars tend to associate Brazil's prominent role in international environmental governance. At the moment, we still can not say for sure that this finding is robust. We operationalize international stage as anything that is not Brazil, so it includes speeches in African countries for instance. We will work towards a better measure that separates international stage from other countries and re-run this to see if it still holds.
+ Table 1 illustrates that more speeches that mention the Amazon proportionally take place in Amazonian states in comparison to their proportion in all speeches. However, when it comes to international settings, a lower proportion of the speeches that mention the Amazon take place in international settings in comparison to all speeches. We find this counter-intuitive, as many scholars tend to associate Brazil's prominent role in international environmental governance. At the moment, we still can not say for sure that this finding is robust. We operationalize international stage as anything that is not Brazil, so it includes speeches in African countries for instance. We will work towards a better measure that separates international stage from other countries and re-run this to see if it still holds.
 
 
 ```{r top words by speaker I, echo=FALSE, warning=FALSE, message=FALSE, fig.height = 6}
@@ -235,6 +240,7 @@ tamazon <- tidytext::tidy(amazon_corpus) %>%
   unnest_tokens(bigram, text , token = "ngrams", n = 2) %>%
   dplyr::count(bigram, sort = TRUE) %>%
   ungroup()
+tamazon
 
 ```
 
@@ -307,7 +313,7 @@ amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
 amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
 ```
 
-  The table 2 (above) and table 4(below) portray the result of a structural topic model. We utilize LDA (Latent Dirichlet allocation), which is a model for estimating the mixture of words associated with a topic (cluster) and determining the probabilities of topics in each mention, we start to see some interesting patterns (for more information on LDA and R approaches [here](https://www.tidytextmining.com/index.html)). We set the number of clusters to be found (topics) at 10, randomly. We, then, select the top ten words coded for each topic. 
+  The table 3 (above) and table 4(below) portray the result of a structural topic model. We utilize LDA (Latent Dirichlet allocation), which is a model for estimating the mixture of words associated with a topic (cluster) and determining the probabilities of topics in each mention, we start to see some interesting patterns (for more information on LDA and R approaches [here](https://www.tidytextmining.com/index.html)). We set the number of clusters to be found (topics) at 10, randomly. We, then, select the top ten words coded for each topic. 
 
   Development appears in 6 out of 10 topics, suggesting it is a cross-cutting vocabulary. In its purest form, we observe the developmentalist narrative in topic 1 and 3. Three topics relate to themes of security, development, and integration (4,7,8) and one other touches on sovereignty in its purest form (9), which combined understand as the sovereignty narrative. Two topics portray vocabulary that we understand as constituting the conservation narrative (2 and 10), with topic 10 being the purest form in the text.
 
@@ -352,6 +358,9 @@ Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speech
                                   Amazon_speeches$anti_environmentalism == 0, 1, 0)
 
 # Visualize correlations
+
+cbPalette <- c("#999999", "#56B4E9", "#0072B2", "#009E73", "#F0E442", "#D55E00", "#CC79A7", "#E69F00")
+
 am_narratives <- Amazon_speeches %>%
   dplyr::select(-c(context, text, fulltext, president, party, date, title, doc_id, location)) %>%
   tidyr::pivot_longer(sovereignty:other) %>% 
@@ -363,10 +372,20 @@ ggplot(am_narratives, aes(x = year, y = value , fill = narrative)) +
   geom_line(aes(group = narrative, color = narrative), size = 1) +
   labs(x = "Year",
        y = "",
-       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")+
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil (wrapped)")+
     geom_smooth(method=lm, se=FALSE, color="black", linetype="dashed",size=0.5)+
     facet_wrap(~narrative)+
-    theme (legend.position="none")
+    theme (legend.position="none")+
+    scale_colour_manual(values=cbPalette)
+
+
+ggplot(am_narratives, aes(x = year, y = value , fill = narrative)) +
+  geom_line(aes(group = narrative, color = narrative), size = 1) +
+  labs(x = "Year",
+       y = "",
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")+
+    theme (legend.position="bottom")+
+    scale_colour_manual(values=cbPalette)
 
 ```
 
