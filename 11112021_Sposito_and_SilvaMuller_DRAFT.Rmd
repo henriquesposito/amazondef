@@ -5,9 +5,9 @@ author:
 - Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
 date: "11/11/2021"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 # 1 Introduction
@@ -185,6 +185,16 @@ cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2"
 freq_year <- dplyr::left_join(freq_year, amazon_def_year, by = "year") 
 ggplot(freq_year, aes(x = year)) +
     geom_line(aes(y = freqn, color = "Frequency of amazonian speeches")) +
+    geom_line(aes(y = `area km²`/100, color = "Annual deforestation (km²/100)")) +
+      labs(x = "",
+       y = "Relative share of speeches per year",
+       title = "Presidential Speeches mentioning the Amazon (1985-2020)",
+       subtitle = "Compared to annual deforestation rates since 1988",
+       color = "")+
+       theme(legend.position ="bottom")+
+        scale_colour_manual(values=cbbPalette)
+
+ggplot(freq_year, aes(x = year)) +
     geom_line(aes(y = `area km²`/100, color = "Annual deforestation (km²/100)")) +
       labs(x = "",
        y = "Relative share of speeches per year",
