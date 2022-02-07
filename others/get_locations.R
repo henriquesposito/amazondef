@@ -29,9 +29,7 @@ summary(as.factor(BR_Presidential_Speeches$location))
 BR_Presidential_Speeches$location <- ifelse(grepl("^NA$", BR_Presidential_Speeches$location),
                                             poldis::extract_location(BR_Presidential_Speeches$text),
                                             BR_Presidential_Speeches$location)
-BR_Presidential_Speeches$location <- ifelse(grepl("", BR_Presidential_Speeches$location),
-                                            poldis::extract_location(BR_Presidential_Speeches$text),
-                                            BR_Presidential_Speeches$location)
+summary(as.factor(BR_Presidential_Speeches$location))
 
 # get context and update amazon specific data
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("amazon", text))
@@ -39,3 +37,4 @@ Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text,
 Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
 
 # Save Rds
+saveRDS(Amazon_speeches, "amazon_speeches.Rds")
