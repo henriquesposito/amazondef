@@ -11,7 +11,6 @@ output:
   pdf_document: default
 bibliography: [export-data.bib]
 csl: [apa.csl]
-
 ---
 
 # questions/to do
@@ -22,7 +21,6 @@ csl: [apa.csl]
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
 library(dplyr)
 library(stringi)
 library(tm)
@@ -35,47 +33,124 @@ library(RColorBrewer)
 library(tidyr)
 library(formatR)
 
-
-# Load data
-BR_Presidential_Speeches <- readRDS("data/BR_Presidential_Speeches.Rds")
-amazon_def_year <- readRDS("data/amazon_def_year.Rds")
+# Load data$
 Amazon_speeches <- readRDS("data/amazon_speeches.rds")
-
 ```
 
 ```{r cleaning and transforming in corpus II, include=FALSE}
 # Rename variables to adapt to text analysis packages' expectations
 Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
-
-
 ```
 
 ```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
-
 # Create the dictionary
 
-sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|
-                ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|
-                dono|nossa")
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|dono|nossa")
 
-development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|
-                incentivos fiscais| integrar|integracao|zona franca|transamazonica|madeira|
-                porto|madeireira|produz|energia")
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais| integra|zona franca|transamazonica|madeira|porto|madeireira|produz|energia|agro|agri")
 
-conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|
-                 areas demarcadas|queimada|sustentav|meio ambiente|florest|cooperaçao|
-                 protecao|proteg")
+conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest|cooperaçao|protecao|proteg")
 
 # Create a variable for each and count matches
 Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
 Amazon_speeches$development <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", development))
 Amazon_speeches$conservation <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", conservation))
-
 Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speeches$development == 0 & 
                                   Amazon_speeches$conservation == 0, 1, 0)
-
+# Notice we count each match here, is that what we want? If not, see code chunk below.
+# Visulaize totals
+tibble::tibble(Sovereignty = sum(Amazon_speeches$sovereignty),
+               Development = sum(Amazon_speeches$development),
+               Conservation = sum(Amazon_speeches$conservation),
+               Other = sum(Amazon_speeches$other))
 #dat <- Amazon_speeches %>% sample_frac(.1)
 #dat <- apply(dat,2,as.character)
 #write.csv(dat, file = "random_sample.csv")
+```
 
+```{r unnest list}
+# Here each context match become one data point in the dataset
+sum(lengths(Amazon_speeches$context)) # Check the number of passages matched
+# Unnest list into a dataframe
+AS_long <- Amazon_speeches %>%
+  select(president, year, party, title, location, date, fulltext, context) %>% 
+  unnest(cols = c(context))
+# Run the same dictionary as before but now only assign 1 if any matches and 0 if no matches
+# (no multiple matches/counts per observation)
+AS_long$sovereignty <- ifelse(stringr::str_detect(AS_long$context, paste0(sovereignty)), 1, 0)
+AS_long$development <- ifelse(stringr::str_detect(AS_long$context, paste0(development)), 1, 0)
+AS_long$conservation <- ifelse(stringr::str_detect(AS_long$context, paste0(conservation)), 1, 0)
+AS_long$other <- ifelse(AS_long$sovereignty == 0 & AS_long$development == 0 & 
+                                  AS_long$conservation == 0, 1, 0)
+# Visualize totals
+tibble::tibble(Sovereignty = sum(AS_long$sovereignty),
+               Development = sum(AS_long$development),
+               Conservation = sum(AS_long$conservation),
+               Other = sum(AS_long$other))
+# Still some overlap... 
+```
+
+```{r lda}
+#### This is a bit useless, you can just delete it if you want...
+#### Tomorrow I will try and run a STM model to see if we can use some of the metadata better
+#### to find topics and correlations. Just in case. I will also work on dictionary further.
+# Let's jus quickly model each category and see if we find something interesting
+# This also serves as a robusteness check for ou dictionary
+# Pivot data longer to use narratives as 
+am <- AS_long %>%
+  select(president, year, location, context, sovereignty, development, conservation, other) %>% 
+  tidyr::pivot_longer(sovereignty:other) %>% 
+  dplyr::rename(doc_id = name, text = context) %>%
+  arrange(doc_id, text)
+# Remove stopwords
+am$text <- tm::removeWords(am$text, c(tm::stopwords("pt"), "nao", "amazonas",
+                                          "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
+                                          "no", "hoje", "presidente", "governador", "regiao", 
+                                          "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
+                                          "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
+                                          "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
+                                          "cumprimentar", "gente", "estado", "querido", "queria",
+                                          "todos", "brasil", "companheiro", "senhores",
+                                          "companheiras", "companheiros", "companheira",
+                                          "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
+                                          "grosso","ministro", "ministra", "josé", "pará", "acre",
+                                          "roraima", "manaus", "rondônia", "ministros", "luiz", 
+                                          "antonio", "vou", "eduardo braga", "rio de janeiro",
+                                          "sao paulo", "então", "pouco", "pode", "sul", "norte", 
+                                          "mato grosso", "outro", "onde", "discurso", "parte", 
+                                          "anos", "cada", "todo", "porto velho", "visite site",
+                                          "site secretaria", "minas gerais", "lula silva", "inácio", "lula",
+                                          "amapa", "bahia", "é", "lá", "et", "in", "silva", "jose",
+                                      "apenas", "tudo", "ainda", "fazendo", "sobre", "republica", 
+                                      "portanto", "mil", "toda", "site", "pais"))
+# Get corpus and DTM
+am_corpus <- tm::VCorpus(DataframeSource(am))
+am_dtm  <- DocumentTermMatrix(am_corpus)
+# Run model (4 topics since we have 4 categories)
+am_lda <- topicmodels::LDA(am_dtm, k = 4, control = list(seed = 1234))
+# Get top terms
+am_top_ten <- tidy(am_lda, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+am_top_ten <- aggregate(am_top_ten$term, list(am_top_ten$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x")
+# Get narratives and merge tables
+am_na <- tidy(am_lda, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:3) %>%
+  arrange(document) %>% 
+  select(-gamma) %>% 
+  distinct()
+am_na <- aggregate(am_na$document, list(am_na$topic), paste, collapse = ", ") %>%
+  rename(Topic = "Group.1", Narrative = "x") 
+amm <- dplyr::left_join(am_top_ten, am_na, by = "Topic") %>%
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amm
+# A lot of overlap... Presidents usually talk about more than one category in discourse (?!).
+# We need to maybe create subtopics for development and sovereinty, as well as improve dictionary...
+# Maybe we can model each narrative separately to help with developing a dictionary?
 ```
