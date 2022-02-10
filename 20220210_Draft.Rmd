@@ -16,9 +16,9 @@ csl: [apa.csl]
 
 # questions/to do
 
-- Amazon context data up to date?
-- Can we copy location stuff from previous set?
-- Start improving dictionary: prepare sheet with large random sample of classified amazonian context for inductive analysis (speaker, year, context, classification)
+- operationalize 1st version of new dictionary.docx.
+- solve broader problems mentioned in new dictionary.docx.
+- spread context and classify based in new dictionary -> new iteration of random_sample and dictionary improvement at observation=one context level
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -47,33 +47,35 @@ Amazon_speeches <- readRDS("data/amazon_speeches.rds")
 # Rename variables to adapt to text analysis packages' expectations
 Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
 
-# Remove stop words and punctuation
-Amazon_speeches$text <- tm::removePunctuation(Amazon_speeches$text)
-Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
-                                        c(tm::stopwords("pt"), "nao", "amazonas",
-                                          "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
-                                          "no", "hoje", "presidente", "governador", "regiao", 
-                                          "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
-                                          "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
-                                          "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
-                                          "cumprimentar", "gente", "estado", "querido", "queria",
-                                          "todos", "brasil", "companheiro", "senhores",
-                                          "companheiras", "companheiros", "companheira",
-                                          "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
-                                          "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
-                                          "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
-                                          "rio grande do sul", "rio grande do norte", "sao paulo", "então", "pouco", "pode", "sul",
-                                          "norte", "mato grosso","outro", "onde", "discurso", "parte", "anos", "cada", "todo", 
-                                          "porto velho", "visite site", "site secretaria", "minas gerais", "lula silva", 
-                                          "inácio lula", "amapa", "bahia", "é", "lá", "et", "in", "httpwww", "vez", "vezes", "entao", "coisa", "ainda", "sobre", "apenas", "coisa",
-                                          "jose", "tudo", "toda", "mil", "sempre", "assim", "estados", "forma", "pais", "programa", "primeiro"))
 
-Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
+```
 
-# Transform into corpus
-Amazon_speeches <- Amazon_speeches %>%
-  dplyr::mutate(doc_id = president) %>%
-  arrange(doc_id, text)
-amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
+```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
+
+# Create the dictionary
+
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|
+                ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|
+                dono|nossa")
+
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|
+                incentivos fiscais| integrar|integracao|zona franca|transamazonica|madeira|
+                porto|madeireira|produz|energia")
+
+conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|
+                 areas demarcadas|queimada|sustentav|meio ambiente|florest|cooperaçao|
+                 protecao|proteg")
+
+# Create a variable for each and count matches
+Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
+Amazon_speeches$development <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", development))
+Amazon_speeches$conservation <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", conservation))
+
+Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speeches$development == 0 & 
+                                  Amazon_speeches$conservation == 0, 1, 0)
+
+#dat <- Amazon_speeches %>% sample_frac(.1)
+#dat <- apply(dat,2,as.character)
+#write.csv(dat, file = "random_sample.csv")
 
 ```
