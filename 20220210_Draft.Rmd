@@ -16,9 +16,9 @@ csl: [apa.csl]
 
 # questions/to do
 
-- Amazon context data up to date?
-- Can we copy location stuff from previous set?
-- Start improving dictionary: prepare sheet with large random sample of classified amazonian context for inductive analysis (speaker, year, context, classification)
+- operationalize 1st version of new dictionary.docx.
+- solve broader problems mentioned in new dictionary.docx.
+- spread context and classify based in new dictionary -> new iteration of random_sample and dictionary improvement.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
