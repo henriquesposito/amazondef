@@ -1,0 +1,79 @@
+---
+title: "How is the Brazilian Amazon constructed as a problem at different levels? Amazonian
+  Narratives in Presidential Speeches since 1985"
+author:
+- Henrique Sposito^[Phd Candidate, The Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
+- Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
+date: "11/11/2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+bibliography: [export-data.bib]
+csl: [apa.csl]
+
+---
+
+# questions/to do
+
+- Amazon context data up to date?
+- Can we copy location stuff from previous set?
+- Start improving dictionary: prepare sheet with large random sample of classified amazonian context for inductive analysis (speaker, year, context, classification)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(stringi)
+library(tm)
+library(ggplot2)
+library(tidytext)
+library(kableExtra)
+library(stringr)
+library(wordcloud)
+library(RColorBrewer)
+library(tidyr)
+library(formatR)
+
+
+# Load data
+BR_Presidential_Speeches <- readRDS("data/BR_Presidential_Speeches.Rds")
+amazon_def_year <- readRDS("data/amazon_def_year.Rds")
+Amazon_speeches <- readRDS("data/amazon_speeches.rds")
+
+```
+
+```{r cleaning and transforming in corpus II, include=FALSE}
+# Rename variables to adapt to text analysis packages' expectations
+Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = ccontext)
+
+# Remove stop words and punctuation
+Amazon_speeches$text <- tm::removePunctuation(Amazon_speeches$text)
+Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text,
+                                        c(tm::stopwords("pt"), "nao", "amazonas",
+                                          "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
+                                          "no", "hoje", "presidente", "governador", "regiao", 
+                                          "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
+                                          "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
+                                          "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
+                                          "cumprimentar", "gente", "estado", "querido", "queria",
+                                          "todos", "brasil", "companheiro", "senhores",
+                                          "companheiras", "companheiros", "companheira",
+                                          "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
+                                          "grosso","ministro", "ministra", "josé", "pará", "acre", "roraima",
+                                          "manaus", "rondônia", "ministros", "luiz", "antonio", "vou", "eduardo braga", "rio de janeiro",
+                                          "rio grande do sul", "rio grande do norte", "sao paulo", "então", "pouco", "pode", "sul",
+                                          "norte", "mato grosso","outro", "onde", "discurso", "parte", "anos", "cada", "todo", 
+                                          "porto velho", "visite site", "site secretaria", "minas gerais", "lula silva", 
+                                          "inácio lula", "amapa", "bahia", "é", "lá", "et", "in", "httpwww", "vez", "vezes", "entao", "coisa", "ainda", "sobre", "apenas", "coisa",
+                                          "jose", "tudo", "toda", "mil", "sempre", "assim", "estados", "forma", "pais", "programa", "primeiro"))
+
+Amazon_speeches$text <- stringr::str_remove_all(Amazon_speeches$text, " [a-z] ")
+
+# Transform into corpus
+Amazon_speeches <- Amazon_speeches %>%
+  dplyr::mutate(doc_id = president) %>%
+  arrange(doc_id, text)
+amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
+
+```
