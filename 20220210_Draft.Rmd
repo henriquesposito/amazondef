@@ -18,7 +18,7 @@ csl: [apa.csl]
 
 - operationalize 1st version of new dictionary.docx.
 - solve broader problems mentioned in new dictionary.docx.
-- spread context and classify based in new dictionary -> new iteration of random_sample and dictionary improvement.
+- spread context and classify based in new dictionary -> new iteration of random_sample and dictionary improvement at observation=one context level
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
