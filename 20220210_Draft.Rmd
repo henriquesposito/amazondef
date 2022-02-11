@@ -45,11 +45,11 @@ Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = cconte
 ```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
 # Create the dictionary
 
-sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|militar|fronteir|patrimonio|nacional|defesa|exercito|dono|nossa")
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|patrimonio nacional|defesa|exercito|donoo|internacionalizar")
 
-development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais| integra|zona franca|transamazonica|madeira|porto|madeireira|produz|energia|agro|agri")
+development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integra|zona franca|transamazonica|madeira|porto|madeireira|energia|estimulo|banco|hidreletrica|convenio|sede|fome|saude|hospital|escola|saneamento|social")
 
-conservation <- ("preserv|conserv|determinacao|povos indigenas|indigenas|direitos humanos|areas demarcadas|queimada|sustentav|meio ambiente|florest|cooperaçao|protecao|proteg")
+conservation <- ("preserv|conserv|determinacao|povos indigenas|demarcar|queimada|sustentav|meio ambiente|florest|protecao|proteg|renovavel|garantias ambientais|garantia ambiental|reduzir desmatamento|combate ao desmatamento|combater desmatamento|baixo carbono|limpa|direitosambientais")
 
 # Create a variable for each and count matches
 Amazon_speeches$sovereignty <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", sovereignty))
@@ -57,6 +57,7 @@ Amazon_speeches$development <- stringr::str_count(Amazon_speeches$text, paste0("
 Amazon_speeches$conservation <- stringr::str_count(Amazon_speeches$text, paste0("(?i)", conservation))
 Amazon_speeches$other <- ifelse(Amazon_speeches$sovereignty == 0 & Amazon_speeches$development == 0 & 
                                   Amazon_speeches$conservation == 0, 1, 0)
+
 # Notice we count each match here, is that what we want? If not, see code chunk below.
 # Visulaize totals
 tibble::tibble(Sovereignty = sum(Amazon_speeches$sovereignty),
