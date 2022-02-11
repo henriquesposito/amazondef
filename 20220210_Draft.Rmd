@@ -43,7 +43,7 @@ Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = cconte
 ```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
 # Create the dictionary
 
-sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|soberana|soberano|interesse estrangeiro|ocupar|forcas armadas|patrimonio nacional|exercito|dono|internacionalizar| |internacionalizacao")
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|soberana|soberano|interesse estrangeiro|ocupar|forcas armadas|patrimonio nacional|exercito|dono|internacionalizar|internacionalizacao")
 
 development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integra|zona franca|transamazonica|madeira|porto|madeireira|energia|estimulo|banco|hidreletrica|convenio|sede|fome|saude|hospital|escola|saneamento|social")
 
@@ -90,7 +90,13 @@ tibble::tibble(Sovereignty = sum(AS_long$sovereignty),
                Development = sum(AS_long$development),
                Conservation = sum(AS_long$conservation),
                Other = sum(AS_long$other))
-# Still some overlap... 
+# Still some overlap...Also, there were 976 context units not matched at all...
+# Let's see some of which is not matched
+o <- dplyr::filter(AS_long, other == 1) %>% dplyr::select(president, year, context)
+dplyr::slice_sample(o, n = 20)
+o$context[1:20] # Number 12 and 17 (riquezas no subsolo/mineral reserves) development?
+o$context[500:520] # Number 7, development or preservation or neither? 10 (chico mendes) preservation? 14 sovereingty? 15 development and sovereingty? 17 and 18 development? 19 and 20 conservation? 21 development?
+o$context[940:960] # 1 (gas and niobio) development? 3 sovereignty? 6 development and preservation? 7 conservation? A lot of Bolsonaro's mentions about the Amazonia not burning, should we code these or not? 
 ```
 
 ```{r lda}
