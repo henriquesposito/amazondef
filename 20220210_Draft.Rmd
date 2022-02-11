@@ -15,9 +15,7 @@ csl: [apa.csl]
 
 # questions/to do
 
-- operationalize 1st version of new dictionary.docx.
 - solve broader problems mentioned in new dictionary.docx.
-- spread context and classify based in new dictionary -> new iteration of random_sample and dictionary improvement at observation=one context level
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -45,7 +43,7 @@ Amazon_speeches <- dplyr::rename(Amazon_speeches, fulltext = text, text = cconte
 ```{r narratives dictionary, warning=FALSE, message=FALSE, echo=TRUE}
 # Create the dictionary
 
-sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|patrimonio nacional|defesa|exercito|donoo|internacionalizar")
+sovereignty <- ("amazonia e brasileira|amazonia e nossa|soberania|interesse estrangeiro|ocupar|forcas armadas|patrimonio nacional|defesa|exercito|donoo|internacionalizar|fronteira")
 
 development <- ("estrada|rodovia|hidroeletrica|desenvolv|balbina|itaipu|incentivos fiscais|integra|zona franca|transamazonica|madeira|porto|madeireira|energia|estimulo|banco|hidreletrica|convenio|sede|fome|saude|hospital|escola|saneamento|social")
 
@@ -83,6 +81,10 @@ AS_long$development <- ifelse(stringr::str_detect(AS_long$context, paste0(develo
 AS_long$conservation <- ifelse(stringr::str_detect(AS_long$context, paste0(conservation)), 1, 0)
 AS_long$other <- ifelse(AS_long$sovereignty == 0 & AS_long$development == 0 & 
                                   AS_long$conservation == 0, 1, 0)
+#set.seed(123)
+#random_sample2 <- AS_long %>% sample_frac(.1)
+#write.csv(random_sample2, file="random_sample2.csv")
+
 # Visualize totals
 tibble::tibble(Sovereignty = sum(AS_long$sovereignty),
                Development = sum(AS_long$development),
