@@ -23,4 +23,7 @@ ts <- training_set_combined %>%
          EI = ifelse(grepl("economic", decision_code), 1, substring(code_henrique, 2, 2)),
          SD = ifelse(grepl("social", decision_code), 1, substring(code_henrique, 3, 3)),
          con = ifelse(grepl("conservation", decision_code), 1, substring(code_henrique, 4, 4))) %>%
-  select(-c(ID, check_decision_fp, check_code, decision_falsepositive, code_henrique, code_livio, decision_code))
+  select(-c(ID, decision_falsepositive, code_henrique, code_livio, decision_code)) %>%
+  mutate_all(~replace(., is.na(.), 0))
+# Save data
+saveRDS(ts, "training_set_final.Rds")
