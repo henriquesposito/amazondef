@@ -6,10 +6,6 @@ library(stringr)
 library(glmnet)
 library(tm)
 library(yardstick)
-library(ggplot2)
-library(pbapply)
-library(mgsub)
-library(RTextTools)
 
 # Get hand coded final training set
 training_set_final <- readRDS("~/GitHub/amazondef/data/training_set_final.Rds")
@@ -57,12 +53,11 @@ pred_score <- txtModelMatrix[606:2014,] # rest are to be scored
 ##### Model FP
 # Build an elastic net classifier for fp
 textFit_fp <- cv.glmnet(train,
-                     y            = as.factor(score$false_positives[1:605]),
-                     alpha        = 0.9,
-                     family       = 'binomial',
-                     type.measure = 'auc',
-                     nfolds       = 5,
-                     intercept    = F)
+                        y            = as.factor(score$false_positives[1:605]),
+                        family       = 'binomial',
+                        type.measure = 'auc',
+                        nfolds       = 5,
+                        intercept    = F)
 textFit_fp
 
 # Explore influential terms
@@ -74,8 +69,8 @@ tail(bestTerms_fp, 10)
 
 # Predict the training set and see acurracy
 training_fp   <- predict(textFit_fp, train, type = 'class')
-conf_mat(table(training_fp, score$false_positives[1:605]))
-accuracy(table(score$false_positives[1:605], training_fp)) 
+yardstick::conf_mat(table(training_fp, score$false_positives[1:605]))
+yardstick::accuracy(table(score$false_positives[1:605], training_fp)) 
 # 93.4% accuracy, this is pretty okay actually!
 
 # Get an AUC curves
@@ -101,12 +96,11 @@ fp # These obs seem to be indeed false positives! Though we are missing a few...
 # Build an elastic net classifier for sov
 set.seed(1234)
 textFit_sov <- cv.glmnet(train,
-                        y            = as.factor(score$sov[1:605]),
-                        alpha        = 0.9,
-                        family       = 'binomial',
-                        type.measure = 'auc',
-                        nfolds       = 5,
-                        intercept    = F)
+                         y            = as.factor(score$sov[1:605]),
+                         family       = 'binomial',
+                         type.measure = 'auc',
+                         nfolds       = 5,
+                         intercept    = F)
 textFit_sov
 
 # Explore influential terms
@@ -118,8 +112,8 @@ tail(bestTerms_sov, 10)
 
 # Predict the training set and see acurracy
 training_sov   <- predict(textFit_sov, train, type = 'class')
-conf_mat(table(training_sov, score$sov[1:605]))
-accuracy(table(score$sov[1:605], training_sov)) 
+yardstick::conf_mat(table(training_sov, score$sov[1:605]))
+yardstick::accuracy(table(score$sov[1:605], training_sov)) 
 # 88% accuracy, not super much here...
 
 # Get an AUC curves
@@ -142,7 +136,6 @@ sov # Looking quickly, it also seems this is ok... thoug, again, we appear to mi
 set.seed(1234)
 textFit_EI <- cv.glmnet(train,
                          y            = as.factor(score$EI[1:605]),
-                         alpha        = 0.9,
                          family       = 'binomial',
                          type.measure = 'auc',
                          nfolds       = 5,
@@ -158,8 +151,8 @@ tail(bestTerms_EI, 10)
 
 # Predict the training set and see acurracy
 training_EI   <- predict(textFit_EI, train, type = 'class')
-conf_mat(table(training_EI, score$EI[1:605]))
-accuracy(table(score$EI[1:605], training_EI)) 
+yardstick::conf_mat(table(training_EI, score$EI[1:605]))
+yardstick::accuracy(table(score$EI[1:605], training_EI)) 
 # 87% accuracy, not super much here either...
 
 # Get an AUC curves
@@ -183,7 +176,6 @@ EI # Did not have the time to look here...
 set.seed(1234)
 textFit_SD <- cv.glmnet(train,
                          y            = as.factor(score$SD[1:605]),
-                         alpha        = 0.9,
                          family       = 'binomial',
                          type.measure = 'auc',
                          nfolds       = 5,
@@ -199,8 +191,8 @@ tail(bestTerms_SD, 10)
 
 # Predict the training set and see acurracy
 training_SD   <- predict(textFit_SD, train, type = 'class')
-conf_mat(table(training_SD, score$SD[1:605]))
-accuracy(table(score$SD[1:605], training_SD)) 
+yardstick::conf_mat(table(training_SD, score$SD[1:605]))
+yardstick::accuracy(table(score$SD[1:605], training_SD)) 
 # 85% accuracy, seems low ...
 
 # Get an AUC curves
@@ -223,9 +215,8 @@ SD # Did not have the time to look into it just yet...
 set.seed(1234)
 textFit_con <- cv.glmnet(train,
                          y            = as.factor(score$con[1:605]),
-                         alpha        = 0.9,
                          family       = 'binomial',
-                         type.measure = 'auc',
+                         type.measure = 'class',
                          nfolds       = 5,
                          intercept    = F)
 textFit_con
@@ -239,8 +230,8 @@ tail(bestTerms_con, 10)
 
 # Predict the training set and see acurracy
 training_con   <- predict(textFit_con, train, type = 'class')
-conf_mat(table(training_con, score$con[1:605]))
-accuracy(table(score$con[1:605], training_con)) 
+yardstick::conf_mat(table(training_con, score$con[1:605]))
+yardstick::accuracy(table(score$con[1:605], training_con)) 
 # 88% accuracy, not super much here...
 
 # Get an AUC curves
@@ -263,3 +254,75 @@ con # Did not have the time to look into it just yet...
 # We can discuss the findings once we take our time to look into it,
 # but we can always play around with the model parameters and/or method.
 # This does not look so bad though for a first attempt from what I see!
+
+
+# What if we use only stems...
+##### Stemming: Let's try it out for false_positives
+
+# Get a package that stems for portuguese language
+devtools::install_github("dfalbel/ptstem")
+library(ptstem)
+
+# Agreesive stemming that replaces terms with different ends but same stem
+stem_corp <- ptstem::ptstem(score$AM2, algorithm = "rslp", complete = TRUE)
+score_st <- score %>% mutate(AM2_st = stem_corp)
+
+# Get a corpus and DTM
+txtcorp_st <- VCorpus(VectorSource(as.character(score_st$AM2_st)))
+txtcorp_st <- tm::tm_map(txtcorp_st, removeWords, stopwords('pt'))
+txtModelMatrix_st <- DocumentTermMatrix(txtcorp_st)
+txtModelMatrix_st <- as.matrix(txtModelMatrix_st)
+
+set.seed(1234)
+train_st <- txtModelMatrix_st[1:605,]
+pred_score_st <- txtModelMatrix_st[606:2014,] # rest are to be scored
+
+# Build an elastic net classifier for steemmed fp
+textFit_fp_st <- cv.glmnet(train_st,
+                           y            = as.factor(score_st$false_positives[1:605]),
+                           family       = 'binomial',
+                           type.measure = 'auc',
+                           nfolds       = 5,
+                           intercept    = F)
+
+# Predict the training set and see acurracy
+training_fp_st   <- predict(textFit_fp_st, train_st, type = 'class')
+yardstick::conf_mat(table(training_fp_st, score_st$false_positives[1:605]))
+yardstick::accuracy(table(score_st$false_positives[1:605], training_fp_st)) 
+# 93% stemmed versus 93.4% accuracy non steemed
+
+# Fit the model in score data
+scored_fp_st <- predict(textFit_fp_st, pred_score_st, type = 'class')
+summary(as.factor(scored_fp_st)) # We predicted 23 false positives, this is lower than previous... 
+# I will just stop here, it seems that stemming does not help, maybe the opposite will though.
+# That is, less data cleaning such as not removing stopwords might help.
+
+##### Let's try not removing stowords
+txtcorp_dirty <- VCorpus(VectorSource(as.character(score$AM2)))
+txtModelMatrix_dirty <- DocumentTermMatrix(txtcorp_dirty)
+txtModelMatrix_dirty <- as.matrix(txtModelMatrix_dirty)
+
+# Get a training set from 605 first obs coded
+set.seed(1234)
+train_dirty <- txtModelMatrix_dirty[1:605,]
+pred_score_dirty <- txtModelMatrix_dirty[606:2014,] # rest are to be scored
+
+# Build an elastic net classifier for fp with stopwords in
+textFit_fp_dirty <- cv.glmnet(train_dirty,
+                              y            = as.factor(score$false_positives[1:605]),
+                              family       = 'binomial',
+                              type.measure = 'auc',
+                              nfolds       = 5,
+                              intercept    = F)
+
+# Predict the training set and see acurracy
+training_fp_dirty   <- predict(textFit_fp_dirty, train_dirty, type = 'class')
+yardstick::conf_mat(table(training_fp_dirty, score$false_positives[1:605]))
+yardstick::accuracy(table(score$false_positives[1:605], training_fp_dirty)) 
+# 92% stemmed versus 93.4% accuracy previously
+
+# Fit the model in score data
+scored_fp_dirty <- predict(textFit_fp_dirty, pred_score_dirty, type = 'class')
+summary(as.factor(scored_fp_dirty)) # We predicted 20 false positives, this is much lower than previous... 
+# I will just stop here, it seems that keeping stopwords also does not help.
+# Let's try other supervised machine learning models!
