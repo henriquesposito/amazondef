@@ -5,6 +5,7 @@ library(stringr)
 library(glmnet)
 library(tm)
 library(yardstick)
+library(lsa)
 # Get hand coded final training set
 training_set_final <- readRDS("~/Documents/GitHub/amazondef/data/training_set_final.Rds")
 # Get full dataset and remove hand coded observations
@@ -39,7 +40,7 @@ txtcorp_lsa <- tm::tm_map(txtcorp_lsa, removeWords, stopwords('pt'))
 TDM_lsa <- TermDocumentMatrix(txtcorp_lsa,
                               control = list(weighting = weightTfIdf))
 # Get 20 latent topics (just for the sake of it)
-lsaTDM <- lsa(TDM_lsa, 20) # This takes a few minutes
+lsaTDM <- lsa(TDM_lsa, 30) # This takes a few minutes
 # Extract the document LSA values
 docVectors <- as.data.frame(lsaTDM$dk)
 
@@ -72,8 +73,7 @@ summary(as.factor(score_lsa_fp)) # We got 96 false positives here!!!
 # Let me take out to see:
 fp_lsa <- score[606:2014,] %>%
   select(AM2) %>%
-  mutate(fp_score = score_lsa_fp) %>% 
-  filter(score_lsa_fp == "1")
+  mutate(fp_score = score_lsa_fp)
 fp_lsa
 
 ##### Model sovereignty
@@ -104,8 +104,7 @@ summary(as.factor(score_lsa_sov)) # We got 114 here
 # Let's take out to see:
 sov_lsa <- score[606:2014,] %>%
   select(AM2) %>%
-  mutate(sov_score = score_lsa_sov) %>% 
-  filter(score_lsa_sov == "1")
+  mutate(sov_score = score_lsa_sov)
 sov_lsa # Idk here
 
 ##### Model EI
@@ -135,8 +134,7 @@ summary(as.factor(score_lsa_EI)) # We got 429 here
 # Let's take out to see:
 EI_lsa <- score[606:2014,] %>%
   select(AM2) %>%
-  mutate(EI_score = score_lsa_EI) %>% 
-  filter(score_lsa_EI == "1")
+  mutate(EI_score = score_lsa_EI)
 EI_lsa # have to check here but IDK ...
 
 # Model SD
@@ -166,8 +164,7 @@ summary(as.factor(score_lsa_SD)) # We got 140 here
 # Let's take out to see:
 SD_lsa <- score[606:2014,] %>%
   select(AM2) %>%
-  mutate(SD_score = score_lsa_SD) %>% 
-  filter(score_lsa_SD == "1")
+  mutate(SD_score = score_lsa_SD)
 SD_lsa # Idk here
 
 ##### Model conservation
@@ -197,6 +194,59 @@ summary(as.factor(score_lsa_con)) # We got 345 here
 # Let's take out to see:
 con_lsa <- score[606:2014,] %>%
   select(AM2) %>%
-  mutate(con_score = score_lsa_con) %>% 
-  filter(score_lsa_con == "1")
+  mutate(con_score = score_lsa_con)
 con_lsa # Idk here
+
+####### Get a plot for abstract (Chicago Conference)
+
+# Bind scored and test data
+final_score <- score[606:2014,] %>%
+  select(-c(false_positives, sov, EI, SD, con)) %>%
+  mutate(Sovereignty = sov_lsa$sov_score,
+         Economic_Integration = EI_lsa$EI_score,
+         Social_Development = SD_lsa$SD_score,
+         Conservation = con_lsa$con_score)
+tt <- training_set_final %>%
+  mutate(Sovereignty = sov,
+         Economic_Integration = EI,
+         Social_Development = SD,
+         Conservation = con) %>% 
+  select(-c(false_positives, sov, EI, SD, con, '...1'))
+final_score <- rbind(final_score, tt)
+# Get other variables in
+fd <- merge(amazon_speeches_long, final_score, by = "AM2")
+summary(fd)
+fd <- fd %>%
+  select(-c(party, ID, title, text, date, title)) %>% 
+  arrange(year)
+# Just take a quick look
+Sovereignty = table(fd$Sovereignty, fd$president)
+Sovereignty
+Economic_Integration = table(fd$Economic_Integration, fd$president)
+Economic_Integration
+Social_development = table(fd$Social_Development, fd$president)
+Social_development
+Conservation = table(fd$Conservation, fd$president)
+Conservation
+# Visualize correlations
+am_narratives <- fd %>%
+  tidyr::pivot_longer(Sovereignty:Conservation) %>% 
+  group_by(year, president, name) %>%
+  rename(narrative = name)
+library(ggplot2)
+ggplot(am_narratives, aes(x = year, y = as.numeric(value), fill = narrative)) +
+  geom_smooth(aes(group = narrative, color = narrative), size = 1, se = FALSE) +
+  labs(x = "Year",
+       y = "Proportion (in relation to all Amazonian statements coded per year)",
+       title = "Narratives in Presidential Speeches per year since 1985 in Brazil")
+ggplot(am_narratives, aes(x = year, y = as.numeric(value), fill = narrative)) +
+  geom_smooth(aes(group = narrative, color = narrative), size = 1, se = FALSE) +
+  facet_wrap(~narrative, ncol = 2) +
+  labs(x = "Year",
+       y = "Proportion (in relation to all Amazonian statements coded per year)",
+       title = "") +
+  theme(legend.position="none")
+library(ggpubr)
+ggpubr::ggarrange(one, two, nrow = 2, common.legend = TRUE, legend="bottom")
+# Save
+
