@@ -61,10 +61,10 @@ validation_combined <- read_excel("data/validation_combined.xlsx")
 summary(as.factor(validation_combined$decision_code))
 validation_final <- validation_combined %>%
   mutate(false_positives = ifelse(grepl("^fp$", decision_code), 1, 0),
-         sov = ifelse(grepl("^fp$", decision_code), 0, substring(code_henrique, 0, 1)),
-         EI = ifelse(grepl("^fp$", decision_code), 0, substring(code_henrique, 2, 2)),
-         SD = ifelse(grepl("^fp$", decision_code), 0, substring(code_henrique, 3, 3)),
-         con = ifelse(grepl("^fp$", decision_code), 0, substring(code_henrique, 4, 4))) %>%
+         sov = ifelse(grepl("^fp$", decision_code), 0, substring(decision_code, 0, 1)),
+         EI = ifelse(grepl("^fp$", decision_code), 0, substring(decision_code, 2, 2)),
+         SD = ifelse(grepl("^fp$", decision_code), 0, substring(decision_code, 3, 3)),
+         con = ifelse(grepl("^fp$", decision_code), 0, substring(decision_code, 4, 4))) %>%
   select(-c(ID, code_henrique, code_livio, decision_code, com_henrique, com_livio, match, "...1"))
 # Save data
-# saveRDS(validation_final, "validation_final.Rds")
+#saveRDS(validation_final, "validation_final.Rds")

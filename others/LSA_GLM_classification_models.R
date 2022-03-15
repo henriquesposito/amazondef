@@ -249,4 +249,3 @@ ggplot(am_narratives, aes(x = year, y = as.numeric(value), fill = narrative)) +
 library(ggpubr)
 ggpubr::ggarrange(one, two, nrow = 2, common.legend = TRUE, legend="bottom")
 # Save
-
