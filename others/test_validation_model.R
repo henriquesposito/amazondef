@@ -13,7 +13,7 @@ library(yardstick)
 library(lsa)
 # Get hand coded final training set
 training_set_final <- readRDS("~/Documents/GitHub/amazondef/data/training_set_final.Rds")
-# Get full dataset and remove hand coded observations
+# Get validation dataset
 validation_final <- readRDS("~/Documents/GitHub/amazondef/data/validation_final.Rds")
 # Get training texts standardized
 training_set_final$AM2 <- stringi::stri_trans_general(training_set_final$AM2, 'latin-ascii')
