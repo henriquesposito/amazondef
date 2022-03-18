@@ -71,6 +71,11 @@ summary(as.factor(BR_Presidential_Speeches$location))
 BR_Presidential_Speeches$location <- ifelse(grepl("^NA$", BR_Presidential_Speeches$location),
                                             poldis::extract_location(BR_Presidential_Speeches$text),
                                             BR_Presidential_Speeches$location)
-summary(as.factor(BR_Presidential_Speeches$location))
+summary(as.factor(BR_presid_speeches_final$location))
 # I am not going to had code the 313 NAs here for now, but if we need we can do so...
 # saveRDS(BR_Presidential_Speeches, "BR_presid_speeches_final.Rds")
+# Get a excel file just to replace NAs
+# writexl::write_xlsx(BR_presid_speeches_final, "BR_presid_speeches_final.xlsx")
+# Most of the NAs left are TV or Radio Announcements in case we want to mark these as such.
+BR_presid_speeches_final <- readxl::read_excel("BR_presid_speeches_final.xlsx")
+summary(as.factor(BR_presid_speeches_final$location))
