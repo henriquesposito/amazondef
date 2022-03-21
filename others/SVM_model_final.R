@@ -184,12 +184,10 @@ model_con <- svm(x = train_matrix, y = as.numeric(tdata$con),
 pred_con <- predict(model_con, score_matrix)
 # add to dataset
 fulldata$con <- pred_con
-
 # let's add an other variable just to keep track here of all the obs not labeled
 fulldata$other <- ifelse(fulldata$false_positives & fulldata$sov < 0.5 & fulldata$EI < 0.5 & fulldata$SD < 0.5 & fulldata$con < 0.5, 1, 0)
 summary(as.factor(fulldata$other))
 # almost 500 is too many maybe
-
 ###### Merge data and save labeled dataset for now
 fdata <- fulldata %>%
   select(AM2, sov, EI, SD, con, false_positives)
@@ -214,129 +212,199 @@ tvt <- rbind(tv, ss)
 # Save also for reference other datasets to start from here in the future
 #saveRDS(label_final, "label_final.Rds") # These are in the data folder if need
 #saveRDS(validation_other_other, "validation_other_other.Rds") # these are in data folder
+#saveRDS(tdata, "tdata.Rds") # these are in data folder
 # get the final label data
 # After all is settled, merge data and run it again 
-validation_other_combined <- read_excel("data/validation_other_combined.xlsx")
-# validation_other_other <- readRDS("~/Documents/GitHub/amazondef/data/validation_other_other.Rds")
-# validation_other_other$false_positives <- validation_other_combined$false_positives
-# validation_other_other$sov <- validation_other_combined$sov
-# validation_other_other$EI <- validation_other_combined$EI
-# validation_other_other$SD <- validation_other_combined$SD
-# validation_other_other$con <- validation_other_combined$con
-# # add data to training data
-# v_train <- select(validation_other_other, AM2, sov, EI, SD, con, false_positives)
-# tdata <- rbind(tdata, v_train)
-# label_final <- readRDS("~/Documents/GitHub/amazondef/data/label_final.Rds")
-# fulldata <- label_final 
-# # create matrixes 
-# train_matrix <- create_matrix(tdata["AM2"], weighting = weightTfIdf)
-# score_matrix <- create_matrix(label_final["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
-# # find and fit best models for each category
-# # model choice fp
-# tune_fp <- tune(svm, train_matrix, as.numeric(tdata$false_positives),
-#                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
-#                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
-#                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-#                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
-#                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
-#                                     700, 800, 900, 1000, 5000, 10000, 50000,
-#                                     100000, 500000, 1000000)))
-# tune_fp$best.model
-# # match best parameters
-# model_fp <- svm(x = train_matrix, y = as.numeric(tdata$false_positives),
-#                 type = "eps-regression", kernel = "radial",
-#                 cost = 5000, gamma = 9.510223e-05, episilon = 0.1)
-# # predict labels
-# pred_fp <- predict(model_fp, score_matrix)
-# # add to dataset
-# fulldata$false_positives <- pred_fp # left as a probability so we can set the threshold later
-# 
-# # Model sov
-# tune_sov <- tune(svm, train_matrix, as.numeric(tdata$sov),
-#                  ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
-#                                      0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
-#                                      3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-#                                      16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
-#                                      60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
-#                                      700, 800, 900, 1000, 5000, 10000, 50000,
-#                                      100000, 500000, 1000000)))
-# tune_sov$best.model
-# # match best parameters
-# model_sov <- svm(x = train_matrix, y = as.numeric(tdata$sov),
-#                  type = "eps-regression", kernel = "radial",
-#                  cost = 5000, gamma = 9.510223e-05, episilon = 0.1)
-# # predict labels
-# pred_sov <- predict(model_sov, score_matrix)
-# # add to dataset
-# fulldata$sov <- pred_sov 
-# 
+validation_other_combined <- readxl::read_excel("data/validation_other_hs.xlsx")
+validation_other_combined$false_positives <- ifelse(validation_other_combined$decision_code == "fp", 1, 0)
+validation_other_combined$decision_code <- ifelse(validation_other_combined$decision_code == "fp", "0000", validation_other_combined$decision_code)
+validation_other_combined$sov <-  substring(validation_other_combined$decision_code, 0, 1)
+validation_other_combined$EI <-  substring(validation_other_combined$decision_code, 2, 2)
+validation_other_combined$SD <-  substring(validation_other_combined$decision_code, 3, 3)
+validation_other_combined$con <-  substring(validation_other_combined$decision_code, 4, 4)
+validation_other_combined <- select(validation_other_combined, sov, EI, SD, con, false_positives)
+validation_other_other <- readRDS("data/validation_other_other.Rds")
+validation_other_other <- select(validation_other_other, -c(sov, EI, SD, con, false_positives))
+validation_merge <- cbind(validation_other_combined, validation_other_other) # Just need to cbind here since they are in the same order
+validation_merge <- relocate(validation_merge, AM2, sov, EI, SD, con, false_positives)
+# add data to training data
+v_train <- select(validation_merge, AM2, sov, EI, SD, con, false_positives, am2_2)
+tdata <- readRDS("data/tdata.Rds")
+tdata$am2_2 <- tv$AM2
+tdata <- rbind(tdata, v_train)
+label_final <- readRDS("~/Documents/GitHub/amazondef/data/label_final.Rds")
+fulldata <- select(label_final, -c(sov, EI, SD, con, false_positives))
+# split train data into a validation and a validation set
+# Split Data into Training and Testing in R 
+sample_size = floor(0.9*nrow(tdata))
+set.seed(7777)
+picked <- sample(seq_len(nrow(tdata)), size = sample_size)
+ttrain = tdata[picked,]
+vvalid = tdata[-picked,]
+# create matrixes
+train_matrix <- create_matrix(ttrain["AM2"], weighting = weightTfIdf)
+valid_matrix <- create_matrix(vvalid["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
+score_matrix <- create_matrix(fulldata["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
+# find and fit best models for each category
+# model choice fp
+tune_fp <- tune(svm, train_matrix, as.numeric(ttrain$false_positives),
+                ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
+                                    0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
+                                    3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                    16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
+                                    60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
+                                    700, 800, 900, 1000, 5000, 10000, 50000,
+                                    100000, 500000, 1000000)))
+tune_fp$best.model
+# match best parameters and validate
+model_fp <- svm(x = train_matrix, y = as.numeric(ttrain$false_positives),
+                type = "eps-regression", kernel = "radial",
+                cost = 5000, gamma = 8.84017e-05, episilon = 0.1)
+# predict validation labels
+pred_fp_v <- predict(model_fp, valid_matrix)
+pred_fp_v <- ifelse(pred_fp_v > 0.5, 1, 0)
+# get metrics
+table(pred = pred_fp_v, true = vvalid$false_positives)
+yardstick::accuracy(table(true = vvalid$false_positives, pred = pred_fp_v))
+roc_svm_fp <- data.frame(cbind(tpred = as.numeric(pred_fp_v), label = as.numeric(vvalid$false_positives)))
+WVPlots::ROCPlot(roc_svm_fp, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for fp")
+# predict labels
+pred_fp <- predict(model_fp, score_matrix)
+# add to dataset
+fulldata$false_positives <- pred_fp # left as a probability so we can set the threshold later
+
+# Model sov
+# I need a new sample here cause what we have for fp does not appear to include many sov
+# statements, so the models codes none...
+sample_size = floor(0.9*nrow(tdata))
+set.seed(3333)
+picked <- sample(seq_len(nrow(tdata)), size = sample_size)
+ttrain = tdata[picked,]
+vvalid = tdata[-picked,]
+# create matrixes
+train_matrix <- create_matrix(ttrain["AM2"], weighting = weightTfIdf)
+valid_matrix <- create_matrix(vvalid["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
+score_matrix <- create_matrix(fulldata["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
+# tune
+tune_sov <- tune(svm, train_matrix, as.numeric(ttrain$sov),
+                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
+                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
+                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
+                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
+                                     700, 800, 900, 1000, 5000, 10000, 50000,
+                                     100000, 500000, 1000000)))
+tune_sov$best.model
+# match best parameters
+model_sov <- svm(x = train_matrix, y = as.numeric(ttrain$sov),
+                 type = "eps-regression", kernel = "radial",
+                 cost = 5000, gamma = 8.899172e-05, episilon = 0.1)
+# predict validation labels
+pred_sov_v <- predict(model_sov, valid_matrix)
+pred_sov_v <- ifelse(pred_sov_v > 0.5, 1, 0)
+# get metrics
+table(pred = pred_sov_v, true = vvalid$sov)
+yardstick::accuracy(table(true = vvalid$sov, pred = pred_sov_v))
+roc_svm_sov <- data.frame(cbind(tpred = as.numeric(pred_sov_v), label = as.numeric(vvalid$sov)))
+WVPlots::ROCPlot(roc_svm_sov, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for sov")
+# predict labels
+pred_sov <- predict(model_sov, score_matrix)
+# add to dataset
+fulldata$sov <- pred_sov
+
 # # Model EI
-# tune_EI <- tune(svm, train_matrix, as.numeric(tdata$EI),
-#                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
-#                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
-#                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-#                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
-#                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
-#                                     700, 800, 900, 1000, 5000, 10000, 50000,
-#                                     100000, 500000, 1000000)))
-# tune_EI$best.model
-# # match best parameters
-# model_EI <- svm(x = train_matrix, y = as.numeric(tdata$EI),
-#                 type = "eps-regression", kernel = "radial",
-#                 cost = 5000, gamma = 9.510223e-05, episilon = 0.1)
-# # predict labels
-# pred_EI <- predict(model_EI, score_matrix)
-# # add to dataset
-# fulldata$EI <- pred_EI 
-# 
-# # Model SD
-# tune_SD <- tune(svm, train_matrix, as.numeric(tdata$SD),
-#                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
-#                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
-#                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-#                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
-#                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
-#                                     700, 800, 900, 1000, 5000, 10000, 50000,
-#                                     100000, 500000, 1000000)))
-# tune_SD$best.model
-# # match best parameters
-# model_SD <- svm(x = train_matrix, y = as.numeric(tdata$SD),
-#                 type = "eps-regression", kernel = "radial",
-#                 cost = 5000, gamma = 9.510223e-05, episilon = 0.1)
-# # predict labels
-# pred_SD <- predict(model_SD, score_matrix)
-# # add to dataset
-# fulldata$SD <- pred_SD
-# 
-# # Model con
-# tune_con <- tune(svm, train_matrix, as.numeric(tdata$con),
-#                  ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
-#                                      0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
-#                                      3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-#                                      16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
-#                                      60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
-#                                      700, 800, 900, 1000, 5000, 10000, 50000,
-#                                      100000, 500000, 1000000)))
-# tune_con$best.model
-# # match best parameters
-# model_con <- svm(x = train_matrix, y = as.numeric(tdata$con),
-#                  type = "eps-regression", kernel = "radial",
-#                  cost = 5000, gamma = 9.510223e-05, episilon = 0.1)
-# # predict labels
-# pred_con <- predict(model_con, score_matrix)
-# # add to dataset
-# fulldata$con <- pred_con
-# 
-# # let's add an other variable just to keep track here of all the obs not labeled
-# fulldata$other <- ifelse(fulldata$sov < 0.5 & fulldata$EI < 0.5 & fulldata$SD < 0.5 & fulldata$con < 0.5, 1, 0)
-# summary(as.factor(fulldata$other))
-# 
-# ###### Merge data and save labeled dataset final
-# fdata <- fulldata %>%
-#   select(AM2, sov, EI, SD, con, false_positives)
-# fdata$AM2 <- lf$AM2
-# tdata$AM2 <- tv$AM2
-# final_labeled_data <- rbind(tdata, fdata)
-# final_labeled_data <- merge(amazon_speeches_long, final_labeled_data, by = "AM2")
-# # save
-# #saveRDS(final_labeled_data, "final_labeled_data.Rds")
+tune_EI <- tune(svm, train_matrix, as.numeric(ttrain$EI),
+                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
+                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
+                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
+                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
+                                     700, 800, 900, 1000, 5000, 10000, 50000,
+                                     100000, 500000, 1000000)))
+tune_EI$best.model
+# match best parameters
+model_EI <- svm(x = train_matrix, y = as.numeric(ttrain$EI),
+                 type = "eps-regression", kernel = "radial",
+                 cost = 5000, gamma = 8.899172e-05, episilon = 0.1)
+# predict validation labels
+pred_EI_v <- predict(model_EI, valid_matrix)
+pred_EI_v <- ifelse(pred_EI_v > 0.5, 1, 0)
+# get metrics
+table(pred = pred_EI_v, true = vvalid$EI)
+yardstick::accuracy(table(true = vvalid$EI, pred = pred_EI_v))
+roc_svm_EI <- data.frame(cbind(tpred = as.numeric(pred_EI_v), label = as.numeric(vvalid$EI)))
+WVPlots::ROCPlot(roc_svm_EI, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for EI")
+# predict labels
+pred_EI <- predict(model_EI, score_matrix)
+# add to dataset
+fulldata$EI <- pred_EI
+ 
+# Model SD
+tune_SD <- tune(svm, train_matrix, as.numeric(ttrain$SD),
+                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
+                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
+                                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                     16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
+                                     60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
+                                     700, 800, 900, 1000, 5000, 10000, 50000,
+                                     100000, 500000, 1000000)))
+tune_SD$best.model
+# match best parameters
+model_SD <- svm(x = train_matrix, y = as.numeric(ttrain$SD),
+                 type = "eps-regression", kernel = "radial",
+                 cost = 5000, gamma = 8.899172e-05, episilon = 0.1)
+# predict validation labels
+pred_SD_v <- predict(model_SD, valid_matrix)
+pred_SD_v <- ifelse(pred_SD_v > 0.5, 1, 0)
+# get metrics
+table(pred = pred_SD_v, true = vvalid$SD)
+yardstick::accuracy(table(true = vvalid$SD, pred = pred_SD_v))
+roc_svm_SD <- data.frame(cbind(tpred = as.numeric(pred_SD_v), label = as.numeric(vvalid$SD)))
+WVPlots::ROCPlot(roc_svm_SD, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for SD")
+# predict labels
+pred_SD <- predict(model_SD, score_matrix)
+# add to dataset
+fulldata$SD <- pred_SD
+
+# Model con
+tune_con <- tune(svm, train_matrix, as.numeric(ttrain$con),
+                ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
+                                    0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
+                                    3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                    16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50,
+                                    60, 70, 80, 90, 100, 200, 300, 400, 500, 600,
+                                    700, 800, 900, 1000, 5000, 10000, 50000,
+                                    100000, 500000, 1000000)))
+tune_con$best.model
+# match best parameters
+model_con <- svm(x = train_matrix, y = as.numeric(ttrain$con),
+                type = "eps-regression", kernel = "radial",
+                cost = 5000, gamma = 8.899172e-05, episilon = 0.1)
+# predict validation labels
+pred_con_v <- predict(model_con, valid_matrix)
+pred_con_v <- ifelse(pred_con_v > 0.5, 1, 0)
+# get metrics
+table(pred = pred_con_v, true = vvalid$con)
+yardstick::accuracy(table(true = vvalid$con, pred = pred_con_v))
+roc_svm_con <- data.frame(cbind(tpred = as.numeric(pred_con_v), label = as.numeric(vvalid$con)))
+WVPlots::ROCPlot(roc_svm_con, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for con")
+# predict labels
+pred_con <- predict(model_con, score_matrix)
+# add to dataset
+fulldata$con <- pred_con
+
+# let's add an other variable just to keep track here of all the obs not labeled
+fulldata$other <- ifelse(fulldata$sov < 0.45 & fulldata$EI < 0.45 & fulldata$SD < 0.45 & fulldata$con < 0.45, 1, 0)
+summary(as.factor(fulldata$other))
+
+###### Merge data and save labeled dataset final
+fdata <- fulldata %>%
+  select(am2_2, sov, EI, SD, con, false_positives) %>%
+  rename(AM2 = am2_2) %>% mutate(hand_coded = 0)
+ttdata <- select(tdata, -AM2) %>% 
+  rename(AM2 = am2_2) %>% 
+  mutate(hand_coded = 1)
+final_data <- rbind(fdata, ttdata)
+final_labeled_data <- dplyr::full_join(amazon_speeches_long, final_data, "AM2")
+# save
+saveRDS(final_labeled_data, "final_labeled_data.Rds")
