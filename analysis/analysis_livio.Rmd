@@ -1,0 +1,617 @@
+---
+title: "How has the Amazon been construed as a problem? Preliminary Analysis"
+author: "Livio Silva-Muller"
+date: "March 2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Setup, Data, Inspection
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(tidyr)
+library(skimr)
+library(scales)
+library(RColorBrewer)
+library(kableExtra)
+library(nnet)
+
+Sys.setlocale("LC_ALL", "C")
+
+options(stringsAsFactors = FALSE, scipen = 999)
+
+cbPalette <- c("#999999", "#56B4E9", "#0072B2", "#009E73", "#F0E442", "#D55E00", "#CC79A7", "#E69F00")
+```
+
+```{r data, include=FALSE, warning=FALSE, message=FALSE}
+
+pop<- readRDS("~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds")
+ama <- readRDS("~/Documents/GitHub/amazondef/final_data_as.Rds")
+
+ama <-  ama %>%
+          select(-c(title, date, text, false_positives)) %>%
+          rename (ei= "EI") %>%
+          rename (sd= "SD")
+
+pop <-  pop %>%
+          select(-c(title, date, text, location))
+
+```
+
+```{r data prep for prob_construction, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+sov <- ama %>% 
+  filter(sov==1) %>% 
+  count(sov, year) %>%
+  group_by(year) %>%
+  select(-c(sov))%>%
+  rename (sov = n)
+
+ei <- ama %>% 
+  filter(ei==1) %>% 
+  count(ei, year) %>%
+  group_by(year) %>%
+  select(-c(ei))%>%
+  rename (ei = n) %>%
+  ungroup() %>%
+  tibble::add_row(year = 2017, ei = 0) %>%
+  tibble::add_row(year = 2018, ei = 0)
+
+sd <- ama %>% 
+  filter(sd==1) %>% 
+  count(sd, year) %>%
+  group_by(year) %>%
+  select(-c(sd))%>%
+  rename (sd = n)
+
+con <- ama %>% 
+  filter(con==1) %>% 
+  count(con, year) %>%
+  group_by(year) %>%
+  select(-c(con))%>%
+  rename (con = n)
+
+other <- ama %>% 
+  filter(other==1) %>% 
+  count(other, year) %>%
+  group_by(year) %>%
+  select(-c(other))%>%
+  rename (other = n)
+
+temp <- ei %>% left_join(other) %>% 
+                left_join(con) %>%
+                left_join(sd) %>%
+                left_join(sov) %>%
+                replace(is.na(.), 0)
+
+```
+
+```{r data prep for mixed_types, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+ama_mx <- ama %>% 
+  unite(mixed_type, sov:con, sep="_") %>%
+  mutate(mx_cat= case_when (mixed_type=='1_0_0_0' ~ "Pure Sovereignty",
+                            mixed_type=='0_1_0_0' ~ "Pure Economic Integration",
+                            mixed_type=='0_0_1_0' ~ "Pure Social Development",
+                            mixed_type=='0_0_0_1' ~ "Pure Conservation",
+                            mixed_type=='0_0_0_0' ~"Other",
+                            mixed_type=='0_1_0_1' ~"Economic Conservation",
+                            mixed_type=='0_1_1_0' ~"Economic and Social Development",
+                            mixed_type=='1_0_0_1' ~"Sovereign Conservation",
+                            mixed_type=='0_1_1_1' ~ "Sustainable Development",
+                            mixed_type=='1_1_0_0'~ "Sovereign Integration",
+                            mixed_type=='0_0_1_1' ~"Other Mixed-types",
+                            mixed_type=='1_1_0_1' ~"Other Mixed-types",
+                            mixed_type=='1_0_1_0' ~"Other Mixed-types",
+                            mixed_type=='1_0_1_0' ~"Other Mixed-types",
+                            mixed_type=='1_1_1_1' ~"Other Mixed-types",
+                            mixed_type=='1_1_1_0' ~"Other Mixed-types",
+                            mixed_type=='1_0_1_1' ~"Other Mixed-types"))%>%
+  mutate(mx_cat=factor(mx_cat, levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development", "Pure Sovereignty", "Other", "Economic Conservation", "Economic and Social Development", "Sovereign Conservation","Sustainable Development","Sovereign Integration", "Other Mixed-types")))
+
+
+```
+
+```{r data prep for model 2, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+sov2 <- ama %>% 
+  filter(sov==1) %>%
+  select(c(sov, location_cat, year))%>%
+  mutate(prob_constr=case_when(sov=="1"~ "sov")) %>%
+  select(-c(sov))
+
+ei2 <- ama %>% 
+  filter(ei==1)%>%
+  select(c(ei, location_cat, year))%>%
+  mutate(prob_constr=case_when(ei=="1"~ "ei")) %>%
+  select(-c(ei))
+
+sd2 <- ama %>% 
+  filter(sd==1)%>%
+  select(c(sd, location_cat, year))%>%
+  mutate(prob_constr=case_when(sd=="1"~ "sd")) %>%
+  select(-c(sd))
+
+con2 <- ama %>% 
+  filter(con==1)%>%
+  select(c(con, location_cat, year))%>%
+  mutate(prob_constr=case_when(con=="1"~ "con")) %>%
+  select(-c(con))
+
+other2 <- ama %>% 
+  filter(other==1)%>%
+  select(c(other, location_cat, year))%>%
+  mutate(prob_constr=case_when(other=="1"~ "other")) %>%
+  select(-c(other))
+
+temp2 <- rbind(sov2, con2, ei2, sd2, other2)
+
+temp2$prob_constr <- as.factor (temp2$prob_constr)
+
+```
+
+```{r inspecting the data, eval=FALSE, include=FALSE}
+
+ama %>% filter(hand_coded==0) %>% filter(sov==1) %>% select(AM2, ID) %>% sample_n(10) %>% kable()
+
+```
+
+## I Amazonian speeches in time, geographic location, and speaker
+
+Question: does the incidence of Amazon differ by year and location?
+
+Logic: compare proportion of speeches mentioning Amazon versus not mentioning it, here proportions add to 1; quite some granularity in possible categories, we either plot separately or we regress.
+
+Normalization: yearly proportion of speeches mentioning Amazon
+
+Take on results:
+
+Plot 1: Interesting variation in incidence of Amazon in speeches overtime that can be easily fitted in a narrative about (1) indigenous and environmental turn in the upcoming deliberative processes related to the 1988 constitution; (2) Earth Summit in 1992; (3) substantial decreases of deforestation in late 2000s; and finally (4) substantial increase in fires and deforestation in late 2010s. This would some story-telling, but nice broad way to open analysis chapter, we add the events to the plot and discuss in relation to policies.
+
+Plot 2: From what I see, there's not that much variation in the incidence of Amazon by speaker. Interesting that the president that mentioned it the least is Temer, right before the one that mentioned it the most. Generally, I do not see anything really interesting to engage with. Generally, I find 'by president' arguments not that interesting for this piece.
+
+Plot 3: Some variation in incidence, but small. Location NAs seem to be biased (almost 10% more for Amazonian speeches), this could change things meaningfully, we should identify location for them. If we remove NAs and do the analysis, the Amazon appears more often in speeches in Amazonian states (obvious). All the other differences are too small to interpret in my opinion.
+
+I would only keep plot 1 from this three and check if plot 3 changes once we correct the location NAs.
+
+```{r Amazonian speeches by year, echo=FALSE, message=FALSE, warning=TRUE, echo=FALSE, paged.print=TRUE}
+
+perc1 <- pop %>%
+  count(amazon_speech, year)%>%
+  group_by(year)%>%
+  mutate(perc=n / sum(n)) %>%
+  select(c(perc,amazon_speech, year))
+
+pop %>% count(amazon_speech, year) %>%
+  group_by(year) %>%
+  left_join(perc1) %>%
+  filter(amazon_speech==1) %>%
+  ggplot(., aes(x = year, y = perc)) +
+  geom_line(color="darkolivegreen")+
+  scale_y_continuous(labels = percent_format())+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Plot1: Share of speeches mentioning the Amazon by year",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )
+
+```
+
+```{r Amazonian speeches by president, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+perc2 <- pop %>%
+  count(amazon_speech, president)%>%
+  group_by(president)%>%
+  mutate(perc=n / sum(n)) %>%
+  select(c(perc,amazon_speech, president))
+
+
+pop %>% count(amazon_speech, president) %>%
+  group_by(president) %>%
+  left_join(perc2) %>%
+  mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(., aes(x = president, y = perc, fill=as.factor(amazon_speech), label= scales::percent(perc))) +
+  geom_bar(stat="identity", position = "stack")+
+  geom_text(size = 2.5, position = position_stack(),
+    vjust = 1.5)+
+  scale_y_continuous(labels = percent_format())+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Plot 2: Share of speeches mentioning the Amazon by president",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985; 1 means speech mentions Amazon",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )
+
+```
+
+```{r Amazonian speeches by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+perc3 <- pop %>%
+  filter(location_cat != "Non Identified") %>%
+  count(amazon_speech, location_cat)%>%
+  group_by(amazon_speech)%>%
+  mutate(perc=n / sum(n)) %>%
+  select(c(perc,amazon_speech, location_cat))
+
+
+pop %>% 
+  filter(location_cat != "Non Identified") %>%
+  count(amazon_speech, location_cat) %>%
+  group_by(amazon_speech) %>%
+  left_join(perc3) %>%
+  ggplot(., aes(x = location_cat, y = perc, fill=location_cat, label= scales::percent(perc))) +
+  geom_bar(stat="identity", position = "dodge")+
+  geom_text(size = 3.5, position = position_dodge(width = 1),
+    vjust = 1.5)+
+  scale_y_continuous(labels = percent_format())+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Plot 3: Share of speeches mentioning the Amazon by president",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985; 1 means speech mentions Amazon",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    axis.text.x = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )+
+  facet_wrap(~as.factor(amazon_speech), ncol=2)
+
+```
+
+## II Incidence of problem construction in time
+
+Question: do specific problem constructions get more salient over time?
+
+Logic: compare yearly counts of problem construction in time;
+
+Normalization: here I changed the unit of analysis from amazonian statements to problem construction, this means we have 2400 observations (see temp), I normalize by taking the proportion of each problem construction from yearly total.
+
+Take on results: Plot 4 is more promising, there is some nice variation. Generally, the more salient problem-constructions are economic integration and conservation. While the former piked in the late 1998 (also when deforestation was high) and then started to decrease, the latter was more salient in the up-coming of the Earth Summit and remained fairly stable. Social development starts gaining more prominence with the PT government despite an unusually high year in 1992. Sovereignty, which remained fairly stable over time, is making a come-back in the late 2010, more prominently with the presidency of Jair Bolsonaro.
+
+Given the results presented in the pure categories of the mixed-types section, it seems like we can basically subsume this analysis in the next section.
+
+```{r problem construction in time I, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+temp %>%
+  gather(key = "problem_construction", value = "n", ei, other, sd, con, sov)%>%
+  group_by(year)%>%
+  mutate(perc=n / sum(n)) %>%
+  mutate(problem_construction=factor(problem_construction, levels = c("sov", "ei", "sd", "con", "other"))) %>%
+  ggplot(., aes(x=year, y=perc, fill=problem_construction))+
+  geom_bar(stat="identity", position="dodge")+
+  geom_smooth(color="black", size=.3, se= FALSE)+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Plot 4: Problem-construction over time",
+    subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )+
+  facet_wrap(~ problem_construction, ncol=2)
+    
+```
+
+```{r problem construction in time II, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+temp %>%
+  gather(key = "problem_construction", value = "n", ei, other, sd, con, sov)%>%
+  group_by(year)%>%
+  mutate(perc=n / sum(n)) %>%
+  ggplot(., aes(x=year, y=perc, fill=problem_construction, label=percent(perc, accuracy=.1)))+
+  geom_bar(stat="identity", position="stack")+
+  geom_text(size = 2, position = position_stack(vjust=.5))+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by president",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+    
+
+```
+
+```{r problem construction in time III, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+temp %>%
+  gather(key = "problem_construction", value = "n", ei, other, sd, con, sov)%>%
+  ggplot(aes(x=year, y=n, fill=problem_construction))+
+  geom_bar(stat="identity", position="dodge")+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )+
+  facet_wrap(~ problem_construction, ncol=2)
+    
+  
+```
+
+## III Mixed types: more complex problems?
+
+Question: do specific combinations characterize specific presidents? Do we see the emergence of new combinations along time?
+
+Logic: compare proportion of yearly mixed_types in time; here proportions add to 1 because the unit of analysis is each amazonian statement unique combination of our four main codes.
+
+From exploration plot, I conceptualize the following categories, which are the most frequent out of the 16 distinct types identified in the data (stored as mx_cat):
+
+(1) pure-types: each one of 1000,0100,0010,0001 separately
+(2) other: 0000
+(3) Economic Conservation: 0101
+(4) Economic & Social Development:0110
+(5) Sovereign Conservation: 1001
+(6) Sovereign Integration: 1100
+(7) Sustainable Development:0111
+(8) other mixed_types: all other combinations
+
+Normalization: proportions of mixed_types
+
+Take on results: Plot 5 and 6 contain some interesting things as well, but small proportions mixed_types might be something reviewers criticize. For Plot 6, I removed pure types and others so we have a more targeted analysis of the mixed_types presidents deploy despite low counts.
+
+First, pure-types dominate and presidents tend not to mix much. We are not looking at pure-types this way in the previous analysis since the unit changed. Lula and Bolsonaro, interestingly, are the ones that have the highest shares of mixes among their problem-construction.
+
+Second, we do observe a decrease economic integration related mixed-types and a parallel increase in conservation related mixed-types between 2000-2010, when strong policies to reduce deforestation were adopted. Specifically, complex problem-construction framing the Amazon as sustainable development came about in the 20000 reaching a local maximum in the early 2010s and decreasing afterwards. This
+
+Finally, given that Lula and Bolsonaro uses more mixed-types, let's take a closer look. It is clear that Bolsonaro mixes sovereignty with other things more than others (Sovereign Integration, Sovereign Conservation, and pure-type sov pike with him). WHile conservation does appear alone in about 19% of Bolsonaro's speeches, all other times it appears it is always relativized by adding another problem-construction in parallel.This might be a good door to open up a more word-based look at this problem-construction around sovereignty. On the other hand, we observe the opposite with Lula.While pure sovereignty accounts for about 22.3% of Bolsonaros' statements, it's only 3.6% of Lula's. Lula's favorite mix ingredient seems to be conservation (Economic conservation, Sovereign Conservation, Sustainable Development, and pure conservation pike with him), but when he uses pure-types, economic integration dominates with about 25% of incidence.
+
+I would make this a subsection of analysis, probably the last one, framing as the main "mixers" (they mix more than others) so we can speak only about bolsonaro versus lula.
+
+```{r mixed-types exploration, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  count(mixed_type)%>%
+  ggplot(aes(x=reorder(mixed_type,-n), y=n, fill=mixed_type))+
+  geom_bar(stat = "identity", position = "dodge")+
+    labs(
+    x = "", y = "", title ="Exploration Plot",
+    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )
+
+
+```
+
+```{r mixed-types exploration II, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  count(mx_cat)%>%
+  ggplot(aes(x=reorder(mx_cat,-n), y=n, fill=mx_cat))+
+  geom_bar(stat = "identity", position = "dodge")+
+    labs(
+    x = "", y = "", title ="Exploration Plot II",
+    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    axis.text.x = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )
+
+
+```
+
+```{r mixed-types in time, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  count(year, mx_cat)%>%
+  group_by(year) %>%
+  mutate(perc=n / sum(n))  %>%
+  ggplot(., aes(x=year, y=perc, fill=mx_cat))+
+  geom_bar(stat="identity", position="dodge")+
+  geom_smooth(color="black", size=.3, se= FALSE)+
+  labs(
+    x = "", y = "", title ="Plot 5: Mixed-types evolution overtime",
+    subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "none"
+  )+
+  facet_wrap(~ mx_cat, ncol=2, scales="free_y")
+    
+```
+
+```{r mixed-types by president , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  filter(mx_cat !="Pure Types")%>%
+  filter(mx_cat !="Other")%>%
+  count(president, mx_cat)%>%
+  group_by(president) %>%
+  mutate(perc=n / sum(n)) %>%
+  mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(., aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1)))+
+  geom_bar(stat="identity", position="stack")+
+  geom_text(size = 3.5, position = position_stack(vjust=.5))+
+  labs(
+    x = "", y = "", title ="Plot 6: Mixed-types by President",
+    subtitle = "Sample composed by 431 problem-constructions in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+```
+
+## IV Amazonian problem-construction in time, geographic location, and speaker
+
+Question: do specific problem constructions differ by geographical location, speaker, and year?
+
+Logic: see what better predicts problem constructions and mixed_types: location, speaker, year. This can be done with a multinominal logistic regression. We should add a few controls to this eventually (deforestation rates, gdp growth, approval rates, election year dummy, party affiliation/ideology), the problem is timing the variables properly.
+
+take on results:
+
+m1 -> not so parsimonious because of multiple mixes,  but some of the interesting significant results are
+(1) pure conservation is less likely to appear in amazonian states*** and in Brazil** ; 
+(2) pure social development is more likely to appear in Brazil**;
+(3) pure economic integration appears more frequently in Brazil**;
+(4) pure sovereignty appears more frequently in Amazonian states **.
+(5) nothing very particular in mixed-types...
+
+
+m2 -> this is a better model, more parsimonious. Interesting significant findings are 
+
+(1) conservation is more likely outside of Brazil and outside of amazon states (both **); -> cool,the more distanced from the Amazon, the more they highlight conservational problem.
+(2) Economic integration is more likely outside of Brazil***;
+(3) sovereignty is more likely outside of amazon states**.
+
+In theory model improvement might help us finding significant coefficients for the relationships we are interested at. I think the findings of m1 related to conservation are particularly interesting, we could keep them somehow.I suppose we can include something en passant in the second sub-section of analysis that looks into problem construction overtime ( II of this document), like Kentikellenis does.
+
+If we take a more bayesian approach, we can ignore significance and work more 
+
+### Model 1 w/ mx_cat as i.V.
+
+i.Vs: mx_cat as i.V. for now it contains 11 levels, other is our base (unit of analysis remain each one of our 1885 Amazonian statements)
+
+d.Vs: location_cat is to granular, for a more parsimonious model, I created two geographical dummies (amazon_state and Brazil)
+
+```{r model 1 mx_cat as i.V., echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+ama_mx <- ama_mx %>%
+    mutate(amazon_state= case_when (location_cat=='Amazonian States' ~ "Yes",
+                            location_cat=='Brasilia' ~ "No",
+                            location_cat=='International' ~ "No",
+                            location_cat=='Non Amazonian States' ~ "No",
+                            location_cat=='Non Identified' ~ "No"))%>%
+    mutate(brazil= case_when (location_cat=='Amazonian States' ~ "Yes",
+                            location_cat=='Brasilia' ~ "Yes",
+                            location_cat=='International' ~ "No",
+                            location_cat=='Non Amazonian States' ~ "Yes",
+                            location_cat=='Non Identified' ~ "No"))
+
+
+ama_mx$mx_cat <- relevel(ama_mx$mx_cat, ref = "Other")
+
+m1 <- multinom(mx_cat ~ brazil + amazon_state, data = ama_mx)
+
+z_m1 <- summary(m1)$coefficients/summary(m1)$standard.errors
+p_m1 <- (1 - pnorm(abs(z_m1), 0, 1)) * 2
+
+summary(m1)
+
+p_m1
+
+exp(coef(m1))
+
+```
+
+### Model 2 w/ problem_construction as i.V.
+
+i.Vs: problem_construction as i.V., contains 5 levels so more parsimonious model, other as base; here unit of analysis are instances of problem_construction (n=2400)
+
+d.Vs: location_cat is to granular, for a more parsimonious model, I created two geographical dummies (amazon_state and Brazil)
+
+```{r model 2 prob_constr as i.V., echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+temp2 <- temp2 %>%
+    mutate(amazon_state= case_when (location_cat=='Amazonian States' ~ "Yes",
+                            location_cat=='Brasilia' ~ "No",
+                            location_cat=='International' ~ "No",
+                            location_cat=='Non Amazonian States' ~ "No",
+                            location_cat=='Non Identified' ~ "No"))%>%
+    mutate(brazil= case_when (location_cat=='Amazonian States' ~ "Yes",
+                            location_cat=='Brasilia' ~ "Yes",
+                            location_cat=='International' ~ "No",
+                            location_cat=='Non Amazonian States' ~ "Yes",
+                            location_cat=='Non Identified' ~ "No"))
+
+
+temp2$prob_constr <- relevel(temp2$prob_constr, ref = "other")
+
+m2 <- multinom(prob_constr ~ amazon_state + brazil, data = temp2)
+
+z_m2 <- summary(m2)$coefficients/summary(m2)$standard.errors
+p_m2 <- (1 - pnorm(abs(z_m2), 0, 1)) * 2
+
+summary(m2)
+
+exp(coef(m2))
+
+p_m2
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
