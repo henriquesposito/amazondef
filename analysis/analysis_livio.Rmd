@@ -105,14 +105,31 @@ ama_mx <- ama %>%
                             mixed_type=='1_0_0_1' ~"Sovereign Conservation",
                             mixed_type=='0_1_1_1' ~ "Sustainable Development",
                             mixed_type=='1_1_0_0'~ "Sovereign Integration",
-                            mixed_type=='0_0_1_1' ~"Other Mixed-types",
+                            mixed_type=='0_0_1_1' ~"Social Conservation",
                             mixed_type=='1_1_0_1' ~"Other Mixed-types",
                             mixed_type=='1_0_1_0' ~"Other Mixed-types",
                             mixed_type=='1_0_1_0' ~"Other Mixed-types",
                             mixed_type=='1_1_1_1' ~"Other Mixed-types",
                             mixed_type=='1_1_1_0' ~"Other Mixed-types",
                             mixed_type=='1_0_1_1' ~"Other Mixed-types"))%>%
-  mutate(mx_cat=factor(mx_cat, levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development", "Pure Sovereignty", "Other", "Economic Conservation", "Economic and Social Development", "Sovereign Conservation","Sustainable Development","Sovereign Integration", "Other Mixed-types")))
+  mutate(mx_cat=factor(mx_cat, levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development", "Pure Sovereignty", "Other", "Economic Conservation", "Economic and Social Development", "Sovereign Conservation","Sustainable Development","Sovereign Integration", "Social Conservation", "Other Mixed-types"))) %>%
+mutate(mx_cat2= case_when (mixed_type=='1_0_0_0' ~ "Pure-type",
+                            mixed_type=='0_1_0_0' ~ "Pure-type",
+                            mixed_type=='0_0_1_0' ~ "Pure-type",
+                            mixed_type=='0_0_0_1' ~ "Pure-type",
+                            mixed_type=='0_0_0_0' ~"Other",
+                            mixed_type=='0_1_0_1' ~"Mixed-type",
+                            mixed_type=='0_1_1_0' ~"Mixed-type",
+                            mixed_type=='1_0_0_1' ~"Mixed-type",
+                            mixed_type=='0_1_1_1' ~ "Mixed-type",
+                            mixed_type=='1_1_0_0'~ "Mixed-type",
+                            mixed_type=='0_0_1_1' ~"Mixed-type",
+                            mixed_type=='1_1_0_1' ~"Mixed-type",
+                            mixed_type=='1_0_1_0' ~"Mixed-type",
+                            mixed_type=='1_0_1_0' ~"Mixed-type",
+                            mixed_type=='1_1_1_1' ~"Mixed-type",
+                            mixed_type=='1_1_1_0' ~"Mixed-type",
+                            mixed_type=='1_0_1_1' ~"Mixed-type"))
 
 
 ```
@@ -211,7 +228,7 @@ pop %>% count(amazon_speech, year) %>%
 
 ```
 
-```{r Amazonian speeches by president, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r Amazonian speeches by president, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=FALSE}
 
 perc2 <- pop %>%
   count(amazon_speech, president)%>%
@@ -246,7 +263,7 @@ pop %>% count(amazon_speech, president) %>%
 
 ```
 
-```{r Amazonian speeches by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r Amazonian speeches by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=FALSE}
 
 perc3 <- pop %>%
   filter(location_cat != "Non Identified") %>%
@@ -429,7 +446,7 @@ ama_mx %>%
 
 ```
 
-```{r mixed-types exploration II, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+```{r mixed-types exploration II, eval=FALSE, message=FALSE, warning=FALSE, include=FAlSE, paged.print=FALSE}
 
 ama_mx %>%
   count(mx_cat)%>%
@@ -490,7 +507,7 @@ ama_mx %>%
   mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
   ggplot(., aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1)))+
   geom_bar(stat="identity", position="stack")+
-  geom_text(size = 3.5, position = position_stack(vjust=.5))+
+  geom_text(size = 2.5, position = position_stack(vjust=.5))+
   labs(
     x = "", y = "", title ="Plot 6: Mixed-types by President",
     subtitle = "Sample composed by 431 problem-constructions in presidential speeches since 1985",
@@ -504,6 +521,68 @@ ama_mx %>%
     plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
     legend.position = "bottom"
   )
+```
+
+```{r pure types versus mixed-types , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  count(president, mx_cat2)%>%
+  group_by(president) %>%
+  mutate(perc=n / sum(n)) %>%
+  filter(mx_cat2 !="Other")%>%
+  mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(., aes(x=president, y=perc, fill=mx_cat2,label= scales::percent(perc, accuracy=.1)))+
+  geom_bar(stat="identity", position="stack")+
+  geom_text(size = 2.5, position = position_stack(vjust=.5))+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Plot 7: Mixed-types verus Pure-types",
+    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+
+```
+
+```{r pure types in time , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+ama_mx %>%
+  count(president, mx_cat, mx_cat2)%>%
+  group_by(president) %>%
+  mutate(perc=n / sum(n)) %>%
+  filter(mx_cat !="Other")%>%
+  filter(mx_cat2 == "Pure-type") %>%
+  mutate(year= case_when (president=='Sarney' ~ "1985",
+                          president=='Bolsonaro' ~ "2018",
+                          president=='Collor' ~ "1990",
+                          president=='Itamar' ~ "1993",
+                          president=='FHC' ~ "1994",
+                          president=='Lula' ~ "2003",
+                          president=='Dilma' ~ "2011",
+                          president=='Temer' ~ "2017"))%>%
+  ggplot(., aes(x=as.numeric(year), y=perc, color=mx_cat))+
+  geom_smooth(aes(color=mx_cat), se=FALSE, size=.5)+
+  labs(
+    x = "", y = "", title ="Plot 8: Pure-types in time",
+    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+
 ```
 
 ## IV Amazonian problem-construction in time, geographic location, and speaker
@@ -603,6 +682,8 @@ exp(coef(m2))
 p_m2
 
 ```
+
+
 
 
 
