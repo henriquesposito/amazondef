@@ -213,7 +213,7 @@ pop %>% count(amazon_speech, year) %>%
   scale_y_continuous(labels = percent_format())+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot1: Share of speeches mentioning the Amazon by year",
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
     subtitle = "Sample composed by 6130 presidential speeches since 1985",
     caption = "") +
   theme(
@@ -248,7 +248,7 @@ pop %>% count(amazon_speech, president) %>%
   scale_y_continuous(labels = percent_format())+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot 2: Share of speeches mentioning the Amazon by president",
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by president",
     subtitle = "Sample composed by 6130 presidential speeches since 1985; 1 means speech mentions Amazon",
     caption = "") +
   theme(
@@ -285,7 +285,7 @@ pop %>%
   scale_y_continuous(labels = percent_format())+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot 3: Share of speeches mentioning the Amazon by president",
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by president",
     subtitle = "Sample composed by 6130 presidential speeches since 1985; 1 means speech mentions Amazon",
     caption = "") +
   theme(
@@ -326,7 +326,7 @@ temp %>%
   geom_smooth(color="black", size=.3, se= FALSE)+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot 4: Problem-construction over time",
+    x = "", y = "", title ="Problem-construction over time",
     subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
@@ -479,8 +479,9 @@ ama_mx %>%
   ggplot(., aes(x=year, y=perc, fill=mx_cat))+
   geom_bar(stat="identity", position="dodge")+
   geom_smooth(color="black", size=.3, se= FALSE)+
+  scale_y_continuous(labels = percent_format(accuracy=1))+
   labs(
-    x = "", y = "", title ="Plot 5: Problem-construction evolution in time",
+    x = "", y = "", title ="Share of different problem-constructions by year",
     subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
@@ -509,7 +510,7 @@ ama_mx %>%
   geom_bar(stat="identity", position="stack")+
   geom_text(size = 3, position = position_stack(vjust=.5))+
   labs(
-    x = "", y = "", title ="Plot 6: Mixed-types by President",
+    x = "", y = "", title ="Share of different problem-construction by president",
     subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
@@ -523,7 +524,7 @@ ama_mx %>%
   )
 ```
 
-```{r pure types versus mixed-types , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r pure types versus mixed-types , echo=FALSE, message=FALSE, warning=FALSE,include=FALSE, paged.print=FALSE}
 
 ama_mx %>%
   count(president, mx_cat2)%>%
@@ -536,7 +537,7 @@ ama_mx %>%
   geom_text(size = 2.5, position = position_stack(vjust=.5))+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot 7: Mixed-types verus pure-types by presidents",
+    x = "", y = "", title ="Share of Mixed types verus pure types by presidents",
     subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
@@ -569,8 +570,9 @@ ama_mx %>%
                           president=='Temer' ~ "2017"))%>%
   ggplot(., aes(x=as.numeric(year), y=perc, color=mx_cat))+
   geom_smooth(aes(color=mx_cat), se=FALSE, size=.5)+
+  scale_y_continuous(labels = percent_format(accuracy=1))+
   labs(
-    x = "", y = "", title ="Plot 8: Pure-types in time",
+    x = "", y = "", title ="Share of each pure types by year",
     subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
