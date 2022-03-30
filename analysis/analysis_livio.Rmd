@@ -480,7 +480,7 @@ ama_mx %>%
   geom_bar(stat="identity", position="dodge")+
   geom_smooth(color="black", size=.3, se= FALSE)+
   labs(
-    x = "", y = "", title ="Plot 5: Mixed-types evolution overtime",
+    x = "", y = "", title ="Plot 5: Problem-construction evolution in time",
     subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
@@ -492,7 +492,7 @@ ama_mx %>%
     plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
     legend.position = "none"
   )+
-  facet_wrap(~ mx_cat, ncol=2, scales="free_y")
+  facet_wrap(~ mx_cat, ncol=3, scales="free_y")
     
 ```
 
@@ -507,10 +507,10 @@ ama_mx %>%
   mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
   ggplot(., aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1)))+
   geom_bar(stat="identity", position="stack")+
-  geom_text(size = 2.5, position = position_stack(vjust=.5))+
+  geom_text(size = 3, position = position_stack(vjust=.5))+
   labs(
     x = "", y = "", title ="Plot 6: Mixed-types by President",
-    subtitle = "Sample composed by 431 problem-constructions in presidential speeches since 1985",
+    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
     panel.background = element_rect("white", "black", .5, "solid"),
@@ -519,7 +519,7 @@ ama_mx %>%
     title = element_text(color = "black", size = 10, face = "bold"),
     legend.title = element_blank(),
     plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "bottom"
+    legend.position = "right"
   )
 ```
 
@@ -536,7 +536,7 @@ ama_mx %>%
   geom_text(size = 2.5, position = position_stack(vjust=.5))+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Plot 7: Mixed-types verus Pure-types",
+    x = "", y = "", title ="Plot 7: Mixed-types verus pure-types by presidents",
     subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
