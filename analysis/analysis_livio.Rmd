@@ -500,8 +500,7 @@ ama_mx %>%
 ```{r mixed-types by president , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
 ama_mx %>%
-  filter(mx_cat !="Pure Types")%>%
-  filter(mx_cat !="Other")%>%
+  filter(mx_cat2 =="Mixed-type")%>%
   count(president, mx_cat)%>%
   group_by(president) %>%
   mutate(perc=n / sum(n)) %>%
@@ -509,9 +508,10 @@ ama_mx %>%
   ggplot(., aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1)))+
   geom_bar(stat="identity", position="stack")+
   geom_text(size = 3, position = position_stack(vjust=.5))+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1)+
   labs(
-    x = "", y = "", title ="Share of different problem-construction by president",
-    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+    x = "", y = "", title ="Share of each mixed type problem-constructions by president",
+    subtitle = "Sample composed of Amazonian statements that were coded as a mixed-type (n=431)",
     caption = "") +
   theme(
     panel.background = element_rect("white", "black", .5, "solid"),
@@ -520,7 +520,7 @@ ama_mx %>%
     title = element_text(color = "black", size = 10, face = "bold"),
     legend.title = element_blank(),
     plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "right"
+    legend.position = "bottom"
   )
 ```
 
@@ -537,7 +537,7 @@ ama_mx %>%
   geom_text(size = 2.5, position = position_stack(vjust=.5))+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
   labs(
-    x = "", y = "", title ="Share of Mixed types verus pure types by presidents",
+    x = "", y = "", title ="Share of Mixed types versus pure types by presidents",
     subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
     caption = "") +
   theme(
