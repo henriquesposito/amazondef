@@ -1,5 +1,10 @@
 ---
-title: "How has the Brazilian Amazon been construed as a problem? An Analysis of Presidential Speeches since 1985"
+title: "How has the Brazilian Amazon been construed as a problem? An analysis of presidential speeches since 1985"
+format:
+  docx:
+    toc: false
+    section-numbers: true
+    highlight-style: github
 output: docx
 author:
 - Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
@@ -26,7 +31,7 @@ date: "April 2022"
 
 # 3 Research Design
 
-## 3.1 Data and Modeling:  operationalizing Amazonian problem construction
+## 3.1 Data and Modeling: operationalizing Amazonian problem construction
 
 ## 3.2 Analysis: descriptive and inferential methods
 
