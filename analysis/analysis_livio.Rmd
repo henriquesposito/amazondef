@@ -25,7 +25,6 @@ Sys.setlocale("LC_ALL", "C")
 
 options(stringsAsFactors = FALSE, scipen = 999)
 
-cbPalette <- c("#999999", "#56B4E9", "#0072B2", "#009E73", "#F0E442", "#D55E00", "#CC79A7", "#E69F00")
 ```
 
 ```{r data, include=FALSE, warning=FALSE, message=FALSE}
