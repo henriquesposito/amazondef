@@ -1,0 +1,168 @@
+---
+title: "Modelling"
+output: html_document
+date: '2022-04-01'
+---
+
+# The simple model
+
+Below, we attempt to model the relationship between location (independent variable) to the Amazonian construction (dependent variable). At first, we use a simple multinomial model, since the DV is a non-ordered categorical variable, without any controls or normalization.
+
+```{r}
+# Load packages
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+library(nnet)
+library(plm)
+library(readxl)
+options(scipen=999)
+# load Brazil data
+pop<- readRDS("~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds")
+pop <-  pop %>% select(-c(title, date, text, location))
+# Load Amazon context data
+ama <- readRDS("~/Documents/GitHub/amazondef/final_data_as.Rds")
+# wrangle dataset
+ama_model1 <-  ama %>% select(-c(title, date, text, false_positives)) %>% 
+  unite(mixed_type, sov:con, sep="_") %>%
+  mutate(mx_cat = as.factor(case_when(mixed_type == '1_0_0_0' ~ "Pure Sovereignty",
+                                      mixed_type == '0_1_0_0' ~ "Pure Economic Integration", 
+                                      mixed_type == '0_0_1_0' ~ "Pure Social Development",
+                                      mixed_type == '0_0_0_1' ~ "Pure Conservation",
+                                      mixed_type == '0_0_0_0' ~ "Other",
+                                      mixed_type == '0_1_0_1' ~ "Economic Conservation",
+                                      mixed_type == '0_1_1_0' ~ "Economic and Social Development",
+                                      mixed_type == '1_0_0_1' ~ "Sovereign Conservation",
+                                      mixed_type == '0_1_1_1' ~ "Sustainable Development",
+                                      mixed_type == '1_1_0_0' ~ "Sovereign Integration",
+                                      mixed_type == '0_0_1_1' ~ "Social Conservation",
+                                      grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
+                                            mixed_type) ~ "Other Types")))
+# Model without any controls or normalization or time effects
+model1 <- multinom(mx_cat ~ location_cat, data = ama_model1)
+summary(model1)
+# Get p-values
+p_values1 <- round((1 - pnorm(abs(summary(model1)$coefficients/summary(model1)$standard.errors)))*2, 5)
+p_values1 <- data.frame(ifelse(p_values1 < 0.05, paste0(p_values1, "** Coef (",round(summary(model1)$coefficients, 5), ")"),
+                               p_values1))[,-1]
+# Get a decent table
+kableExtra::kable(x = p_values1, caption = "P values for Model 1",
+                  col.names = c("Brasilia", "International", "Non-AM State", "TV and Radio"))
+#stargazer::stargazer(model1, type="text", add.lines = nrow(model1$residuals))
+```
+
+From this simple model, we notice some very interesting correlations. We notice, for example, that, in comparison to Amazonian States (reference category), pure conservation constructions are performed in Brasilia and on international settings with greater frequency. The same is true for pure sovereignty and sovereignty conservation constructions in Brasilia in relations to Amazonian States.
+
+Let's add normalization and other control variables, such as yearly inflation level (economy), election year (binary), and yearly deforestation rates (for previous year) to the same model.
+
+```{r}
+ama_model2 <- ama_model1 %>% 
+         mutate(election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0)) # election year
+# deforestation yearly (year before) - load data and merge
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
+amazon_def_year <- mutate(amazon_def_year, year = year + 1) %>% # yearly deforestation rates only come out the year after
+  rename(def_year = `area km²`)
+ama_model2 <- dplyr::left_join(ama_model2, amazon_def_year, by = "year") # merge
+# inflation rates per year Brazil (average for year - but could be change)
+average_inflation_year_BR <- read_excel("data/average_inflation_year_BR.xlsx") # source world bank
+ama_model2 <- dplyr::left_join(ama_model2, average_inflation_year_BR, by = "year") # merge
+# Model with some controls
+model2 <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model2)
+summary(model2)
+# Get p-values
+p_values2 <- round((1 - pnorm(abs(summary(model2)$coefficients/summary(model2)$standard.errors)))*2, 5)
+p_values2 <- data.frame(ifelse(p_values2 < 0.05, paste0(p_values2, "** Coef (",round(summary(model2)$coefficients, 5), ")"),
+                               p_values2))[,-1]
+# Get a decent table
+kableExtra::kable(x = p_values2, caption = "P values for Model 2",
+                  col.names = c("Brasilia", "International", "Non-AM State", "TV and Radio",
+                                "Election_Year", "Deforastion_year", "Avg_inflation"))
+```
+
+Other interesting patterns arise when we control for election year, yearly deforestation rates, and average inflation per year. For example, pure conservation correlates positively with Brasilia and International locations in relation to Amazonian states, as well as correlates negatively with deforestation rates and positively with average inflation. Pure economic integration correlates positively with deforestation rates. Pure social development correlates negatively with International locations in comparison to Amazonian states and negatively with yearly deforestation rates. Pure sovereignty correlates positively with Brasilia and non-Amazonian states in relation to Amazonian states, as well as with positively election years, negatively with yearly deforestation rates, and positively with average inflation.
+
+However, we do not know if these correlations are time specific (i.e. for a few specific election cycles). The issue here is, it does not seen that R has a function or package that handles time series mutinomial regressions (neither mlogit nor survival appear to handle well these types of data). We can we can do this for binary dependent variables, but not for multiple unordered (funny enough it appear that stata does handle these types of regression with "femlogit"). If we want to go Bayesian we can use the brms package to do this, but I am not sure this is the right approach judging by our audience. There is one, not great, way around this using the mgcv and the mixcat package in which we add the effects by hand and the odds are calculated separately for each category in regards to the reference (I tried but was not able to get it to work with our data). These approaches are not very easy to run or to understand. Let's try to run a simple ols, fixed, and random effects for each of the pure categories (as a dummy variable) and compare for now.
+
+```{r}
+ama_model3 <- ama_model2 %>% 
+  mutate(pure_EI = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
+         pure_SD = ifelse(mx_cat == "Pure Social Development", 1, 0),
+         pure_con = ifelse(mx_cat == "Pure Conservation", 1, 0),
+         pure_sov = ifelse(mx_cat == "Pure Sovereignty", 1, 0),
+         pure_all = ifelse(grepl("Pure Economic Integration|Pure Social Development|Pure Conservation|Pure Sovereignty",
+                                 mx_cat), 1, 0))
+# OLS models
+pure_EI_ols <- plm(pure_EI ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "pooling", index = "year")
+pure_SD_ols <- plm(pure_SD ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "pooling", index = "year")
+pure_con_ols <- plm(pure_con ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "pooling", index = "year")
+pure_sov_ols <- plm(pure_sov ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "pooling", index = "year")
+pure_all_ols <- plm(pure_all ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "pooling", index = "year")
+# table
+stargazer::stargazer(pure_EI_ols, pure_SD_ols, pure_con_ols, pure_sov_ols, pure_all_ols, type = "text",
+                     title = "Pooled OLS for each Pure Type Amazonian Constructions in Time", align=TRUE)
+# fixed effects
+pure_EI_fe <- plm(pure_EI ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "within", index = "year")
+pure_SD_fe <- plm(pure_SD ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "within", index = "year")
+pure_con_fe <- plm(pure_con ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "within", index = "year")
+pure_sov_fe <- plm(pure_sov ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "within", index = "year")
+pure_all_fe <- plm(pure_all ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "within", index = "year")
+# table
+stargazer::stargazer(pure_EI_fe, pure_SD_fe, pure_con_fe, pure_sov_fe, pure_all_fe, type = "text",
+                     title = "Fixed effects for each Pure Type Amazonian Constructions in Time", align=TRUE)
+# Random effects
+pure_EI_re <- plm(pure_EI ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "random", index = "year")
+pure_SD_re <- plm(pure_SD ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "random", index = "year")
+pure_con_re <- plm(pure_con ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "random", index = "year")
+pure_sov_re <- plm(pure_sov ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "random", index = "year")
+pure_all_re <- plm(pure_all ~ location_cat + election_year + def_year + AAI, data = ama_model3,
+               model = "random", index = "year")
+# table
+stargazer::stargazer(pure_EI_re, pure_SD_re, pure_con_re, pure_sov_re, pure_all_re, type = "text",
+                     title = "Random effects for each Pure Type Amazonian Constructions in Time", align=TRUE)
+```
+
+Though modelling is not perfect here, the question is: do we see similar significant correlations as the multinomila models above? Let's just assume for the purposes of the discussion that the OLS model is a better fit than others because it has the highest adjusted R squares. The pooled OLS method illustrates that pure conservation and pure sovereignty constructions correlate positively to Brasilia in relation to Amazonian states (reference category). Alternatively, pure economic integration and pure  social development correlate negatively to Brasilia in relation to Amazonian states. Pure social development correlate negatively to international settings while pure conservation correlate positively to international settings, in relations to Amazonian states. Pure sovereignty is correlate positively to election years. When it comes to deforestation rates, pure EI correlate positively with deforestation rates and correlate negatively to pure SD, conservation, and sovereignty. Finally, the average inflation per year correlate negatively with pure EI and positively pure conversation constructions.
+
+These findings above are not all that different from model 2, even though model 2 is run with several other mixed types. This might indicate that time effects are not as significant and we can proceed with a multinomial model, for now.
+
+Let us just try one last multinomial model, using only the pure types, one category for all mixed types, and a category for other.
+
+```{r}
+ama_model4 <- ama_model2 %>% 
+  mutate(mx_cat2 = case_when(!grepl("Pure Economic Integration|Pure Social Development|Pure Conservation|Pure Sovereignty|^Other$", mx_cat) ~ "Mixed Types"),
+         mx_cat2 = as.factor(ifelse(is.na(mx_cat2), paste0(mx_cat), mx_cat2))) %>% 
+  filter(location_cat != "Non Identified")
+# model
+model4 <- multinom(mx_cat2 ~ location_cat + election_year + def_year + AAI, data = ama_model4)
+summary(model4)
+# Get p-values
+p_values4 <- round((1 - pnorm(abs(summary(model4)$coefficients/summary(model4)$standard.errors)))*2, 5)
+p_values4 <- data.frame(ifelse(p_values4 < 0.05, paste0(p_values4, "** Coef (",round(summary(model4)$coefficients, 5), ")"),
+                               p_values4))[,-1]
+# Get a decent table
+kableExtra::kable(x = p_values4, caption = "Model 4 - Amazon Contructions by Location",
+                  col.names = c("Brasilia", "International", "Non-AM State",
+                                "Election Year", "Deforastion (year)", "Avg. Inflation (year)"))
+stargazer::stargazer(model4, type="text", add.lines = nrow(model4$residuals),
+                     covariate.labels = c("Brasilia", "International", "Non-AM State",
+                                "Election Year", "Deforastion (year)", "Avg. Inflation (year)"),
+                     column.labels = c("Other", "Conservation", "Economic Integration",
+                                       "Social Development", "Sovereignty"),
+                     dep.var.labels.include = FALSE)
+```
+
+
