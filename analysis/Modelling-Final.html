@@ -400,7 +400,12 @@ library(plm)</code></pre>
 ## 
 ##     between, lag, lead</code></pre>
 <pre class="r"><code>library(readxl)
-options(scipen=999)
+library(stargazer)</code></pre>
+<pre><code>## 
+## Please cite as:</code></pre>
+<pre><code>##  Hlavac, Marek (2022). stargazer: Well-Formatted Regression and Summary Statistics Tables.</code></pre>
+<pre><code>##  R package version 5.2.3. https://CRAN.R-project.org/package=stargazer</code></pre>
+<pre class="r"><code>options(scipen=999)
 # load Brazil data
 pop&lt;- readRDS(&quot;~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds&quot;)
 pop &lt;-  pop %&gt;% select(-c(title, date, text, location))
@@ -1723,6 +1728,407 @@ Pure Sovereignty
 ## Akaike Inf. Crit.     5,905.071  5,905.071        5,905.071           5,905.071       5,905.071 
 ## ================================================================================================
 ## Note:                                                                *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+<div id="last-few-models" class="section level1">
+<h1>Last few models</h1>
+<p>With controls and mix types but no president…</p>
+<pre class="r"><code>ama_model5 &lt;- ama_model2 %&gt;%
+  filter(location_cat != &quot;Non Identified&quot;,
+         mx_cat != &quot;Other Types&quot;) %&gt;% 
+  mutate(mx_cat = relevel(mx_cat, ref = &quot;Pure Conservation&quot;))
+# model
+model5 &lt;- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model5)</code></pre>
+<pre><code>## Warning in multinom(mx_cat ~ location_cat + election_year + def_year + AAI, :
+## group &#39;Other Types&#39; is empty</code></pre>
+<pre><code>## # weights:  88 (70 variable)
+## initial  value 4136.369346 
+## iter  10 value 3834.593941
+## iter  20 value 3621.648498
+## iter  30 value 3475.109161
+## iter  40 value 3452.987061
+## iter  50 value 3450.296753
+## iter  60 value 3450.035368
+## iter  70 value 3450.012375
+## final  value 3450.011995 
+## converged</code></pre>
+<pre class="r"><code>summary(model5)$coefficients</code></pre>
+<pre><code>##                                 (Intercept) location_catBrasilia
+## Economic and Social Development  -1.2296889           -1.0907801
+## Economic Conservation            -1.3323355           -0.4982980
+## Other                             0.1889265           -0.7029768
+## Pure Economic Integration        -0.5815714           -0.9595139
+## Pure Social Development           0.1875878           -0.9461718
+## Pure Sovereignty                 -0.5340926           -0.1562609
+## Social Conservation              -1.3815038           -1.0456707
+## Sovereign Conservation           -2.6700341            0.4390088
+## Sovereign Integration            -1.2923025           -1.0752988
+## Sustainable Development          -1.3326104           -1.3597582
+##                                 location_catInternational
+## Economic and Social Development                -0.7544597
+## Economic Conservation                          -0.3681730
+## Other                                          -1.1179506
+## Pure Economic Integration                      -0.6601741
+## Pure Social Development                        -1.4999443
+## Pure Sovereignty                               -1.0517682
+## Social Conservation                            -0.3533909
+## Sovereign Conservation                         -0.4379567
+## Sovereign Integration                          -1.1829385
+## Sustainable Development                        -1.2501407
+##                                 location_catNon Amazonian States election_year
+## Economic and Social Development                      -0.14301669   -0.27379714
+## Economic Conservation                                -0.38237740   -0.08901597
+## Other                                                -0.19396088   -0.41076201
+## Pure Economic Integration                            -0.10281618   -0.22250383
+## Pure Social Development                              -0.07312862   -0.04688720
+## Pure Sovereignty                                      0.41685391   -0.82092118
+## Social Conservation                                  -0.32030956   -0.08114325
+## Sovereign Conservation                                0.81442138   -0.55371604
+## Sovereign Integration                                -0.27166805   -1.27397619
+## Sustainable Development                              -0.50083938    0.04152678
+##                                     def_year           AAI
+## Economic and Social Development  0.064211120 -0.0005758390
+## Economic Conservation            0.071446960 -0.0005175496
+## Other                            0.057355463 -0.0002974968
+## Pure Economic Integration        0.113810986 -0.0006269832
+## Pure Social Development          0.017828533 -0.0004335914
+## Pure Sovereignty                -0.005577197 -0.0000100847
+## Social Conservation              0.001319287 -0.0003326089
+## Sovereign Conservation           0.047474984  0.0002345170
+## Sovereign Integration            0.028914629 -0.0009867541
+## Sustainable Development          0.020422971 -0.0004788589</code></pre>
+<pre class="r"><code># Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model5, type=&quot;text&quot;, apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = &quot;vc*&quot;,
+                     covariate.labels = c(&quot;Brasilia&quot;, &quot;International&quot;, &quot;Non-AM state&quot;,
+                                &quot;Election&quot;, &quot;Deforestation&quot;, &quot;Inflation&quot;),
+                     column.labels = c(&quot;EI-SD&quot;, &quot;EI-Con&quot;, &quot;Other&quot;, &quot;EI&quot;, &quot;SD&quot;, &quot;Sov&quot;,
+                                       &quot;SD-Con&quot;, &quot;Sov-Con&quot;, &quot;Sov-EI&quot;, &quot;SD-EI-Con&quot;),
+                     dep.var.labels.include = FALSE)</code></pre>
+<pre><code>## 
+## =====================================================================================================================
+##                                                           Dependent variable:                                        
+##                   ---------------------------------------------------------------------------------------------------
+##                     EI-SD    EI-Con     Other      EI        SD        Sov     SD-Con    Sov-Con   Sov-EI   SD-EI-Con
+##                      (1)       (2)       (3)       (4)       (5)       (6)       (7)       (8)       (9)      (10)   
+## ---------------------------------------------------------------------------------------------------------------------
+## Brasilia          0.336***   0.608**  0.495***  0.383***  0.388***    0.855   0.351***   1.551*   0.341***  0.257*** 
+##                                                                                                                      
+## International      0.470**    0.692   0.327***  0.517***  0.223***  0.349***    0.702     0.645   0.306***  0.286*** 
+##                                                                                                                      
+## Non-AM state        0.867     0.682     0.824     0.902     0.929     1.517     0.726   2.258***    0.762     0.606  
+##                                                                                                                      
+## Election            0.760     0.915    0.663**    0.801     0.954   0.440***    0.922     0.575    0.280**    1.042  
+##                                                                                                                      
+## Deforestation     1.066***  1.074***  1.059***  1.121***    1.018     0.994     1.001    1.049*     1.029     1.021  
+##                                                                                                                      
+## Inflation          0.999**   0.999**   1.000**  0.999***   1.000**    1.000     1.000     1.000     0.999     1.000  
+##                                                                                                                      
+## Constant          0.292***  0.264***    1.208   0.559***    1.206     0.586   0.251***  0.069***  0.275***  0.264*** 
+##                                                                                                                      
+## ---------------------------------------------------------------------------------------------------------------------
+## Akaike Inf. Crit. 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024 7,040.024
+## =====================================================================================================================
+## Note:                                                                                     *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>With controls and mix types and president…</p>
+<pre class="r"><code># model
+model6 &lt;- multinom(mx_cat ~ location_cat + election_year + def_year + AAI + president, data = ama_model5)</code></pre>
+<pre><code>## Warning in multinom(mx_cat ~ location_cat + election_year + def_year + AAI + :
+## group &#39;Other Types&#39; is empty</code></pre>
+<pre><code>## # weights:  165 (140 variable)
+## initial  value 4136.369346 
+## iter  10 value 3834.251494
+## iter  20 value 3642.893968
+## iter  30 value 3398.397541
+## iter  40 value 3349.682645
+## iter  50 value 3343.883546
+## iter  60 value 3340.723728
+## iter  70 value 3338.958582
+## iter  80 value 3338.090074
+## iter  90 value 3337.786790
+## iter 100 value 3337.715306
+## final  value 3337.715306 
+## stopped after 100 iterations</code></pre>
+<pre class="r"><code>summary(model6)$coefficients</code></pre>
+<pre><code>##                                 (Intercept) location_catBrasilia
+## Economic and Social Development  -1.5140969           -1.0960151
+## Economic Conservation            -0.9404670           -0.5918470
+## Other                             0.3786163           -0.8319564
+## Pure Economic Integration        -0.4422733           -1.0604625
+## Pure Social Development          -0.9555574           -1.0218985
+## Pure Sovereignty                  0.2702380           -0.4274431
+## Social Conservation              -1.3757715           -0.9985752
+## Sovereign Conservation           -1.6657221            0.3222980
+## Sovereign Integration            -0.5393333           -1.2222587
+## Sustainable Development          -2.5822607           -1.4384443
+##                                 location_catInternational
+## Economic and Social Development                -0.8207371
+## Economic Conservation                          -0.4291235
+## Other                                          -1.2068810
+## Pure Economic Integration                      -0.6599283
+## Pure Social Development                        -1.6011614
+## Pure Sovereignty                               -1.0735775
+## Social Conservation                            -0.3066710
+## Sovereign Conservation                         -0.5582214
+## Sovereign Integration                          -1.1462972
+## Sustainable Development                        -1.5089881
+##                                 location_catNon Amazonian States election_year
+## Economic and Social Development                      -0.10671255   -0.22668336
+## Economic Conservation                                -0.42606154    0.13273651
+## Other                                                -0.20752893   -0.38544491
+## Pure Economic Integration                            -0.07604194   -0.11193302
+## Pure Social Development                              -0.10696297   -0.22025894
+## Pure Sovereignty                                      0.43818422   -0.85772217
+## Social Conservation                                  -0.25970959   -0.07327665
+## Sovereign Conservation                                0.88936387   -1.00661466
+## Sovereign Integration                                -0.25635984   -0.80198725
+## Sustainable Development                              -0.40105208   -0.22966022
+##                                    def_year           AAI presidentCollor
+## Economic and Social Development  0.06176224  0.0002324845     -1.58923833
+## Economic Conservation            0.09408259 -0.0012835759      0.08261476
+## Other                            0.06697871 -0.0002252844     -1.78938336
+## Pure Economic Integration        0.11428791  0.0007609260     -3.41739124
+## Pure Social Development          0.03630432 -0.0008023649     -0.37858440
+## Pure Sovereignty                 0.01558567  0.0025882619    -13.33766199
+## Social Conservation             -0.01628244  0.0038221457     -5.90388442
+## Sovereign Conservation           0.02048848  0.0019423676    -11.63847726
+## Sovereign Integration            0.06036707  0.0015445121     -5.09475919
+## Sustainable Development          0.01297042 -0.0063977866     -2.60716933
+##                                 presidentDilma presidentFHC presidentItamar
+## Economic and Social Development     0.41311512    0.3836135      1.53154216
+## Economic Conservation              -0.61083663   -0.9375892     -3.67552782
+## Other                              -0.09231254   -0.1290296      1.98151609
+## Pure Economic Integration          -0.09118245    0.2136449     -0.01550291
+## Pure Social Development             1.63779703    0.8474432     -2.67982706
+## Pure Sovereignty                   -1.48881279   -0.9180255     -6.19221443
+## Social Conservation                -0.28791725    0.3086300    -10.91564785
+## Sovereign Conservation            -11.23670108   -0.5278980     -3.19278481
+## Sovereign Integration             -11.02199412   -1.4903426     -7.64842974
+## Sustainable Development             1.94898843    1.6691439     10.81143786
+##                                 presidentLula presidentSarney presidentTemer
+## Economic and Social Development     0.4280889      -1.6344644     -8.7192815
+## Economic Conservation              -0.7396356       0.4386592    -10.3555409
+## Other                              -0.4614868      -0.5149204     -0.2664080
+## Pure Economic Integration          -0.4937666      -3.2182794    -10.1177935
+## Pure Social Development             1.0675114       1.9234981      1.6575727
+## Pure Sovereignty                   -1.6257833      -5.8105578     -1.2368659
+## Social Conservation                 0.2486813      -8.1473541      0.1504525
+## Sovereign Conservation             -0.3034353      -3.0985519    -10.1439216
+## Sovereign Integration              -1.4008778     -13.5173891    -10.4584889
+## Sustainable Development             1.5884186      13.3851010     -5.8104827</code></pre>
+<pre class="r"><code># Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model6, type=&quot;text&quot;, apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = &quot;vc*&quot;,
+                     covariate.labels = c(&quot;Brasilia&quot;, &quot;Int.&quot;, &quot;Non-AM state&quot;, 
+                                          &quot;Election&quot;, &quot;Def.&quot;, &quot;Inflation&quot;, &quot;Collor&quot;, &quot;Rousseff&quot;, &quot;Cardoso&quot;,
+                                          &quot;Franco&quot;, &quot;Lula&quot;, &quot;Sarney&quot;, &quot;Temer&quot;),
+                     column.labels = c(&quot;EI-SD&quot;, &quot;EI-Con&quot;, &quot;Other&quot;, &quot;EI&quot;, &quot;SD&quot;, &quot;Sov&quot;,
+                                       &quot;SD-Con&quot;, &quot;Sov-Con&quot;, &quot;Sov-EI&quot;, &quot;SD-EI-Con&quot;),
+                     dep.var.labels.include = FALSE)</code></pre>
+<pre><code>## 
+## ================================================================================================================================
+##                                                                Dependent variable:                                              
+##                   --------------------------------------------------------------------------------------------------------------
+##                     EI-SD     EI-Con     Other       EI        SD        Sov       SD-Con    Sov-Con     Sov-EI     SD-EI-Con   
+##                      (1)       (2)        (3)       (4)        (5)       (6)        (7)        (8)        (9)          (10)     
+## --------------------------------------------------------------------------------------------------------------------------------
+## Brasilia          0.334***   0.553**   0.435***   0.346***  0.360***    0.652     0.368***    1.380     0.295***     0.237***   
+##                                                                                                                                 
+## Int.               0.440**    0.651    0.299***   0.517***  0.202***   0.342***    0.736      0.572     0.318***     0.221***   
+##                                                                                                                                 
+## Non-AM state        0.899     0.653      0.813     0.927      0.899     1.550      0.771     2.434***    0.774        0.670     
+##                                                                                                                                 
+## Election            0.797     1.142     0.680*     0.894      0.802    0.424**     0.929     0.365**     0.448*       0.795     
+##                                                                                                                                 
+## Def.              1.064***   1.099***  1.069***   1.121***   1.037*     1.016      0.984      1.021     1.062**       1.013     
+##                                                                                                                                 
+## Inflation           1.000    0.999***    1.000    1.001***  0.999***   1.003***   1.004***   1.002***   1.002**      0.994***   
+##                                                                                                                                 
+## Collor            0.204***    1.086    0.167***   0.033***    0.685   0.00000***  0.003***  0.00001***  0.006***     0.074***   
+##                                                                                                                                 
+## Rousseff            1.512     0.543      0.912     0.913    5.144***   0.226***    0.750    0.00001*** 0.00002***    7.022***   
+##                                                                                                                                 
+## Cardoso             1.468    0.392***    0.879     1.238    2.334***   0.399***    1.362      0.590     0.225***     5.308***   
+##                                                                                                                                 
+## Franco            4.625***   0.025***  7.254***    0.985    0.069***   0.002***  0.00002***  0.041***  0.0005***  49,584.710*** 
+##                                                                                                                                 
+## Lula               1.534*    0.477**    0.630**    0.610*   2.908***   0.197***    1.282      0.738     0.246***     4.896***   
+##                                                                                                                                 
+## Sarney            0.195***   1.551**    0.598*    0.040***  6.845***   0.003***  0.0003***   0.045***  0.00000*** 650,242.800***
+##                                                                                                                                 
+## Temer             0.0002*** 0.00003***   0.766   0.00004*** 5.247***   0.290***    1.162    0.00004*** 0.00003***    0.003***   
+##                                                                                                                                 
+## Constant          0.220***   0.390***    1.460     0.643*   0.385***    1.310     0.253***   0.189***    0.583       0.076***   
+##                                                                                                                                 
+## --------------------------------------------------------------------------------------------------------------------------------
+## Akaike Inf. Crit. 6,955.431 6,955.431  6,955.431 6,955.431  6,955.431 6,955.431  6,955.431  6,955.431  6,955.431    6,955.431   
+## ================================================================================================================================
+## Note:                                                                                                *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>I do not know here… I few there is a lot of significant things but I
+do not think we should include speaker.</p>
+<p>Let’s try to recode variables and run the same model.</p>
+<pre class="r"><code>sov2 &lt;- ama %&gt;% 
+  filter(sov==1) %&gt;%
+  select(c(sov, location_cat, year, president))%&gt;%
+  mutate(prob_constr=case_when(sov==&quot;1&quot;~ &quot;sov&quot;)) %&gt;%
+  select(-c(sov))
+ei2 &lt;- ama %&gt;% 
+  filter(EI==1)%&gt;%
+  select(c(EI, location_cat, year, president))%&gt;%
+  mutate(prob_constr=case_when(EI==&quot;1&quot;~ &quot;EI&quot;)) %&gt;%
+  select(-c(EI))
+sd2 &lt;- ama %&gt;% 
+  filter(SD==1)%&gt;%
+  select(c(SD, location_cat, year, president))%&gt;%
+  mutate(prob_constr=case_when(SD==&quot;1&quot;~ &quot;SD&quot;)) %&gt;%
+  select(-c(SD))
+con2 &lt;- ama %&gt;% 
+  filter(con==1)%&gt;%
+  select(c(con, location_cat, year, president))%&gt;%
+  mutate(prob_constr=case_when(con==&quot;1&quot;~ &quot;con&quot;)) %&gt;%
+  select(-c(con))
+other2 &lt;- ama %&gt;% 
+  filter(other==1)%&gt;%
+  select(c(other, location_cat, year, president))%&gt;%
+  mutate(prob_constr = case_when(other==&quot;1&quot;~ &quot;other&quot;)) %&gt;%
+  select(-c(other))
+ama_model7 &lt;- rbind(sov2, con2, ei2, sd2, other2) %&gt;% 
+  mutate(prob_constr = as.factor(prob_constr),
+         election_year = ifelse(grepl(&quot;1989|1994|1998|2002|2006|2010|2014|2018&quot;, year), 1, 0))  %&gt;% # election year
+  filter(location_cat != &quot;Non Identified&quot;)
+# deforestation yearly (year before)
+ama_model7 &lt;- dplyr::left_join(ama_model7, amazon_def_year, by = &quot;year&quot;) # merge
+# inflation rates per year Brazil (average for year - but could be change)
+ama_model7 &lt;- dplyr::left_join(ama_model7, AAI, by = &quot;year&quot;) # merge
+# model
+model7 &lt;- multinom(prob_constr ~ location_cat + election_year + def_year + AAI, data = ama_model7)</code></pre>
+<pre><code>## # weights:  40 (28 variable)
+## initial  value 3650.205185 
+## iter  10 value 3483.782787
+## iter  20 value 3417.047525
+## iter  30 value 3413.005719
+## final  value 3412.825722 
+## converged</code></pre>
+<pre class="r"><code>summary(model7)$coefficients</code></pre>
+<pre><code>##       (Intercept) location_catBrasilia location_catInternational
+## EI    -0.26210816          -0.56323601                -0.3910549
+## other -0.51640154          -0.33573944                -0.8008420
+## SD     0.01295688          -0.61677080                -0.7367487
+## sov   -0.49633235          -0.03505106                -0.6062862
+##       location_catNon Amazonian States election_year     def_year           AAI
+## EI                         -0.06017126   -0.16478496  0.065390126 -0.0004254207
+## other                      -0.05770336   -0.33445158  0.035061047 -0.0001339450
+## SD                         -0.04012096   -0.05354054  0.006443325 -0.0002508993
+## sov                         0.26001257   -0.67272322 -0.011108945  0.0001211364</code></pre>
+<pre class="r"><code># Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model7, type=&quot;text&quot;, apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = &quot;vc*&quot;,
+                     covariate.labels = c(&quot;Brasilia&quot;, &quot;International&quot;, &quot;Non-AM state&quot;,
+                                          &quot;Election&quot;, &quot;Deforestation&quot;, &quot;Inflation&quot;),
+                     column.labels = c(&quot;EI&quot;, &quot;Other&quot;, &quot;SD&quot;, &quot;Sov&quot;),
+                     dep.var.labels.include = FALSE)</code></pre>
+<pre><code>## 
+## =========================================================
+##                             Dependent variable:          
+##                   ---------------------------------------
+##                      EI       Other      SD        Sov   
+##                      (1)       (2)       (3)       (4)   
+## ---------------------------------------------------------
+## Brasilia          0.569***   0.715*   0.540***    0.966  
+##                                                          
+## International      0.676**  0.449***  0.479***   0.545** 
+##                                                          
+## Non-AM state        0.942     0.944     0.961     1.297  
+##                                                          
+## Election            0.848    0.716**    0.948   0.510*** 
+##                                                          
+## Deforestation     1.068***  1.036***    1.006     0.989  
+##                                                          
+## Inflation         1.000***    1.000    1.000**    1.000  
+##                                                          
+## Constant            0.769    0.597**    1.013    0.609*  
+##                                                          
+## ---------------------------------------------------------
+## Akaike Inf. Crit. 6,881.651 6,881.651 6,881.651 6,881.651
+## =========================================================
+## Note:                         *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>I do not know if the results differ that much that we should change,
+what do you think?</p>
+<pre class="r"><code># model
+model8 &lt;- multinom(prob_constr ~ location_cat + election_year + def_year + AAI + president, data = ama_model7)</code></pre>
+<pre><code>## # weights:  75 (56 variable)
+## initial  value 3650.205185 
+## iter  10 value 3476.116181
+## iter  20 value 3373.614271
+## iter  30 value 3346.399304
+## iter  40 value 3344.072893
+## iter  50 value 3343.145461
+## iter  60 value 3342.795707
+## final  value 3342.792073 
+## converged</code></pre>
+<pre class="r"><code>summary(model8)$coefficients</code></pre>
+<pre><code>##       (Intercept) location_catBrasilia location_catInternational
+## EI     -0.1621992           -0.5937046                -0.3646910
+## other  -0.5013084           -0.4101774                -0.8176702
+## SD     -0.9284572           -0.6103144                -0.7659469
+## sov     0.1702300           -0.1712711                -0.5982352
+##       location_catNon Amazonian States election_year     def_year           AAI
+## EI                         -0.03985611   -0.08028442  0.064190597 0.00038743064
+## other                      -0.07757105   -0.31166220  0.039907403 0.00002562148
+## SD                         -0.06007727   -0.17993983  0.009967219 0.00014650633
+## sov                         0.29454701   -0.79330273 -0.013908520 0.00439543893
+##       presidentCollor presidentDilma presidentFHC presidentItamar presidentLula
+## EI         -1.7770795    -0.03592407    0.1204562       0.2211992    -0.2966219
+## other      -1.2399406     0.17842664    0.1179847       1.3149670    -0.2833352
+## SD         -0.3321594     1.40656768    0.9170263       1.0309574     1.0001271
+## sov        -8.9519024    -1.60210046   -0.5512693     -10.5697721    -0.7800728
+##       presidentSarney presidentTemer
+## EI         -1.9386119     -9.2910310
+## other      -0.4644902      0.3437632
+## SD          0.2580469      1.6082575
+## sov        -8.6034895     -0.7722264</code></pre>
+<pre class="r"><code># Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model8, type=&quot;text&quot;, apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = &quot;vc*&quot;,
+                     covariate.labels = c(&quot;Brasilia&quot;, &quot;International&quot;, &quot;Non-AM state&quot;,
+                                          &quot;Election&quot;, &quot;Deforestation&quot;, &quot;Inflation&quot;, &quot;Collor&quot;, &quot;Rousseff&quot;, &quot;Cardoso&quot;,
+                                          &quot;Franco&quot;, &quot;Lula&quot;, &quot;Sarney&quot;, &quot;Temer&quot;),
+                     column.labels = c(&quot;EI&quot;, &quot;Other&quot;, &quot;SD&quot;, &quot;Sov&quot;),
+                     dep.var.labels.include = FALSE)</code></pre>
+<pre><code>## 
+## ==========================================================
+##                             Dependent variable:           
+##                   ----------------------------------------
+##                      EI       Other      SD        Sov    
+##                      (1)       (2)       (3)       (4)    
+## ----------------------------------------------------------
+## Brasilia          0.552***   0.664**  0.543***    0.843   
+##                                                           
+## International      0.694**  0.441***  0.465***   0.550**  
+##                                                           
+## Non-AM state        0.961     0.925     0.942     1.343   
+##                                                           
+## Election            0.923    0.732*     0.835    0.452*** 
+##                                                           
+## Deforestation     1.066***   1.041**    1.010     0.986   
+##                                                           
+## Inflation          1.000**    1.000     1.000    1.004*** 
+##                                                           
+## Collor            0.169***  0.289***    0.717   0.0001*** 
+##                                                           
+## Rousseff            0.965     1.195   4.082***   0.201*** 
+##                                                           
+## Cardoso             1.128     1.125   2.502***   0.576**  
+##                                                           
+## Franco              1.248   3.725***  2.804***  0.00003***
+##                                                           
+## Lula                0.743     0.753   2.719***   0.458*** 
+##                                                           
+## Sarney            0.144***   0.628*     1.294   0.0002*** 
+##                                                           
+## Temer             0.0001***   1.410   4.994***   0.462*** 
+##                                                           
+## Constant            0.850    0.606**  0.395***    1.186   
+##                                                           
+## ----------------------------------------------------------
+## Akaike Inf. Crit. 6,797.584 6,797.584 6,797.584 6,797.584 
+## ==========================================================
+## Note:                          *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
 </div>
 
 
