@@ -6,10 +6,11 @@ author:
 - Henrique Sposito^[Phd Candidate, The Geneva Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
 date: "April 2022"
 output:
-  html_document:
-    df_print: paged
   word_document:
     reference_docx: template.docx
+  pdf_document: default
+  html_document:
+    df_print: paged
 bibliography: references.bib
 csl: chicago.csl
 abstract: This paper ...
@@ -368,5 +369,3 @@ This is not to say that those who preceded President Bolsonaro are like him. The
 # 5 Conclusion
 
 # 6 References
-
-
