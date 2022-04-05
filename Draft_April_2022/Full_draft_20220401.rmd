@@ -1,19 +1,15 @@
 ---
-title: "How has the Brazilian Amazon been constructed as a problem? An analysis of presidential speeches since 1985"
-format:
-  docx:
-    toc: false
-    reference-doc: "template.docx"
-    section-numbers: true
-    highlight-style: github
-abstract: This paper ...
-output: docx
+title: How has the Brazilian Amazon been constructed as a problem? An analysis of
+  presidential speeches since 1985
 author:
 - Livio Silva-Muller^[Phd Candidate, The Graduate Institute Geneva, livio.silva@graduateinstitute.ch]
 - Henrique Sposito^[Phd Candidate, The Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
-
 date: "April 2022"
+output: word_document
 bibliography: references.bib
+csl: chicago.csl
+template: template.docx
+abstract: This paper ...
 ---
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
