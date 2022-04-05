@@ -776,8 +776,8 @@ amazon_def_year &lt;- mutate(amazon_def_year, year = year + 1) %&gt;% # yearly d
   rename(def_year = `area km²`)
 ama_model2 &lt;- dplyr::left_join(ama_model2, amazon_def_year, by = &quot;year&quot;) # merge
 # inflation rates per year Brazil (average for year - but could be change)
-average_inflation_year_BR &lt;- read_excel(&quot;data/average_inflation_year_BR.xlsx&quot;) # source world bank
-ama_model2 &lt;- dplyr::left_join(ama_model2, average_inflation_year_BR, by = &quot;year&quot;) # merge
+AAI &lt;- readRDS(&quot;~/Documents/GitHub/amazondef/data/AAI.Rds&quot;) # source world bank
+ama_model2 &lt;- dplyr::left_join(ama_model2, AAI, by = &quot;year&quot;) # merge
 # Model with some controls
 model2 &lt;- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model2)</code></pre>
 <pre><code>## # weights:  108 (88 variable)

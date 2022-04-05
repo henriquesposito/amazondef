@@ -16,6 +16,7 @@ library(kableExtra)
 library(nnet)
 library(plm)
 library(readxl)
+library(stargazer)
 options(scipen=999)
 # load Brazil data
 pop<- readRDS("~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds")
@@ -64,8 +65,8 @@ amazon_def_year <- mutate(amazon_def_year, year = year + 1) %>% # yearly defores
   rename(def_year = `area km²`)
 ama_model2 <- dplyr::left_join(ama_model2, amazon_def_year, by = "year") # merge
 # inflation rates per year Brazil (average for year - but could be change)
-average_inflation_year_BR <- read_excel("data/average_inflation_year_BR.xlsx") # source world bank
-ama_model2 <- dplyr::left_join(ama_model2, average_inflation_year_BR, by = "year") # merge
+AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds") # source world bank
+ama_model2 <- dplyr::left_join(ama_model2, AAI, by = "year") # merge
 # Model with some controls
 model2 <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model2)
 summary(model2)
@@ -165,4 +166,103 @@ stargazer::stargazer(model4, type="text", add.lines = nrow(model4$residuals),
                      dep.var.labels.include = FALSE)
 ```
 
+# Last few models
 
+With controls and mix types but no president...
+
+```{r}
+ama_model5 <- ama_model2 %>%
+  filter(location_cat != "Non Identified",
+         mx_cat != "Other Types") %>% 
+  mutate(mx_cat = relevel(mx_cat, ref = "Pure Conservation"))
+# model
+model5 <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model5)
+summary(model5)$coefficients
+# Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model5, type="text", apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = "vc*",
+                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                "Election", "Deforestation", "Inflation"),
+                     column.labels = c("EI-SD", "EI-Con", "Other", "EI", "SD", "Sov",
+                                       "SD-Con", "Sov-Con", "Sov-EI", "SD-EI-Con"),
+                     dep.var.labels.include = FALSE)
+```
+
+With controls and mix types and president...
+
+```{r}
+# model
+model6 <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI + president, data = ama_model5)
+summary(model6)$coefficients
+# Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model6, type="text", apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = "vc*",
+                     covariate.labels = c("Brasilia", "Int.", "Non-AM state", 
+                                          "Election", "Def.", "Inflation", "Collor", "Rousseff", "Cardoso",
+                                          "Franco", "Lula", "Sarney", "Temer"),
+                     column.labels = c("EI-SD", "EI-Con", "Other", "EI", "SD", "Sov",
+                                       "SD-Con", "Sov-Con", "Sov-EI", "SD-EI-Con"),
+                     dep.var.labels.include = FALSE)
+```
+
+I do not know here... I few there is a lot of significant things but I do not think we should include speaker.
+
+Let's try to recode variables and run the same model.
+
+```{r}
+sov2 <- ama %>% 
+  filter(sov==1) %>%
+  select(c(sov, location_cat, year, president))%>%
+  mutate(prob_constr=case_when(sov=="1"~ "sov")) %>%
+  select(-c(sov))
+ei2 <- ama %>% 
+  filter(EI==1)%>%
+  select(c(EI, location_cat, year, president))%>%
+  mutate(prob_constr=case_when(EI=="1"~ "EI")) %>%
+  select(-c(EI))
+sd2 <- ama %>% 
+  filter(SD==1)%>%
+  select(c(SD, location_cat, year, president))%>%
+  mutate(prob_constr=case_when(SD=="1"~ "SD")) %>%
+  select(-c(SD))
+con2 <- ama %>% 
+  filter(con==1)%>%
+  select(c(con, location_cat, year, president))%>%
+  mutate(prob_constr=case_when(con=="1"~ "con")) %>%
+  select(-c(con))
+other2 <- ama %>% 
+  filter(other==1)%>%
+  select(c(other, location_cat, year, president))%>%
+  mutate(prob_constr = case_when(other=="1"~ "other")) %>%
+  select(-c(other))
+ama_model7 <- rbind(sov2, con2, ei2, sd2, other2) %>% 
+  mutate(prob_constr = as.factor(prob_constr),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))  %>% # election year
+  filter(location_cat != "Non Identified")
+# deforestation yearly (year before)
+ama_model7 <- dplyr::left_join(ama_model7, amazon_def_year, by = "year") # merge
+# inflation rates per year Brazil (average for year - but could be change)
+ama_model7 <- dplyr::left_join(ama_model7, AAI, by = "year") # merge
+# model
+model7 <- multinom(prob_constr ~ location_cat + election_year + def_year + AAI, data = ama_model7)
+summary(model7)$coefficients
+# Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model7, type="text", apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = "vc*",
+                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                          "Election", "Deforestation", "Inflation"),
+                     column.labels = c("EI", "Other", "SD", "Sov"),
+                     dep.var.labels.include = FALSE)
+```
+
+I do not know if the results differ that much that we should change, what do you think? 
+
+```{r}
+# model
+model8 <- multinom(prob_constr ~ location_cat + election_year + def_year + AAI + president, data = ama_model7)
+summary(model8)$coefficients
+# Vizualize (just keep log odds and significance stars)
+stargazer::stargazer(model8, type="text", apply.coef = exp, t.auto=F, p.auto = F, se = NULL, report = "vc*",
+                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                          "Election", "Deforestation", "Inflation", "Collor", "Rousseff", "Cardoso",
+                                          "Franco", "Lula", "Sarney", "Temer"),
+                     column.labels = c("EI", "Other", "SD", "Sov"),
+                     dep.var.labels.include = FALSE)
+```
