@@ -40,6 +40,12 @@ ama <-  ama %>%
 pop <-  pop %>%
           select(-c(title, date, text, location))
 
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
+
+amazon_def_year <- mutate(amazon_def_year, year = year + 1) %>%
+  rename(def_year = "area km\u00b2")
+
+
 ```
 
 ```{r data prep for prob_construction, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -206,6 +212,7 @@ perc1 <- pop %>%
 pop %>% count(amazon_speech, year) %>%
   group_by(year) %>%
   left_join(perc1) %>%
+  left_join(amazon_def_year)%>%
   filter(amazon_speech==1) %>%
   ggplot(., aes(x = year, y = perc)) +
   geom_line(color="darkolivegreen")+
@@ -656,22 +663,11 @@ d.Vs: location_cat is to granular, for a more parsimonious model, I created two 
 
 ```{r model 2 prob_constr as i.V., echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
-temp2 <- temp2 %>%
-    mutate(amazon_state= case_when (location_cat=='Amazonian States' ~ "Yes",
-                            location_cat=='Brasilia' ~ "No",
-                            location_cat=='International' ~ "No",
-                            location_cat=='Non Amazonian States' ~ "No",
-                            location_cat=='Non Identified' ~ "No"))%>%
-    mutate(brazil= case_when (location_cat=='Amazonian States' ~ "Yes",
-                            location_cat=='Brasilia' ~ "Yes",
-                            location_cat=='International' ~ "No",
-                            location_cat=='Non Amazonian States' ~ "Yes",
-                            location_cat=='Non Identified' ~ "No"))
+temp2 <- dplyr::left_join(temp2, amazon_def_year, by = "year")
 
+temp2$prob_constr <- relevel(temp2$prob_constr, ref = "con")
 
-temp2$prob_constr <- relevel(temp2$prob_constr, ref = "other")
-
-m2 <- multinom(prob_constr ~ amazon_state + brazil, data = temp2)
+m2 <- multinom(prob_constr ~ location_cat + def_year, data = temp2)
 
 z_m2 <- summary(m2)$coefficients/summary(m2)$standard.errors
 p_m2 <- (1 - pnorm(abs(z_m2), 0, 1)) * 2
@@ -683,17 +679,6 @@ exp(coef(m2))
 p_m2
 
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 
 
