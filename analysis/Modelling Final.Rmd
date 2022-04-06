@@ -61,8 +61,6 @@ ama_model2 <- ama_model1 %>%
          mutate(election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0)) # election year
 # deforestation yearly (year before) - load data and merge
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
-amazon_def_year <- mutate(amazon_def_year, year = year + 1) %>% # yearly deforestation rates only come out the year after
-  rename(def_year = `area km²`)
 ama_model2 <- dplyr::left_join(ama_model2, amazon_def_year, by = "year") # merge
 # inflation rates per year Brazil (average for year - but could be change)
 AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds") # source world bank

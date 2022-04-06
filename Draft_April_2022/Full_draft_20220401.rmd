@@ -17,7 +17,6 @@ abstract: This paper ...
 ---
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
-
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
 library(ggplot2)
@@ -28,37 +27,24 @@ library(RColorBrewer)
 library(kableExtra)
 library(nnet)
 library(stargazer)
-
 Sys.setlocale("LC_ALL", "C")
-
 options(stringsAsFactors = FALSE, scipen = 999)
-
 ```
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
-
 pop<- readRDS("~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds")
+pop <-  pop %>% select(-c(title, date, text, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/final_data_as.Rds")
-
-ama <-  ama %>%
-          select(-c(title, date, text, false_positives)) %>%
-          rename (ei= "EI") %>%
-          rename (sd= "SD")
-
-pop <-  pop %>%
-          select(-c(title, date, text, location))
-
+ama <-  ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
 ```
 
 ```{r data prep for prob_construction, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-
 sov <- ama %>% 
   filter(sov==1) %>% 
   count(sov, year) %>%
   group_by(year) %>%
   select(-c(sov))%>%
   rename (sov = n)
-
 ei <- ama %>% 
   filter(ei==1) %>% 
   count(ei, year) %>%
@@ -68,77 +54,58 @@ ei <- ama %>%
   ungroup() %>%
   tibble::add_row(year = 2017, ei = 0) %>%
   tibble::add_row(year = 2018, ei = 0)
-
 sd <- ama %>% 
   filter(sd==1) %>% 
   count(sd, year) %>%
   group_by(year) %>%
   select(-c(sd))%>%
   rename (sd = n)
-
 con <- ama %>% 
   filter(con==1) %>% 
   count(con, year) %>%
   group_by(year) %>%
   select(-c(con))%>%
   rename (con = n)
-
 other <- ama %>% 
   filter(other==1) %>% 
   count(other, year) %>%
   group_by(year) %>%
   select(-c(other))%>%
   rename (other = n)
-
 temp <- ei %>% left_join(other) %>% 
                 left_join(con) %>%
                 left_join(sd) %>%
                 left_join(sov) %>%
                 replace(is.na(.), 0)
-
 ```
 
 ```{r data prep for mixed_types, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-
-ama_mx <- ama %>% 
+ama_mx <-  ama %>%
   unite(mixed_type, sov:con, sep="_") %>%
-  mutate(mx_cat= case_when (mixed_type=='1_0_0_0' ~ "Pure Sovereignty",
-                            mixed_type=='0_1_0_0' ~ "Pure Economic Integration",
-                            mixed_type=='0_0_1_0' ~ "Pure Social Development",
-                            mixed_type=='0_0_0_1' ~ "Pure Conservation",
-                            mixed_type=='0_0_0_0' ~"Other",
-                            mixed_type=='0_1_0_1' ~"Economic Conservation",
-                            mixed_type=='0_1_1_0' ~"Economic and Social Development",
-                            mixed_type=='1_0_0_1' ~"Sovereign Conservation",
-                            mixed_type=='0_1_1_1' ~ "Sustainable Development",
-                            mixed_type=='1_1_0_0'~ "Sovereign Integration",
-                            mixed_type=='0_0_1_1' ~"Social Conservation",
-                            mixed_type=='1_1_0_1' ~"Other Mixed-types",
-                            mixed_type=='1_0_1_0' ~"Other Mixed-types",
-                            mixed_type=='1_0_1_0' ~"Other Mixed-types",
-                            mixed_type=='1_1_1_1' ~"Other Mixed-types",
-                            mixed_type=='1_1_1_0' ~"Other Mixed-types",
-                            mixed_type=='1_0_1_1' ~"Other Mixed-types"))%>%
-  mutate(mx_cat=factor(mx_cat, levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development", "Pure Sovereignty", "Other", "Economic Conservation", "Economic and Social Development", "Sovereign Conservation","Sustainable Development","Sovereign Integration", "Social Conservation", "Other Mixed-types"))) %>%
-mutate(mx_cat2= case_when (mixed_type=='1_0_0_0' ~ "Pure-type",
-                            mixed_type=='0_1_0_0' ~ "Pure-type",
-                            mixed_type=='0_0_1_0' ~ "Pure-type",
-                            mixed_type=='0_0_0_1' ~ "Pure-type",
-                            mixed_type=='0_0_0_0' ~"Other",
-                            mixed_type=='0_1_0_1' ~"Mixed-type",
-                            mixed_type=='0_1_1_0' ~"Mixed-type",
-                            mixed_type=='1_0_0_1' ~"Mixed-type",
-                            mixed_type=='0_1_1_1' ~ "Mixed-type",
-                            mixed_type=='1_1_0_0'~ "Mixed-type",
-                            mixed_type=='0_0_1_1' ~"Mixed-type",
-                            mixed_type=='1_1_0_1' ~"Mixed-type",
-                            mixed_type=='1_0_1_0' ~"Mixed-type",
-                            mixed_type=='1_0_1_0' ~"Mixed-type",
-                            mixed_type=='1_1_1_1' ~"Mixed-type",
-                            mixed_type=='1_1_1_0' ~"Mixed-type",
-                            mixed_type=='1_0_1_1' ~"Mixed-type"))
-
-
+  mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ "Pure Sovereignty",
+                                      mixed_type == '0_1_0_0' ~ "Pure Economic Integration", 
+                                      mixed_type == '0_0_1_0' ~ "Pure Social Development",
+                                      mixed_type == '0_0_0_1' ~ "Pure Conservation",
+                                      mixed_type == '0_0_0_0' ~ "Other",
+                                      mixed_type == '0_1_0_1' ~ "Economic Conservation",
+                                      mixed_type == '0_1_1_0' ~ "Economic and Social Development",
+                                      mixed_type == '1_0_0_1' ~ "Sovereign Conservation",
+                                      mixed_type == '0_1_1_1' ~ "Sustainable Development",
+                                      mixed_type == '1_1_0_0' ~ "Sovereign Integration",
+                                      mixed_type == '0_0_1_1' ~ "Social Conservation",
+                                      grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
+                                            mixed_type) ~ "Other Mixed-types"),
+         levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development",
+                    "Pure Sovereignty", "Other", "Economic Conservation", "Economic and Social Development",
+                    "Sovereign Conservation","Sustainable Development","Sovereign Integration",
+                    "Social Conservation", "Other Mixed-types")),
+         mx_cat2 = case_when(grepl("Pure Economic Integration|Pure Conservation|
+                                   |Pure Social Development|Pure Sovereignty", mx_cat) ~ "Pure-types",
+                             grepl("^Other$", mx_cat) ~ "Other",
+                             grepl("Economic Conservation|Economic and Social Development|
+                                   |Sovereign Conservation|Sustainable Development|
+                                   |Sovereign Integration|Social Conservation|Other Mixed-types",
+                                   mx_cat) ~ "Mixed-types"))
 ```
 
 \pagebreak
@@ -220,14 +187,13 @@ Figure 1 shows the proportion of speeches that mentions the Amazon in relation t
 First, we observe a steady increase from about 5% in 1985 to 32% 1989. This is the period when the Brazilian Constitution was being written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. Two other factors are likely to explain this increase: in 1988 Chico Mendes was brutally murdered, and in 1989, the New York Times published an article with pictures of the Amazon burning. Both incidents caught unprecedented international attention. President Sarney responded to these publicly, and proposed a new set of policies to address, named Nossa Natureza [@capobianco2021]
 
 ```{r Amazonian speeches by year, echo=FALSE, message=FALSE, warning=TRUE, paged.print=TRUE, include=TRUE}
-
 perc1 <- pop %>%
   count(amazon_speech, year)%>%
   group_by(year)%>%
   mutate(perc=n / sum(n)) %>%
   select(c(perc,amazon_speech, year))
-
-pop %>% count(amazon_speech, year) %>%
+Amazon_year <- pop %>%
+  count(amazon_speech, year) %>%
   group_by(year) %>%
   left_join(perc1) %>%
   filter(amazon_speech==1) %>%
@@ -235,20 +201,16 @@ pop %>% count(amazon_speech, year) %>%
   geom_line(color="darkolivegreen")+
   scale_y_continuous(labels = percent_format())+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
-  labs(
-    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-    subtitle = "Sample composed by 6130 presidential speeches since 1985",
-    caption = "") +
-  theme(
-    panel.background = element_rect("white", "black", .5, "solid"),
-    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-    axis.text = element_text(color = "black", size = 10),
-    title = element_text(color = "black", size = 10, face = "bold"),
-    legend.title = element_blank(),
-    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "right"
-  )
-
+  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+       subtitle = "Sample composed by 6130 presidential speeches since 1985", caption = "") +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "right")
+Amazon_year
 ```
 
 While in 1990 there was a decrease to about 12.4%, we observe a novel increase to 15% and 25% in 1991 and 1992 respectively. The driver of this increase is likely to be the 1992 Earth Summit, which was being prepared by various state and non-state actors in the region and brought international attention to environmental topics in Brazil. One of the big announcements was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation (cite). During the Cardoso years (1994-2002), Amazonian speeches averaged at about 15% without strong variation. There were no big international or domestic events that drove the topic up.
@@ -264,30 +226,25 @@ We do find evidence that deforestation rates, economic situation, elections, and
 Figure 2 portrays plots with the proportions of different problem constructions over time. We conceptualize four problem constructions: sovereignty, economic integration, social development, and conservation. At the level of the Amazonian statement, though, presidents might mix two or more together. These are what we call mixed types, in opposition to pure types. There are 16 mix types in total, and figure 2 portrays the most frequent of them. Pure problem constructions dominate, with their joint average above 55%. Among the four pure types as well as the mixed types, we observe a strong variation over time, suggesting the narratives do respond differently to factors that affect Amazonian statements discussed in the section above.
 
 ```{r mixed-types in time, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-
-ama_mx %>%
+prob_construction_year <- ama_mx %>%
   count(year, mx_cat)%>%
   group_by(year) %>%
-  mutate(perc=n / sum(n))  %>%
-  ggplot(., aes(x=year, y=perc, fill=mx_cat))+
-  geom_bar(stat="identity", position="dodge")+
-  geom_smooth(color="black", size=.3, se= FALSE)+
-  scale_y_continuous(labels = percent_format(accuracy=1))+
-  labs(
-    x = "", y = "", title ="Share of different problem-constructions by year",
-    subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985",
-    caption = "") +
-  theme(
-    panel.background = element_rect("white", "black", .5, "solid"),
-    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-    axis.text = element_text(color = "black", size = 10),
-    title = element_text(color = "black", size = 10, face = "bold"),
-    legend.title = element_blank(),
-    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "none"
-  )+
+  mutate(perc = n / sum(n)) %>%
+  ggplot(aes(x=year, y=perc, fill=mx_cat)) +
+  geom_bar(stat="identity", position="dodge") +
+  geom_smooth(color="black", size=.3, se= FALSE) +
+  scale_y_continuous(labels = percent_format(accuracy=1)) +
+  labs(x = "", y = "", title ="Share of different problem-constructions by year",
+       subtitle = "Sample composed by 2400 problem-constructions in 1885 Amazonian statements in presidential speeches since 1985", caption = "") +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "none") +
   facet_wrap(~ mx_cat, ncol=3, scales="free_y")
-    
+prob_construction_year
 ```
 
 The plots reveal several trends. Pure economic integration statements, which were dominant, decreased in incidence as of the mid 1990s. In the late 1990s, pure conservation as well as pure social development increased; both surpassing the proportion of economic integration problem-construction in 2005. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and presence in the Amazon region, which in turn engendered a perception of higher risk of being caught and fined for deforestation. This is aligned with our findings: a higher incidence of the Amazon as a topic overall can generate a perception of more attention from the top, and a shift from economic integration to conservation can generate a perception of higher change of being caught. As of the early 2010s, we observe a reversal of the trend with a twist: economic integration starts picking up again in detriment of conservation and social development problem constructions, but with sovereignty increasing steadily.
@@ -295,67 +252,52 @@ The plots reveal several trends. Pure economic integration statements, which wer
 Figure 3 (below) shows these shifts more clearly and highlights the decrease of economic integration and increase of social and conservation problem constructions preceding Lula's presidential mandate. Relatedly, figure 3 also shows that while the reversal precedes the mandate of President Bolsonaro, it was with him and his dismantling of social and environmental policies that sovereignty and economic integration appears the most, in detriment of social development and environmental conservation. The starkest decrease relates to social development construction between Temer's and Bolsonaro's administration.
 
 ```{r pure types in time , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-
-ama_mx %>%
-  count(president, mx_cat, mx_cat2)%>%
-  group_by(president) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(mx_cat !="Other")%>%
-  filter(mx_cat2 == "Pure-type") %>%
-  mutate(year= case_when (president=='Sarney' ~ "1985",
-                          president=='Bolsonaro' ~ "2018",
-                          president=='Collor' ~ "1990",
-                          president=='Itamar' ~ "1993",
-                          president=='FHC' ~ "1994",
-                          president=='Lula' ~ "2003",
-                          president=='Dilma' ~ "2011",
-                          president=='Temer' ~ "2017"))%>%
-  ggplot(., aes(x=as.numeric(year), y=perc, color=mx_cat))+
-  geom_smooth(aes(color=mx_cat), se=FALSE, size=.5)+
-  scale_y_continuous(labels = percent_format(accuracy=1))+
-  labs(
-    x = "", y = "", title ="Share of each pure types by year",
-    subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
-    caption = "") +
-  theme(
-    panel.background = element_rect("white", "black", .5, "solid"),
-    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-    axis.text = element_text(color = "black", size = 10),
-    title = element_text(color = "black", size = 10, face = "bold"),
-    legend.title = element_blank(),
-    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "bottom"
-  )
-
+pure_types_time <- ama_mx %>%
+  count(president, mx_cat2, mx_cat, year) %>%
+  group_by(president, year) %>%
+  mutate(perc = n / sum(n)) %>% 
+  filter(mx_cat2 == "Pure-types") %>% 
+  ggplot(aes(x=as.numeric(year), y=perc, color=mx_cat)) +
+  geom_smooth(aes(color=mx_cat), se=FALSE, size=.5) +
+  scale_y_continuous(labels = percent_format(accuracy=1)) +
+  labs(x = "", y = "", title ="Share of each pure types by year",
+       subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+       caption = "") +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")
+pure_types_time
 ```
 
 We now move to mixed types, which average at around 17% for all presidents in our sample: overall, presidents prefer pure problem-constructions. While there is some variation in time for each single mixed type, some of them have low counts and interpretations are not adequate. We focus our discussion on those with higher incidence. First, the most frequent mix overall is that of economic integration with conservation, which after reaching 25% of all problem-constructions in 1989, remained stable at 9% on average for the remainder of the period. President Lula was the most frequent user of this mix. Second, except for economic and social development appearing together in all statements made by Color in 1992, mixed types using conservation were quite frequent in the lead up and aftermath of the 1992 Earth Summit. This includes the mix type we label sustainable development, which constructs the Amazon as a problem of economic integration, social development, and environmental conservation. In all, we interpret the appearance of mixed types as more complex understandings of Amazonian problems. This follows a global agenda of understanding interconnections of social, environmental, and economic domains. As we show that Amazonian incidence in discourse does respond to global issues, this is not a surprise given agendas as Millennium Development Goals and the Sustainable Development Goals. Nevertheless, as in pure types, we also observe the comeback of sovereignty being used in mixed types in detriment of conservation. This becomes more apparent in a comparison between Lula and Bolsonaro, the two presidents that mix the most with proportions 11% above presidential averages: 28.5% and 28.6% respectively. While the former frequently mixed conservation with other problem constructions, the latter prefers mixing sovereignty. The combination of sovereignty with economic integration, which was also characteristic of the military dictatorship policies for the region, reaches its highest level with Bolsonaro.
 
 ```{r mixed-types by president , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-
-ama_mx %>%
-  filter(mx_cat2 =="Mixed-type")%>%
-  count(president, mx_cat)%>%
+mixed_types_presid <- ama_mx %>%
+  filter(mx_cat2 == "Mixed-types") %>%
+  count(president, mx_cat) %>%
   group_by(president) %>%
-  mutate(perc=n / sum(n)) %>%
-  mutate(president=factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
-  ggplot(., aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1)))+
-  geom_bar(stat="identity", position="stack")+
-  geom_text(size = 3, position = position_stack(vjust=.5))+
-  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1)+
-  labs(
-    x = "", y = "", title ="Share of each mixed type problem-constructions by president",
-    subtitle = "Sample composed of Amazonian statements that were coded as a mixed-type (n=431)",
-    caption = "") +
-  theme(
-    panel.background = element_rect("white", "black", .5, "solid"),
-    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-    axis.text = element_text(color = "black", size = 10),
-    title = element_text(color = "black", size = 10, face = "bold"),
-    legend.title = element_blank(),
-    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "bottom"
-  )
+  mutate(perc = n / sum(n)) %>%
+  mutate(president = factor(president,
+                            levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat="identity", position="stack") +
+  geom_text(size = 3, position = position_stack(vjust=.5)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of each mixed type problem-constructions by president",
+       subtitle = "Sample composed of Amazonian statements that were coded as a mixed-type (n=431)",
+       caption = "") +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")
+mixed_types_presid
 ```
 
 @pacheco2019 proposes that we see the Amazon frontier as a key analytic category to understand the Brazilian state and democracy. Specifically, the author states that the natural richness of the region has been instrumentally transformed in political support through resource exploration by different governments over the last centuries. The costs for said economic and political benefits are the livelihoods of indigenous and traditional populations and the ecosystems they reside in. Political stability, thus, can be seen as a product of the trade-off between both. Policies during the military dictatorship were strongly geared towards integrating the Amazon to the national territory and international economy. With the strengthening of environmentalism in the 1990s, its most strong form being the policies adopted in the 2000s, we can interpret the fall of economic integration and the rise of social and conservation problem constructions as a new relationship between granting local livelihoods their rights and economic exploitation.
@@ -365,6 +307,50 @@ While unprecedented, this new balance was not long-standing. Democratic decay is
 This is not to say that those who preceded President Bolsonaro are like him. They are not, and we have shown how he is different from others already. But the political forces in Brazilian democracy that drive these changes in problem-construction were long in the making, as the earlier and softer shifts in discourse suggest. Bolsonaro's problem-construction is the strongest form of this shift. Now that we've inspected and developed pure and mixed types, we can check if these specific problem constructions vary depending on where the president is speaking.
 
 ## 4.3 An Amazonian three-level game? Boasting policy outside, talking to people inside
+
+```{r multimonial model, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+# get data on deforestation rates per year (PRODES)
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
+# source: http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates
+# Since annual deforestation rates are calculated since 1988, we copy the rates of 1988 to 1985, 1986, and 1987.
+# These rates are consistent with most estimates (see for example Prates and Bracha 2010 -
+# https://www.scielo.br/j/ecos/a/59DMy3zmJdPHXzXRsHTkmNF/?lang=pt&format=pdf)
+adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
+amazon_def_year <- rbind(adr, amazon_def_year)
+ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
+# inflation rates per year Brazil (average for year)
+AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds")
+# source EU inflation: https://www.inflation.eu/en/inflation-rates/brazil/historic-inflation/cpi-inflation-brazil.aspx
+ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
+# remove non-identified locations and mixed-other constructions (very little data for either and not relevant)
+ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>% 
+  mutate(mx_cat = factor(mx_cat, levels = c("Pure Conservation", "Pure Economic Integration",
+                                            "Pure Social Development", "Pure Sovereignty", "Economic Conservation",
+                                            "Economic and Social Development", "Sovereign Conservation",
+                                            "Sustainable Development","Sovereign Integration",
+                                            "Social Conservation", "Other")),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))
+# model
+model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model, model = TRUE)
+# summary statistics
+model_summary <- summary(model)
+p_values <- round((1 - pnorm(abs(summary(model)$coefficients/summary(model)$standard.errors)))*2, 5)
+# post estimation tests
+chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
+# Chi-square p value (p-value < 0.001) tells us that our model explains a
+# significant amount of the variation in the data in comparison with a null model.
+# null_model <- multinom(mx_cat ~ 1, data = ama_model) # Null model for a likelihood ration test, just in case.
+# library(lmtest)
+# lrtest(null_model, model) # We very much reject the hypothesis
+# (i.e. the more complex model is significantly better than the null model).
+# Finally, let's get a nice output:
+stargazer::stargazer(model, type="text",
+                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                          "Election", "Deforestation", "Inflation"),
+                     column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
+                                       "Sov-EI", "SD-Con", "Other"),
+                     dep.var.labels.include = FALSE)
+```
 
 # 5 Conclusion
 
