@@ -42,8 +42,13 @@ pop <-  pop %>%
 
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
 
+AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds")
+
+amazon_def_year <- amazon_def_year %>% rename(def_year = "area km\u00b2")
+
 amazon_def_year <- mutate(amazon_def_year, year = year + 1) %>%
   rename(def_year = "area km\u00b2")
+
 
 
 ```
@@ -215,6 +220,7 @@ pop %>% count(amazon_speech, year) %>%
   left_join(amazon_def_year)%>%
   filter(amazon_speech==1) %>%
   ggplot(., aes(x = year, y = perc)) +
+  geom_smooth(color="black", size=.75, se=FALSE, method="loess")+
   geom_line(color="darkolivegreen")+
   scale_y_continuous(labels = percent_format())+
   scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
@@ -231,6 +237,78 @@ pop %>% count(amazon_speech, year) %>%
     plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
     legend.position = "right"
   )
+
+```
+
+```{r Amazonian speeches by year II, echo=FALSE, message=FALSE, warning=TRUE, echo=FALSE, paged.print=TRUE}
+
+  perc1 <- pop %>%
+  count(amazon_speech, year)%>%
+  group_by(year)%>%
+  mutate(perc=n / sum(n)) %>%
+  select(c(perc,amazon_speech, year))
+
+pop %>% count(amazon_speech, year) %>%
+  group_by(year) %>%
+  left_join(perc1) %>%
+  filter(amazon_speech==1) %>%
+  ggplot(., aes(x = year, y = perc)) +
+  geom_line(color="darkolivegreen")+
+  scale_y_continuous(labels = percent_format())+
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
+  labs(
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "") +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "right"
+  )
+
+
+
+```
+
+```{r Amazonian speeches by year III, echo=FALSE, message=FALSE, warning=TRUE, echo=FALSE, paged.print=TRUE}
+
+pop2 <- pop %>% count(amazon_speech, year, president) %>%
+  group_by(year, president) %>%
+  left_join(perc1) %>%
+  filter(amazon_speech==1) %>%
+  mutate(election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))
+  
+  pop2 <- left_join(pop2, AAI, by = "year")
+  pop2 <- left_join(pop2, amazon_def_year, by = "year")
+
+model <- lm(perc ~ AAI+ def_year + president + election_year, data=pop2)
+
+pop2$predicted = predict(model, pop2)
+
+
+pop2 %>% ggplot(., aes(x = year, y = perc)) +
+  geom_line(size=.65, aes(x=year, y=perc, color="real share"), linetype= "solid")+
+  geom_line(size=.5, aes(x=year, y=predicted, color="Predicted share"), linetype="dotted")+
+  scale_color_manual(values=c("real share"="darkolivegreen", "Predicted share"= "black"))+
+  scale_y_continuous(labels = percent_format())+
+  labs(
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "Predicted share curve controls for yearly deforestation rates, yearly inflation, and president", color='Y series') +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+
 
 ```
 
