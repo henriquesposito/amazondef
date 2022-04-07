@@ -32,13 +32,12 @@ options(stringsAsFactors = FALSE, scipen = 999)
 ```
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
-pop<- readRDS("~/Documents/GitHub/amazondef/BR_presid_speeches_final.Rds")
+pop<- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
 pop <-  pop %>% select(-c(title, date, text, location))
-ama <- readRDS("~/Documents/GitHub/amazondef/final_data_as.Rds")
+ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
 ama <-  ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
-AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds")
-amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
-
+AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
 ```
 
 ```{r data prep for prob_construction, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
@@ -177,9 +176,25 @@ These are the cornerstones of our framework: while governments are sometimes por
 
 # 3 Research Design
 
+To operationalize our theoretical framework and understand how the Brazilian Amazon has been constructed as a problem, we adopt a mixed-methods approach using manual coding and supervised machine learning. We explain our research design and each step of the procedure in this section.
+
 ## 3.1 Data and modeling: operationalizing Amazonian problem construction
 
+We build upon the dataset provided by Cezar (2020) which contains all official speeches by Brazilian Presidents from 1985 to 2019 scrapped from the archives of the Brazilian Presidential Library. We update the dataset by scraping and adding all official speeches from 2020 and 2021. The final dataset encompasses 6130 speeches for all the presidents of Brazil since 1985. We then identify all speeches about the Amazon as a region, peoples, or forest out of the 6130 speeches. We do so by detecting all speeches in which the stem “amazon” appears. In Portuguese, the stem captures terms such as “Amazonia”, “Amazonica”, “Amazonidas”, “Amazonense(s)”, “Amazonas”, among others. We find that 946 speeches are, at least partially, about the Amazon from the 6130.
+
+Using the poldis R package, we proceed to extract two sentences before and two sentences after the sentence in which the stem “amazon” appears. We opt for picking two sentences before and two sentences after, rather than words because a sentence, because sentences usually contain a cohesive idea. By doing so we create our unit of analysis: an Amazonian statement. We use Amazon statements as our unit of analysis for two main reasons. First, working at the level of statements allows us to identify only passages that are meaningful for our specific purpose. Second, it increases the number of our observations and its variety meaningfully, allowing for more specificity in our analysis. This process yields 2014 unique Amazonian statements across the 946 speeches about the Amazon identified. Notice that an Amazonian statement can contain two or more matches of the stem “amazon” (i.e. two consecutive sentences in which one of the words covered by the stem appears). In this case, we get two sentences before the first match and two sentences after the last match. On average, an Amazonian statement contains 123 words.
+
+After revising the literature (section 2), we selected a random sample of these Amazonian statements to develop a codebook for identifying how the Amazon is constructed as a problem in presidential discourse (see Table 1 below). We understand Amazonian problem-constructions as Weberian ideal types, that is, an unified analytical construct portraying a ‘pure’ version of a phenomenon. This serves the purpose of allocating empirical observations within a range of possibilities. We identify the three problem-constructions derived from the literature (national sovereignty, economic integration, and environmental conservation) in the sample of Amazonian statements. However, in addition to them, we inductively identified a fourth problem construction that the literature does not explicitly cover: social development. Presidents, for example, sometimes opt to emphasize the lack of hospitals, sanitation, and schools in relation to peoples’ constitutional rights when speaking about the Amazon. We saw this code category as substantially different from the other three, hence, we created the code category ‘social development’. In their conceptualization, each code is mutually exclusive in its conceptualization, meaning that they cover different forms of constructing the Amazon as a problem, though each Amazonian statement might be assigned to one or more codes. A statement can, for example, construct the Amazon as a problem of sovereignty and a problem of economic integration or a problem of social development and conservation. Amazonian statements, thus, can be either coded as a pure-types or mixed-types.
+
+With the codebook in hands, each one of the authors, separately, hand-coded the same set of 1007 randomly selected Amazonian statements. This amount refers to 50% of all the Amazon Statements identified. Inter-coder agreement for each of the four main categories was 85%, on average. For each non-matching coded observation, the co-authors discussed and sorted their disagreements. At this stage, we also notice that a few of the Amazon statements identified were not about the Brazilian Amazon region, people, or forest. These are statements that mention the stem “amazon”, but are not about the Brazilian Amazon per se as the president, for example, might simply greet the Governor of the Amazonas in a speech or make a reference to the Venezuelan Amazon. We coded these statements as false positives. The manually coded data is then randomly divided into a training set, containing 80% of the hand-coded observations (806 observations), and a validation set, containing the remaining 20% of the hand-coded data (201 observations). The training set is used to train the supervised machine-learning model that automatically classifies observations and the validation set is used to make sure the model fit is appropriate. 
+
+We chose to employ a support-vector machine (SVM) algorithm to label texts, that is, a non-probabilistic linear classifier that classifies documents by assigning points in mapped space to maximize the gap between binary categories (see  Meyer et al. 2021; Noble 2006). After the SVM model is trained and tuned, and the model shows to appropriately fit the validation set,  we use the model to  automatically code the remaining 1007 Amazonian statements. The model was also trained to identify false positive observations, which we chose to delete for analysis since these are not meaningful statements about the Amazon. The final dataset for analysis contains 1895 Amazonian statements. Out of these, 237 statements are labeled as national sovereignty, 810 as economic integration, 418 as social development, and 567 as environmental conservation. Finally, we use poldis once more to extract locations for all speeches in the data. These locations represent the Brazilian state in which certain speech was given or an international country.
+
 ## 3.2 Analysis and limitations
+
+To analyze our data, we first present a series of different plots on proportions of Amazonian statements and problem-constructions over time and by presidents. We control proportions for factors that might affect the incidence of the Amazon in speeches and portray both real and controlled curves. To test whether different problem constructions change according to location, we run a multinomial regression model in which different problem constructions (as categories) are the dependent variable and location is the independent variable. We also control for annual deforestation rates, annual inflation rates, and election years in the model. We interpret the plots and model considering multiple Amazon related events and policies over the last 30 years, as well as their correlations with different presidents and locations, while embedding problem-construction in contemporary happenings.
+
+These procedures come with its limitations. Our codebook is developed using specific Amazon related vocabulary. For example, a statement will be coded as economic integration if it is a meaningful support to the Zona Franca of Manaus or a Dam in the Amazon. However, the economy is generally a topic that presidents speak about. Hence, high incidence of economic integration in Amazonian statements can also be related to the higher importance of this problem-construction in Brazil in time. Moreover, we classify statements as Amazonian based on a dictionary composed of a single lexicon stem: “amazon”. We chose to do so knowing that a few speeches about the Amazon might not contain the lexicon “Amazon”, for example, when the president says, “the forest” or “deforestation”. Hence, we might be missing statements about Amazon that do not refer to it. However, we consider this safer as we cannot be sure that mentions of the forest or deforestation do not correspond to other biomes such as the Cerrado or the Mata Atlantica. Nevertheless, our dataset covers only what is considered an official remark. Presidents, though, give interviews, appear in debates, talk at campaign rallies, and more recently start to appear in social media. Problem-construction within presidential discourse, thus, also happens in different sites for which we do not account for in this paper.
 
 # 4 How has the amazon been constructed as a problem?
 
@@ -194,45 +209,34 @@ Figure 1 shows the proportion of speeches that mentions the Amazon in relation t
 First, we observe a steady increase from about 5% in 1985 to 32% 1989. This is the period when the Brazilian Constitution was being written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. Two other factors are likely to explain this increase: in 1988 Chico Mendes was brutally murdered and the New York Times published an article with pictures of the Amazon burning [@simons1988]. Both incidents caught unprecedented international attention. President Sarney responded to these publicly, and proposed a new set of policies to address, named Nossa Natureza [@capobianco2021].
 
 ```{r Figure 1: Amazonian speeches by year, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
-
 perc1 <- pop %>%
   count(amazon_speech, year)%>%
   group_by(year)%>%
   mutate(perc=n / sum(n)) %>%
   select(c(perc,amazon_speech, year))
-
 pop2 <- pop %>% count(amazon_speech, year, president) %>%
   group_by(year, president) %>%
   left_join(perc1) %>%
   filter(amazon_speech==1)
-  
-  pop2 <- left_join(pop2, AAI, by = "year")
-  pop2 <- left_join(pop2, amazon_def_year, by = "year")
-
+pop2 <- left_join(pop2, AAI, by = "year")
+pop2 <- left_join(pop2, amazon_def_year, by = "year")
 model <- lm(perc ~ AAI+ def_year + president, data=pop2)
-
 pop2$predicted = predict(model, pop2)
-
 Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(size=.85, aes(x=year, y=perc, color="Real share"))+
   geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share"))+
   scale_color_manual(values=c("Real share"="darkolivegreen", "Predicted share"= "gray40"))+
   scale_y_continuous(labels = percent_format())+
-  labs(
-    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-    subtitle = "Sample composed by 6130 presidential speeches since 1985",
-    caption = "Predicted share controls for deforestation rates, inflation, and president.", color='Y series') +
-  theme(
-    panel.background = element_rect("white", "black", .5, "solid"),
-    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-    axis.text = element_text(color = "black", size = 10),
-    title = element_text(color = "black", size = 10, face = "bold"),
-    legend.title = element_blank(),
-    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-    legend.position = "bottom"
-  )
-
-
+  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+       subtitle = "Sample composed by 6130 presidential speeches since 1985",
+       caption = "Predicted share controls for deforestation rates, inflation, and president.", color='Y series') +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")
 Amazon_year
 ```
 
@@ -332,8 +336,7 @@ This is not to say that those who preceded President Bolsonaro are like him. The
 ## 4.3 An Amazonian three-level game? Boasting policy outside, talking to people inside
 
 ```{r multimonial model, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-# get data on deforestation rates per year (PRODES)
-amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/data/amazon_def_year.Rds")
+# data on deforestation rates per year (PRODES)
 # source: http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates
 # Since annual deforestation rates are calculated since 1988, we copy the rates of 1988 to 1985, 1986, and 1987.
 # These rates are consistent with most estimates (see for example Prates and Bracha 2010 -
@@ -342,7 +345,6 @@ adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.05
 amazon_def_year <- rbind(adr, amazon_def_year)
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 # inflation rates per year Brazil (average for year)
-AAI <- readRDS("~/Documents/GitHub/amazondef/data/AAI.Rds")
 # source EU inflation: https://www.inflation.eu/en/inflation-rates/brazil/historic-inflation/cpi-inflation-brazil.aspx
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 # remove non-identified locations and mixed-other constructions (very little data for either and not relevant)

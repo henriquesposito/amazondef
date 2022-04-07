@@ -1,0 +1,221 @@
+---
+title: "Amazon in Presidential Speeches in Brazil: data exploration for full texts"
+author: "Henrique Sposito and Livio Silva-Muller"
+date: "10/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Data and Filter it for Amazon related texts
+
+```{r amazon, warning=FALSE, message=FALSE}
+library(dplyr)
+BR_Presidential_Speeches <- readRDS("~/GitHub/amazondef/BR_Presidential_Speeches.Rds")
+Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches,
+                                 grepl("Amazôn|Amazon|amazôn|amazon", text))
+# 861 speeches mention words related to Amazon
+summary(as.factor(Amazon_speeches$president)) # Frequency by president
+plot(Amazon_speeches$year, as.factor(Amazon_speeches$year), type = "b",
+     main = "Presidential Speeches about the Amazon in Time in Brazil",
+     xlab = "Year", ylab = "Frequency") # simple plot, but interesting!
+```
+
+## Clean text and get most frequent terms overall, and by speaker, in time
+
+```{r term frequency, warning=FALSE, message=FALSE}
+library(tm)
+library(tidytext)
+library(kableExtra)
+# Make text lower case
+Amazon_speeches$text <- tolower(Amazon_speeches$text)
+
+# Remove stopwords and punctuation
+Amazon_speeches$text <- tm::removePunctuation(Amazon_speeches$text)
+Amazon_speeches$text <- tm::removeWords(Amazon_speeches$text, tm::stopwords("pt"))
+
+# Transform into corpus
+Amazon_speeches <- Amazon_speeches %>%
+  dplyr::mutate(doc_id = president) %>%
+  arrange(doc_id, text)
+amazon_corpus <- tm::VCorpus(DataframeSource(Amazon_speeches))
+
+# Get 30 most frequent words overall
+amazon_dtm  <- DocumentTermMatrix(amazon_corpus)
+amazon_dtmm <- as.matrix(amazon_dtm)
+amazon_f <- data.frame(term = names(colSums(amazon_dtmm)),
+                       freq = colSums(amazon_dtmm))
+amazon_f <- amazon_f[order(amazon_f$freq, decreasing = T),]
+rownames(amazon_f) <- NULL
+amazon_f30 <- data.frame(head(amazon_f, 30))
+amazon_f30 # Not very informative...
+
+# Let's see if bigrams help us more here
+tamazon <- tidytext::tidy(amazon_corpus) %>%
+  unnest_tokens(bigram, text , token = "ngrams", n = 3, n_min = 2) %>%
+  dplyr::count(bigram, sort = TRUE) %>%
+  ungroup()
+tamazon # Not very informative either...
+
+# Let's get the 30 most frequent term by speaker
+amazon_presid <- aggregate(Amazon_speeches$text, list(Amazon_speeches$president), paste, collapse = " ") %>%
+  rename(doc_id = "Group.1", text = "x")
+amazon_presid_t <- tm::VCorpus(DataframeSource(amazon_presid)) %>%
+  tidy() %>% 
+  unnest_tokens(word, text) %>%
+  count(id, word, sort = TRUE)
+Sarney <- head(dplyr::filter(amazon_presid_t, id == "Sarney"), 30) %>%
+  mutate(Sarney = word) %>% select(Sarney)
+Collor <- head(dplyr::filter(amazon_presid_t, id == "Collor"), 30) %>%
+  mutate(Collor = word) %>% select(Collor)
+Itamar <- head(dplyr::filter(amazon_presid_t, id == "Itamar"), 30) %>%
+  mutate(Itamar = word) %>% select(Itamar)
+FHC <- head(dplyr::filter(amazon_presid_t, id == "FHC"), 30) %>%  mutate(FHC = word) %>% select(FHC)
+Lula <- head(dplyr::filter(amazon_presid_t, id == "Lula"), 30) %>%  mutate(Lula = word) %>% select(Lula)
+Dilma <- head(dplyr::filter(amazon_presid_t, id == "Dilma"), 30) %>%  mutate(Dilma = word) %>% select(Dilma)
+Temer <- head(dplyr::filter(amazon_presid_t, id == "Temer"), 30) %>%  mutate(Temer = word) %>% select(Temer)
+Bolsonaro <- head(dplyr::filter(amazon_presid_t, id == "Bolsonaro"), 30) %>%
+  mutate(Bolsonaro = word) %>% select(Bolsonaro)
+f_speaker <- cbind(Sarney, Collor, Itamar, FHC, Lula, Dilma, Temer, Bolsonaro)
+f_speaker <- kableExtra::kbl(f_speaker, caption = "Top 10 Words Per President") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+f_speaker # not super informative ...
+```
+
+## Simple LDA model by speakers
+
+```{r lda, warning=FALSE, message=FALSE}
+library(topicmodels)
+# Fit a simple LDA model
+# Please note that we randomly set a K = 10 (10 cluster topics)
+amazon_lda <- topicmodels::LDA(amazon_dtm, k = 10, control = list(seed = 1234))
+
+# Get the top 10 words per topic
+amazon_lda10 <- tidy(amazon_lda, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_topic <- aggregate(amazon_lda10$term, list(amazon_lda10$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x") %>% 
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Prsidential Speeches Mentioning the Amazon") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+topten_topic # "ambiente" (environment) appears only in topic 7 ...
+# Agriculture, on the other hand, is the first cluster...
+
+# Let's get the gamma (percent of topic in document for speakers)
+amazon_lda_presid <- tidy(amazon_lda, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:2) %>% # get the top 3 topics per speaker
+  arrange(document)
+amazon_lda_presid$gamma <- round(amazon_lda_presid$gamma, digits = 4)
+amazon_lda_presid <- kableExtra::kbl(amazon_lda_presid, caption = "Top 2 Topics Per Speaker") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_presid # Only Collor associated with topic cluster that mentions "ambiente"...
+```
+
+
+## Get, and compare, sentiment in time for speakers (afinn and NRC)
+
+```{r sentiment, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(stringr)
+# library(poldis)
+
+# Load internal sentiment dictionaries from poldis
+Afinn_pt <- poldis:::Afinn_pt
+nrc_portuguese <- poldis:::nrc_portuguese
+
+# Aggregate by president and year and transform into a corpus
+amazon_sent <- mutate(Amazon_speeches, doc_id = paste0(doc_id, "_", year))
+amazon_sent <- aggregate(amazon_sent$text, list(amazon_sent$doc_id), paste, collapse =" ") %>%
+  rename(doc_id = "Group.1", text = "x")
+amazon_sent_wf <- VCorpus(DataframeSource(amazon_sent)) %>%
+  tidy() %>%
+  unnest_tokens(word, text) %>%
+  count(id, word, sort = TRUE)
+
+# Get afinn sentiment
+amazon_sent_af <- inner_join(amazon_sent_wf, Afinn_pt, by = "word") %>%
+  group_by(id) %>%
+  summarize(value = sum(n)) %>%
+  mutate(year = stringr::str_extract(id, "[0-9]{4}"),
+         president = stringr::str_remove_all(id, "_[0-9]{4}"),
+         date2 = stringr::str_extract(id, "[0-9]{2}$"))
+
+# Plot Afinn sentiment in time for speeches about the Amazon
+ggplot(amazon_sent_af, aes(x = reorder(date2, as.numeric(year)), y = value , fill = president)) +
+  geom_line(aes(group = president)) +
+  geom_point(size = 5, shape = 21) +
+  labs(x = "",
+       y = "",
+       title = "Sentiment in Presidential Speeches about the Amazon",
+       caption = "Afinn sentiment lexicon")
+# Lula more positive about in speeches surrounding the Amazon than others...
+
+# Get NRC per speaker
+amazon_sent_nrc <- inner_join(amazon_sent_wf, nrc_portuguese, by = "word") %>%
+  group_by(id, sentiment) %>%
+  summarize(value = sum(n)) %>%
+  mutate(year = stringr::str_extract(id, "[0-9]{4}"),
+         president = stringr::str_remove_all(id, "_[0-9]{4}"),
+         date2 = stringr::str_extract(id, "[0-9]{2}$"))
+
+# Plot NRC
+ggplot(amazon_sent_nrc, aes(x = reorder(id, as.numeric(year)), y = value, fill = sentiment)) +
+  geom_bar(position="stack", stat="identity") +
+  theme(axis.text.x=element_text(angle=90,hjust=1,vjust=1)) +
+  labs(x = "",
+       y = "",
+       title = "Sentiment in Presidential Speeches about the Amazon",
+       caption = "NRC sentiment lexicon") +
+  coord_flip() +
+  expand_limits(y=c(0, 1000))
+# Lula 2010 appears to have spoken more and used more "carried" words related to certain sentiment according to dictionary in texts mentioning the Amazon.
+```
+
+## Does location matter?
+
+```{r}
+# Location was added with poldis::extraxt_location(), still needs to be improved...
+summary(as.factor(Amazon_speeches$location))
+
+# Let's code the Amzonian states as "local"; the other Brazilian states as "nacional";
+# and the ones delivered outside Brazil as "international".
+Amazon_lc <- mutate(Amazon_speeches, stage = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins", location) ~ "local", grepl("Alagoas|Bahia|Ceará|Distrito Federal|Goias|Maranhao|Minas Gerais|Paraiba|Parana|Pernambuco|Piaui|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Santa Catarina|Sao Paulo|Brazil|Sergipe", location) ~ "national", grepl("Argentina|Chile|China|Colombia|Cuba|European|France|Hamburg|India|Israel|Jamaica|Nicaragua|Oman|ONU|Panama|Peru|Portugal|Senegal|Suriname", location) ~ "international"))
+Amazon_lc$stage <- stringr::str_replace_na(Amazon_lc$stage, "Non Identified")
+summary(as.factor(Amazon_lc$stage)) # A lot of international observations ...
+
+# Let's try an simple LDA model again
+Amazon_lc <- mutate(Amazon_lc, doc_id = stage) %>% arrange(doc_id, text)
+amazon_lcc <- tm::VCorpus(DataframeSource(Amazon_lc))
+amazon_dtm_lc  <- DocumentTermMatrix(amazon_lcc)
+amazon_lda_lc <- topicmodels::LDA(amazon_dtm_lc, k = 20, control = list(seed = 1234)) # set k = 20
+amazon_lda_lcc <- tidy(amazon_lda_lc, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+topten_lc <- aggregate(amazon_lda_lcc$term, list(amazon_lda_lcc$topic), paste, collapse=", ") %>%
+  rename(Topic = "Group.1", Terms = "x")
+
+# Get stage and merge tables
+amazon_lda_lcs <- tidy(amazon_lda_lc, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:8) %>% # get the top 3 topics per location
+  arrange(document) %>% 
+  select(-gamma) %>% 
+  distinct()
+amazon_lda_topic <- aggregate(amazon_lda_lcs$document, list(amazon_lda_lcs$topic), paste, collapse = ", ") %>% rename(Topic = "Group.1", Stage = "x") 
+amazon_lda_topic <- dplyr::left_join(topten_lc, amazon_lda_topic, by = "Topic") %>%
+  kableExtra::kbl(caption = "Top 10 Words per Topic for Stages") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Times New Roman")
+amazon_lda_topic # Do you see anything interesting?
+```
+
+This is where I stop since, overall, this appears not to be very helpful ...
+But how about we try the a similar script with only the matches themselves instead of full texts?
