@@ -187,29 +187,40 @@ Figure 1 shows the proportion of speeches that mentions the Amazon in relation t
 First, we observe a steady increase from about 5% in 1985 to 32% 1989. This is the period when the Brazilian Constitution was being written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. Two other factors are likely to explain this increase: in 1988 Chico Mendes was brutally murdered, and in 1989, the New York Times published an article with pictures of the Amazon burning. Both incidents caught unprecedented international attention. President Sarney responded to these publicly, and proposed a new set of policies to address, named Nossa Natureza [@capobianco2021]
 
 ```{r Amazonian speeches by year, echo=FALSE, message=FALSE, warning=TRUE, paged.print=TRUE, include=TRUE}
-perc1 <- pop %>%
-  count(amazon_speech, year)%>%
-  group_by(year)%>%
-  mutate(perc=n / sum(n)) %>%
-  select(c(perc,amazon_speech, year))
-Amazon_year <- pop %>%
-  count(amazon_speech, year) %>%
-  group_by(year) %>%
+
+pop2 <- pop %>% count(amazon_speech, year, president) %>%
+  group_by(year, president) %>%
   left_join(perc1) %>%
-  filter(amazon_speech==1) %>%
-  ggplot(., aes(x = year, y = perc)) +
-  geom_line(color="darkolivegreen")+
+  filter(amazon_speech==1)
+  
+  pop2 <- left_join(pop2, AAI, by = "year")
+  pop2 <- left_join(pop2, amazon_def_year, by = "year")
+
+model <- lm(perc ~ AAI+ def_year + president, data=pop2)
+
+pop2$predicted = predict(model, pop2)
+
+
+Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
+  geom_line(size=.85, aes(x=year, y=perc, color="Real share"))+
+  geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share"))+
+  scale_color_manual(values=c("Real share"="darkolivegreen", "Predicted share"= "gray40"))+
   scale_y_continuous(labels = percent_format())+
-  scale_fill_brewer(type = "qual", palette = "Set2", direction= -1)+
-  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-       subtitle = "Sample composed by 6130 presidential speeches since 1985", caption = "") +
-  theme(panel.background = element_rect("white", "black", .5, "solid"),
-        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-        axis.text = element_text(color = "black", size = 10),
-        title = element_text(color = "black", size = 10, face = "bold"),
-        legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "right")
+  labs(
+    x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+    subtitle = "Sample composed by 6130 presidential speeches since 1985",
+    caption = "Predicted share controls for deforestation rates, inflation, and president.", color='Y series') +
+  theme(
+    panel.background = element_rect("white", "black", .5, "solid"),
+    panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+    axis.text = element_text(color = "black", size = 10),
+    title = element_text(color = "black", size = 10, face = "bold"),
+    legend.title = element_blank(),
+    plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+    legend.position = "bottom"
+  )
+
+
 Amazon_year
 ```
 
