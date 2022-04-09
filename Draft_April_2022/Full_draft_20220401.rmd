@@ -377,12 +377,21 @@ chi_square <- chisq.test(ama_model$mx_cat, predict(model))
 # lrtest(null_model, model) # We very much reject the hypothesis
 # (i.e. the more complex model is significantly better than the null model).
 # Finally, let's get a nice output:
-stargazer::stargazer(model, type="text",
-                     covariate.labels = c("Brasilia", "International", "Non-AM state",
-                                          "Election", "Deforestation", "Inflation"),
-                     column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
-                                       "Sov-EI", "SD-Con", "Other"),
-                     dep.var.labels.include = FALSE)
+model_output <- stargazer::stargazer(model, type = "text",
+                                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                                          "Election", "Deforestation", "Inflation"),
+                                     column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
+                                                       "Sov-EI", "SD-Con", "Other"),
+                                     dep.var.labels.include = FALSE)
+tibble::tibble("Dependent Variables" = c("Economic Integration vs. Environmental Conservation", 
+                                            "Social Development vs. Environmental Conservation", 
+                                            "Sovereignty vs. Environmental Conservation"),
+                  "Brasilia vs. Amazonian States" = c("-1.024***"," -1.002***", "-0.206"),
+                  "International vs. Amazonian States" = c("-0.612***", "-1.583***", "-1.427***"),
+                  "Non-AM States vs. Amazonian States" = c("0.023", "-0.041", "0.324"),
+                  "Election Year" = c("-0.241", "0.028", "-0.684**"),
+                  "Annual Deforestation" = c("0.063***", "-0.031*", "0.004"),
+                  "Average Inflation" = c("-0.001***", "-0.001***", "-0.0001"))
 ```
 # 5 Conclusion
 
