@@ -6,11 +6,11 @@ author:
 - Henrique Sposito^[Phd Candidate, The Geneva Graduate Institute Geneva, henrique.sposito@graduateinstitute.ch]
 date: "April 2022"
 output:
-  word_document:
-    reference_docx: template.docx
   pdf_document: default
   html_document:
     df_print: paged
+  word_document:
+    reference_docx: template.docx
 bibliography: references.bib
 csl: chicago.csl
 abstract: This paper ...
@@ -218,7 +218,7 @@ This section presents the three main findings of our analysis. We open with a br
 
 Figure 1 shows the proportion of speeches that mentions the Amazon in relation to all speeches in each year. The predicted share curve controls incidence for deforestation[^2], economic situation, and speaker (see appendix for methodological details). We observe various local maxima: 1989, 1992, 2005, 2009, 2015, and 2019. These points coincide with exogenous events that helps us explain the rises and falls of the Amazon in presidential discourse.
 
-[^2]: The reasoning here is that knowledge of high or low deforestation rates might drive presidents to speak about the Amazon. Matching deforestation with speech dates is a complicated endeavor. INPE published consolidated deforestation data with almost two years of delay until 2005 [@capobianco2021, pp. 60]. Preliminary data was published earlier, but with lower degrees of confidence in the findings. For the subsequent years, the consolidated figures for a given year tend to come out in August of the subsequent year. However, it also seems to be the case that the executive government have access to the data before everyone else. In addition, other sources indicating if deforestation is going up or down, as fire data or lower resolution deforestation data (DETER for example), circulates within the same year. The year of 1988 is particularly indicative of these complications: a report dating 1988 was circulating with deforestation and fire figures[@fearnside1990], and a New York Times article about the issue was written with comments by an INPE scientist [@simons1988]. Hence, we believe the most appropriate way of matching is without any lags on deforestation.
+[^2]: The reasoning here is that knowledge of high or low deforestation rates might drive presidents to speak about the Amazon. Nevertheless, matching deforestation with speech dates is a complicated endeavor. INPE published consolidated deforestation data with almost two years of delay until 2005 [@capobianco2021, pp. 60]. Preliminary data was published earlier, but with lower degrees of confidence in the findings. For the subsequent years, the consolidated figures for a given year came out in August of the subsequent year. However, it also seems to be the case that the executive government have access to the data before everyone else. In addition, other sources indicating if deforestation is going up or down, as fire data or lower resolution deforestation data (DETER for example), or even other sources, circulated within the year the data covered. The year of 1988 is particularly indicative of these complications: a report dating 1988 was circulating with deforestation and fire figures[@fearnside1990], and a New York Times article about the issue with deforestation rates for 1988 was written with comments by an INPE scientist [@simons1988]. Hence, we believe the most appropriate way of matching is without any lags on deforestation.
 
 First, we observe a steady increase from about 5% in 1985 to 32% 1989. This is the period when the Brazilian Constitution was being written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. Two other factors are likely to explain this increase: in 1988 Chico Mendes was brutally murdered and the New York Times published an article with pictures of the Amazon burning [@simons1988]. Both incidents caught unprecedented international attention. President Sarney responded to these publicly, and proposed a new set of policies to address, named Nossa Natureza [@capobianco2021].
 
@@ -364,7 +364,34 @@ This is not to say that those who preceded President Bolsonaro are like him. The
 
 ## 4.3 An Amazonian three-level game? Boasting policy outside, talking to people inside
 
-Table 2, below, displays the multinational regression coefficients for the correlation between diverse problem constructions and locations. The regression coefficients express the relative probability in relation to the reference categories, which are Amazonian states for location and environmental conservation for problem construction. Although all the other mixed types problem-constructions were included in the model, we choose to display and focus the analysis on the pure types. From the outset, we notice that problem constructions of pure economic integration and pure social development correlate in negative statistically significant ways to both international settings and Brasilia in relation to environmental conservation problem constructions in Amazonian states. These findings indicate that constructing the Amazon as an issue of  environmental conservation is more likely to happen in international settings and in Brasilia than in Amazonian states. Additionally, pure sovereignty correlates in negative statistically significant ways to international settings in relation to conservation in Amazonian states. That is, constructing the Amazon as an issue of sovereignty is less likely in international settings than it is in Amazonian States. Interestingly, we see no statistically significant correlations between problem constructions in non-Amazonian states in relation to Amazonian states. This indicates that when presidents speak about the Amazon at the state level, constructions might be rather similar across different states. Furthermore, we also notice that some of the control variables correlate with some Amazonian problem constructions in interesting ways. For example, pure sovereignty constructions correlate negatively with election years in relation to conservation. That is, in election years conservation constructions are more likely to take place in comparison to sovereignty. As well, annual deforestation rates correlate positively with economic integration constructions in relation to conservation. This indicates that both deforestation increases and presidents are also more likely to construct the Amazon as an issue of economic integration.
+```{r Figure 5: pure types in time by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+
+pure_types_time_location <- ama_mx %>%
+  count(president, mx_cat2, mx_cat, year, location_cat) %>%
+  group_by(president, year) %>%
+  mutate(perc = n / sum(n)) %>% 
+  filter(mx_cat2 == "Pure-types") %>%
+  filter(location_cat != "Non Identified") %>%
+  ggplot(aes(x=as.numeric(year), y=perc, color=mx_cat)) +
+  geom_smooth(aes(color=mx_cat), se=FALSE, size=.5) +
+  scale_y_continuous(labels = percent_format(accuracy=1)) +
+  labs(x = "", y = "", title ="Share of each pure type in time by location",
+       subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+       caption = "") +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")+
+  facet_wrap(~location_cat, scales= "free_y", ncol=2)
+
+pure_types_time_location
+
+```
+
+Table 2, below, displays the multinomial regression coefficients for the correlation between problem constructions and locations. The regression coefficients express the relative probability in relation to the reference categories, which are Amazonian states for location and environmental conservation for problem construction. Although all the other mixed types problem-constructions were included in the model, we choose to display and focus the analysis on the pure types. From the outset, we notice that problem constructions of pure economic integration and pure social development correlate in negative statistically significant ways to both international settings and Brasilia in relation to environmental conservation problem constructions in Amazonian states. These findings indicate that constructing the Amazon as an issue of  environmental conservation is more likely to happen in international settings and in Brasilia than in Amazonian states. Additionally, pure sovereignty correlates in negative statistically significant ways to international settings in relation to conservation in Amazonian states. That is, constructing the Amazon as an issue of sovereignty is less likely in international settings than it is in Amazonian States. Interestingly, we see no statistically significant correlations between problem constructions in non-Amazonian states in relation to Amazonian states. This indicates that when presidents speak about the Amazon at the state level, constructions might be rather similar across different states. Furthermore, we also notice that some of the control variables correlate with some Amazonian problem constructions in interesting ways. For example, pure sovereignty constructions correlate negatively with election years in relation to conservation. That is, in election years conservation constructions are more likely to take place in comparison to sovereignty. As well, annual deforestation rates correlate positively with economic integration constructions in relation to conservation. This indicates that both deforestation increases and presidents are also more likely to construct the Amazon as an issue of economic integration.
 
 ```{r multimonial model, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 # data on deforestation rates per year (PRODES)

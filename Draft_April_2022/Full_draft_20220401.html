@@ -1922,15 +1922,14 @@ and policy-adoption that is less linear.</p>
 <p>Problem-construction at the level of discourse is also more varied.
 They are not monolithic in time, across location, or even by the same
 speaker. While governmental discourses in Brazil have been studied for
-topic such as inflation or race relations, we only find one systematic
-analysis of Amazonian discourse. <span class="citation">Barros
-(2020)</span> investigates Amazonian discourse in the Brazilian Congress
-with the objective of identifying the arguments put forth by
-congressmen. The main finding is that the economic value of the Amazon
-for the cattle industry is the most salient narrative, leading the
-author to conclude there is a mismatch between the international debate
-(which focuses on preservation) and the national debate (which focuses
-on economic development).</p>
+topic such as inflation or race relations <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, we only find one
+systematic analysis of Amazonian discourse. <span class="citation">Barros (2020)</span> investigates Amazonian discourse
+in the Brazilian Congress with the objective of identifying the
+arguments put forth by congressmen. The main finding is that the
+economic value of the Amazon for the cattle industry is the most salient
+narrative, leading the author to conclude there is a mismatch between
+the international debate (which focuses on preservation) and the
+national debate (which focuses on economic development).</p>
 <p>We also find several analyzes of environmental discourse in American
 presidential speeches. <span class="citation">Calderwood (2019)</span>
 examines 2919 mentions of climate change in American official
@@ -2031,18 +2030,18 @@ our research design and each step of the procedure in this section.</p>
 <div id="data-and-modeling-operationalizing-amazonian-problem-construction" class="section level2">
 <h2>3.1 Data and modeling: operationalizing Amazonian problem
 construction</h2>
-<p>We build upon the dataset provided by Cezar (2020) which contains all
-official speeches by Brazilian Presidents from 1985 to 2019 scrapped
-from the archives of the Brazilian Presidential Library. We update the
-dataset by scraping and adding all official speeches from 2020 and 2021.
-The final dataset encompasses 6130 speeches for all the presidents of
-Brazil since 1985. We then identify all speeches about the Amazon as a
-region, peoples, or forest out of the 6130 speeches. We do so by
-detecting all speeches in which the stem “amazon” appears. In
-Portuguese, the stem captures terms such as “Amazonia”, “Amazonica”,
-“Amazonidas”, “Amazonense(s)”, “Amazonas”, among others. We find that
-946 speeches are, at least partially, about the Amazon from the
-6130.</p>
+<p>We build upon the dataset provided by <span class="citation">(Cezar
+2020)</span> which contains all official speeches by Brazilian
+Presidents from 1985 to 2019 scrapped from the archives of the Brazilian
+Presidential Library. We update the dataset by scraping and adding all
+official speeches from 2020 and 2021. The final dataset encompasses 6130
+speeches for all the presidents of Brazil since 1985. We then identify
+all speeches about the Amazon as a region, peoples, or forest out of the
+6130 speeches. We do so by detecting all speeches in which the stem
+“amazon” appears. In Portuguese, the stem captures terms such as
+“Amazonia”, “Amazonica”, “Amazonidas”, “Amazonense(s)”, “Amazonas”,
+among others. We find that 946 speeches are, at least partially, about
+the Amazon from the 6130.</p>
 <p>Using the poldis R package, we proceed to extract two sentences
 before and two sentences after the sentence in which the stem “amazon”
 appears. We opt for picking two sentences before and two sentences
@@ -2084,9 +2083,10 @@ economic integration or a problem of social development and
 conservation. Amazonian statements, thus, can be either coded as a
 pure-types or mixed-types.</p>
 <table>
+<caption>Table 1 - Amazonian Problem-Construction Codebook</caption>
 <thead>
 <tr class="header">
-<th align="left">Problem Construction</th>
+<th align="left">Problem_Construction</th>
 <th align="left">Description</th>
 <th align="left">Example</th>
 </tr>
@@ -2103,13 +2103,14 @@ and non-state actors about governments&lt;U+2019&gt; actions related to
 the Brazilian Amazon. In all, it advances the view that the Amazon is
 Brazilian, foreign, and non-state presence in the region needs to be
 monitored closely.</td>
-<td align="left">We can now walk the world and when we debate about the
-Amazon, we do not need to wait for questions, we are the ones who are
-going to say what we are doing in the Amazon. We do not need to keep on
-saying &lt;U+2018&gt;the Amazon is ours&lt;U+2019&gt; just for saying
-it, people often say this without much conviction either. If the Amazon
-has been ours since Cabral (European discoverer of Brazil) stepped here,
-why do we now have to worry about the Amazon? (Lula 2008)</td>
+<td align="left">Congressman, the fundamental link for Brazil to really
+head in the direction to prosperity. I would like first, Hu Chunhua, to
+thank you for the words of your ambassador to Brazil recognizing our
+sovereignty over the Amazonian region during that recent episode in the
+G7 meeting. I would like to thank the Chinese government. For us, this
+type of public acknowledgement is priceless in your words about this
+region that is so important to the world and to Brazil. (Bolsonaro
+25/10/2019)</td>
 </tr>
 <tr class="even">
 <td align="left">Economic Integration</td>
@@ -2121,7 +2122,15 @@ creating a diverse set of infrastructure (roads, dams, internet, radio,
 energy), fostering differing industries (tourism, mining, cattle,
 agriculture and so on) through tax-free zones, as well as facilitating
 the exploitation of natural resources for developmental purposes.</td>
-<td align="left"></td>
+<td align="left">If you allow me, in the Amazon - which for a long time
+stayed asleep due to the lack of coordinated actions - have already
+taken a few structuring actions. We, in the Amazon, are connecting
+Manuas, Boa Vista, Caracarai, until up there, the red line [in a map]
+that goes all the way up in the direction of Venezuela, that is the
+so-called BR-174 highway. This highway will allow production in the Tax
+Free Zone in MAnaus to be competitive, not within, but outside, that is
+the vocation of the the Tax Free Zone to export; and we can even do it
+through the Caribbean (Cardoso 02/07/1997)</td>
 </tr>
 <tr class="odd">
 <td align="left">Social Development</td>
@@ -2134,7 +2143,14 @@ includes guarantees of a dignified life with decent employment, access
 to water and sanitation, as well as access to electricity, internet,
 radio, and light. Finally, this includes referrals to culture and the
 right to vote.</td>
-<td align="left"></td>
+<td align="left">The state does not work for profits, the state needs to
+guarantee dignity, we find that a citizen who lives in the riverside of
+the Amazon river, 600 kilometers from Manaus, has the right to have the
+electricity in their house, to owe a fridge, to owe a television where
+to watch the soap operas. We have invested over 14 billion reais in this
+program, in three and a half years. Do you know how many electrical
+lines we have already built? One million kilometers of lines. (Lula
+20/11/2009)</td>
 </tr>
 <tr class="even">
 <td align="left">Environmental Conservation</td>
@@ -2147,7 +2163,15 @@ indigenous and traditional populations should be maintained and
 fostered. It advances the view that the emission of greenhouse gasses
 should be halted, that renewable energy should be supported, and that
 protected areas should be created.</td>
-<td align="left"></td>
+<td align="left">I have put in place emergency measures, I have
+suspended the exports of wood logs, I have suspended the fiscal
+incentives and credits to projects that could damage the environment in
+the amazon and I have made a license mandatory to gold mining that
+prohibits utilizing mercury in the process. This began the restructuring
+of the governmental system of control and preservation of the
+environment, I have created the Brazilian Institute for the Environment
+and Natural Resources [IBAMA], which will be headed by Dr. Mesquita
+(Sarney 20/07/1989)</td>
 </tr>
 </tbody>
 </table>
@@ -2169,16 +2193,17 @@ is appropriate.</p>
 <p>We chose to employ a support-vector machine (SVM) algorithm to label
 texts, that is, a non-probabilistic linear classifier that classifies
 documents by assigning points in mapped space to maximize the gap
-between binary categories (see Meyer et al. 2021; Noble 2006). After the
-SVM model is trained and tuned, and the model shows to appropriately fit
-the validation set, we use the model to automatically code the remaining
-1007 Amazonian statements. The model was also trained to identify false
-positive observations, which we chose to delete for analysis since these
-are not meaningful statements about the Amazon. The final dataset for
-analysis contains 1895 coded Amazonian statements. Finally, we use
-poldis once more to extract locations for all speeches in the data.
-These locations represent the Brazilian state in which certain speech
-was given or an international country.</p>
+between binary categories <span class="citation">(Meyer et al. 2021;
+Noble 2006)</span><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. After the SVM model is trained and tuned,
+and the model shows to appropriately fit the validation set, we use the
+model to automatically code the remaining 1007 Amazonian statements. The
+model was also trained to identify false positive observations, which we
+chose to delete for analysis since these are not meaningful statements
+about the Amazon. The final dataset for analysis contains 1895 coded
+Amazonian statements. Finally, we use poldis once more to extract
+locations for all speeches in the data. These locations represent the
+Brazilian state in which certain speech was given or an international
+country.</p>
 </div>
 <div id="analysis-and-limitations" class="section level2">
 <h2>3.2 Analysis and limitations</h2>
@@ -2231,7 +2256,7 @@ speaker moves further away from the Amazon region.</p>
 speeches</h2>
 <p>Figure 1 shows the proportion of speeches that mentions the Amazon in
 relation to all speeches in each year. The predicted share curve
-controls incidence for deforestation<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, economic situation, and speaker (see
+controls incidence for deforestation<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>, economic situation, and speaker (see
 appendix for methodological details). We observe various local maxima:
 1989, 1992, 2005, 2009, 2015, and 2019. These points coincide with
 exogenous events that helps us explain the rises and falls of the Amazon
@@ -2426,48 +2451,121 @@ speaking.</p>
 <div id="an-amazonian-three-level-game-boasting-policy-outside-talking-to-people-inside" class="section level2">
 <h2>4.3 An Amazonian three-level game? Boasting policy outside, talking
 to people inside</h2>
-<pre><code>## # weights:  88 (70 variable)
-## initial  value 4416.923092 
-## iter  10 value 4017.522240
-## iter  20 value 3850.674388
-## iter  30 value 3699.438241
-## iter  40 value 3676.058797
-## iter  50 value 3674.521349
-## iter  60 value 3674.391978
-## final  value 3674.391362 
-## converged</code></pre>
-<pre><code>## 
-## ======================================================================================================================
-##                                                           Dependent variable:                                         
-##                   ----------------------------------------------------------------------------------------------------
-##                      EI         SD        Sov     EI-Con     EI-SD    Sov-Con  SD-EI-Con  Sov-EI    SD-Con     Other  
-##                      (1)       (2)        (3)       (4)       (5)       (6)       (7)       (8)       (9)      (10)   
-## ----------------------------------------------------------------------------------------------------------------------
-## Brasilia          -1.024*** -1.002***   -0.206    -0.341   -1.019***   0.420   -1.197*** -1.212*** -0.860*** -0.892***
-##                    (0.169)   (0.205)    (0.260)   (0.248)   (0.273)   (0.257)   (0.330)   (0.342)   (0.318)   (0.172) 
-##                                                                                                                       
-## International     -0.612*** -1.583***  -1.427***  -0.265   -0.980***  -0.451   -1.110*** -1.105***  -0.117   -0.774***
-##                    (0.192)   (0.303)    (0.431)   (0.292)   (0.336)   (0.367)   (0.407)   (0.395)   (0.328)   (0.202) 
-##                                                                                                                       
-## Non-AM state        0.023     -0.041     0.324     0.149     0.071   0.823***   -0.466    -0.136    -0.074    -0.159  
-##                    (0.197)   (0.230)    (0.302)   (0.296)   (0.292)   (0.306)   (0.373)   (0.366)   (0.354)   (0.206) 
-##                                                                                                                       
-## Election           -0.241     0.028    -0.684**   -0.059    -0.254    -0.573     0.064   -1.243**   -0.067   -0.451** 
-##                    (0.186)   (0.215)    (0.298)   (0.253)   (0.281)   (0.406)   (0.367)   (0.547)   (0.405)   (0.194) 
-##                                                                                                                       
-## Deforestation     0.063***   -0.031*     0.004     0.023    0.047**    0.005    -0.013    -0.001     0.011   0.059*** 
-##                    (0.013)   (0.016)    (0.019)   (0.017)   (0.019)   (0.027)   (0.026)   (0.028)   (0.026)   (0.013) 
-##                                                                                                                       
-## Inflation         -0.001*** -0.0005***  -0.0001  -0.001*** -0.0005**  0.0002   -0.001**   -0.0004   -0.001*  -0.0002* 
-##                   (0.0001)   (0.0002)  (0.0002)  (0.0002)  (0.0002)  (0.0002)  (0.0004)  (0.0004)  (0.0004)  (0.0001) 
-##                                                                                                                       
-## Constant            0.228    0.852***   -0.599*  -0.762**  -0.981*** -2.041*** -0.794**  -1.049*** -1.630***   0.164  
-##                    (0.210)   (0.252)    (0.333)   (0.312)   (0.335)   (0.332)   (0.371)   (0.347)   (0.319)   (0.217) 
-##                                                                                                                       
-## ----------------------------------------------------------------------------------------------------------------------
-## Akaike Inf. Crit. 7,488.783 7,488.783  7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783
-## ======================================================================================================================
-## Note:                                                                                      *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Table 2, below, displays the multinational regression coefficients
+for the correlation between diverse problem constructions and locations.
+The regression coefficients express the relative probability in relation
+to the reference categories, which are Amazonian states for location and
+environmental conservation for problem construction. Although all the
+other mixed types problem-constructions were included in the model, we
+choose to display and focus the analysis on the pure types. From the
+outset, we notice that problem constructions of pure economic
+integration and pure social development correlate in negative
+statistically significant ways to both international settings and
+Brasilia in relation to environmental conservation problem constructions
+in Amazonian states. These findings indicate that constructing the
+Amazon as an issue of environmental conservation is more likely to
+happen in international settings and in Brasilia than in Amazonian
+states. Additionally, pure sovereignty correlates in negative
+statistically significant ways to international settings in relation to
+conservation in Amazonian states. That is, constructing the Amazon as an
+issue of sovereignty is less likely in international settings than it is
+in Amazonian States. Interestingly, we see no statistically significant
+correlations between problem constructions in non-Amazonian states in
+relation to Amazonian states. This indicates that when presidents speak
+about the Amazon at the state level, constructions might be rather
+similar across different states. Furthermore, we also notice that some
+of the control variables correlate with some Amazonian problem
+constructions in interesting ways. For example, pure sovereignty
+constructions correlate negatively with election years in relation to
+conservation. That is, in election years conservation constructions are
+more likely to take place in comparison to sovereignty. As well, annual
+deforestation rates correlate positively with economic integration
+constructions in relation to conservation. This indicates that both
+deforestation increases and presidents are also more likely to construct
+the Amazon as an issue of economic integration.</p>
+<table>
+<caption>Table 2 - Amazon Problem-Construction by Location</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Dependent.Variables</td>
+<td align="left">Economic Integration vs. Environmental
+Conservation</td>
+<td align="left">Social Development vs. Environmental Conservation</td>
+<td align="left">Sovereignty vs. Environmental Conservation</td>
+</tr>
+<tr class="even">
+<td align="left">Brasilia.vs..Amazonian.States</td>
+<td align="left">-1.024***</td>
+<td align="left">-1.002***</td>
+<td align="left">-0.206</td>
+</tr>
+<tr class="odd">
+<td align="left">International.vs..Amazonian.States</td>
+<td align="left">-0.612***</td>
+<td align="left">-1.583***</td>
+<td align="left">-1.427***</td>
+</tr>
+<tr class="even">
+<td align="left">Non.AM.States.vs..Amazonian.States</td>
+<td align="left">0.023</td>
+<td align="left">-0.041</td>
+<td align="left">0.324</td>
+</tr>
+<tr class="odd">
+<td align="left">Election.Year</td>
+<td align="left">-0.241</td>
+<td align="left">0.028</td>
+<td align="left">-0.684**</td>
+</tr>
+<tr class="even">
+<td align="left">Annual.Deforestation</td>
+<td align="left">0.063***</td>
+<td align="left">-0.031*</td>
+<td align="left">0.004</td>
+</tr>
+<tr class="odd">
+<td align="left">Average.Inflation</td>
+<td align="left">-0.001***</td>
+<td align="left">-0.001***</td>
+<td align="left">-0.0001</td>
+</tr>
+</tbody>
+</table>
+<p><span class="citation">Putnam (1988)</span> seminal article on the
+two level game between domestic and international politics analyzes how
+negotiations at both levels make policies possible. The author argues
+that both domestic and international levels need to be taken into
+consideration when analyzing how, often, domestic politics became
+entangled in international negotiations. The Amazon, as a region and a
+forest, has been the topic of international negotiations, national
+debates, and local policy implementation; though how the Amazon has been
+constructed as an issue differs on each of these three levels. While in
+Brasilia or internationally different presidents might construct the
+Amazon as an issue of conservation, the same presidents might construct
+the Amazon as an issue of economic integration or social development at
+the local level. This implies not only that audiences’ priorities in
+each setting change, but that which policies are appropriate to solve
+the “Amazon issue” differ. The three level game entails that
+conservation might be a desirable construction when speaking
+internationally about the Amazon, but not for local electorates. Such
+might help explain diverse local implementation gaps between public
+policy negotiated outside and implemented within the Amazon as
+perceptions and expectations about the issues the same policy addresses
+might differ <span class="citation">(Alesina and Giuliano 2009; López et
+al. 2020)</span>.</p>
+<p>Whereas presidential discourses at the top matter to define and
+justify public policy <span class="citation">(Zarefsky 2004)</span>,
+presidents shape their discourses according to who their audience might
+be and what “they want to hear”. This democratic game contribute to the
+advancement of ambiguous public policies thought from the outside to the
+Amazon or contradictory policies from Amazon to the outside. Take, for
+example, the rural credit offered to local agricultural producers in
+Amazonian states went from 500 million reais in 1999 to over 4 billion
+by 2012 (cite). During the same period, the money spent in fighting
+deforestation in the Amazonian states also increased from … in … to … in
+… These policies match diverse local, national, and international
+expectations and match solutions to different problem constructions
+presented at each of these levels.</p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
@@ -2556,6 +2654,10 @@ socioambiental en la Amazonia,”</span> January. <a href="https://gredos.usal.e
 ———. 2021. <em>Amazônia: Uma Década de Esperança</em>. 1ª edição. São
 Paulo: Estação Liberdade.
 </div>
+<div id="ref-cezar2020" class="csl-entry">
+Cezar, Rodrigo Fagundes. 2020. <span>“Brazilian Presidential Speeches
+from 1985 to July 2020.”</span> <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/M9UU09">https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/M9UU09</a>.
+</div>
 <div id="ref-drummond2006" class="csl-entry">
 Drummond, Jose, and Ana Flavia Barros-Platiau. 2006. <span>“Brazilian
 Environmental Laws and Policies, 1934-2002: A Critical Overview.”</span>
@@ -2617,10 +2719,19 @@ López, Matias, Graziella Moraes Silva, Chana Teeger, and Pedro Marques.
 2020. <span>“Economic and Cultural Determinants of Elite Attitudes
 Toward Redistribution.”</span> <em>Socio-Economic Review</em>, May. <a href="https://doi.org/10.1093/ser/mwaa015">https://doi.org/10.1093/ser/mwaa015</a>.
 </div>
+<div id="ref-meyer2021" class="csl-entry">
+Meyer, David, Evgenia Dimitriadou, Kurt Hornik, Andreas Weingessel, and
+Friedrich Leisch. 2021. <em>E1071: Misc Functions of the Department of
+Statistics, Probability Theory Group (Formerly: E1071), TU Wien</em>. <a href="https://CRAN.R-project.org/package=e1071">https://CRAN.R-project.org/package=e1071</a>.
+</div>
 <div id="ref-miranda2021" class="csl-entry">
 Miranda, David. 2021. <span>“Bolsonaro<span>’</span>s 1,000km Amazon
 Railway Will Cause Climate Chaos. It Must Be Stopped.”</span> <em>The
 Guardian</em>, July. <a href="https://www.theguardian.com/commentisfree/2021/jul/28/bolsonaro-amazon-railway-climate-chaos-must-be-stopped">https://www.theguardian.com/commentisfree/2021/jul/28/bolsonaro-amazon-railway-climate-chaos-must-be-stopped</a>.
+</div>
+<div id="ref-noble2006" class="csl-entry">
+Noble, William S. 2006. <span>“What Is a Support Vector Machine?”</span>
+<em>Nature Biotechnology</em> 24 (12): 1565–67.
 </div>
 <div id="ref-pacheco2019" class="csl-entry">
 Pacheco, João. 2019. <em>Ecxterminio y Tutela: Procesos de Formación de
@@ -2629,7 +2740,7 @@ Alteridades En El Brasil</em>. UNSAM Edita. Ciencias sociales. <a href="http://w
 <div id="ref-putnam1988" class="csl-entry">
 Putnam, Robert D. 1988. <span>“Diplomacy and Domestic Politics: The
 Logic of Two-Level Games.”</span> <em>International Organization</em> 42
-(3): 427–60. <a href="https://www.jstor.org/stable/2706785">https://www.jstor.org/stable/2706785</a>.
+(3): 427–60. <a href="http://www.jstor.org/stable/2706785">http://www.jstor.org/stable/2706785</a>.
 </div>
 <div id="ref-silva-muller2022" class="csl-entry">
 Silva-Muller, Livio, and Moira Faul. 2022. <span>“Protecting the Amazon
@@ -2672,25 +2783,35 @@ expanding the Brazilian territory beyond what the Tordesillas Treaty
 established. The treaty allocated almost the whole Amazonian territory
 to the Spanish Empire, the bandeirantes took much of the territory
 afterwards.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>The reasoning here is that knowledge of high or low
+<li id="fn4"><p>For an overview on how inflation and political discourse
+in Brazil see Porto (2007), Malheiros-Poulet (2012), and Fonseca et
+al. (2021). For a few studies on racist and anti-racist discourses in
+Brazil see Htun (2004), Silva and Larkins (2019) and Dijk (2020).<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>For more information on this please see the extended
+methodology. The document includes a detailed discussion of how the SVM
+algorithm was chosen over other algorithms based on evaluation of
+performance of trained models for labeling the validation set. The
+extended methodology also includes a more detailed codebook table with
+further coding guidelines.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>The reasoning here is that knowledge of high or low
 deforestation rates might drive presidents to speak about the Amazon.
-Matching deforestation with speech dates is a complicated endeavor. INPE
-published consolidated deforestation data with almost two years of delay
-until 2005 <span class="citation">(Capobianco 2021, 60)</span>.
-Preliminary data was published earlier, but with lower degrees of
-confidence in the findings. For the subsequent years, the consolidated
-figures for a given year tend to come out in August of the subsequent
-year. However, it also seems to be the case that the executive
-government have access to the data before everyone else. In addition,
-other sources indicating if deforestation is going up or down, as fire
-data or lower resolution deforestation data (DETER for example),
-circulates within the same year. The year of 1988 is particularly
-indicative of these complications: a report dating 1988 was circulating
-with deforestation and fire figures<span class="citation">(Fearnside
-1990)</span>, and a New York Times article about the issue was written
-with comments by an INPE scientist <span class="citation">(Simons and
-Times 1988)</span>. Hence, we believe the most appropriate way of
-matching is without any lags on deforestation.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+Nevertheless, matching deforestation with speech dates is a complicated
+endeavor. INPE published consolidated deforestation data with almost two
+years of delay until 2005 <span class="citation">(Capobianco 2021,
+60)</span>. Preliminary data was published earlier, but with lower
+degrees of confidence in the findings. For the subsequent years, the
+consolidated figures for a given year came out in August of the
+subsequent year. However, it also seems to be the case that the
+executive government have access to the data before everyone else. In
+addition, other sources indicating if deforestation is going up or down,
+as fire data or lower resolution deforestation data (DETER for example),
+or even other sources, circulated within the year the data covered. The
+year of 1988 is particularly indicative of these complications: a report
+dating 1988 was circulating with deforestation and fire figures<span class="citation">(Fearnside 1990)</span>, and a New York Times article
+about the issue with deforestation rates for 1988 was written with
+comments by an INPE scientist <span class="citation">(Simons and Times
+1988)</span>. Hence, we believe the most appropriate way of matching is
+without any lags on deforestation.<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
