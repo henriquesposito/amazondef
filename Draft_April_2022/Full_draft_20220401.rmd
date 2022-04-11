@@ -302,7 +302,7 @@ pure_types_time <- ama_mx %>%
   geom_smooth(aes(color=mx_cat), se=FALSE, size=.5) +
   scale_y_continuous(labels = percent_format(accuracy=1)) +
   labs(x = "", y = "", title ="Share of each pure type by year",
-       subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+       subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
        caption = "") +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
@@ -315,16 +315,13 @@ pure_types_time
 ```
 
 ```{r code for averages, eval=FALSE, include=FALSE}
-
 mmt1 <- ama_mx %>%
   filter(mx_cat2 == "Mixed-types") %>%
   count(mx_cat) %>%
   mutate(perc = n / sum(n)) #averages in relation to only mixed-types
-
 mmt2 <- ama_mx %>%
   count(mx_cat)%>%
   mutate(perc = n / sum(n)) # averages in relation to full sample
-
 ```
 
 We now move to mixed types, which average at 17.7% for all presidents in our sample: overall, presidents prefer pure problem-constructions. While there is some variation in time for each single mixed type, some of them have low counts and interpretations are not adequate. We focus our discussion on those with higher incidence. First, the most frequent mix overall is that of economic integration with environmental conservation, which averages at 29.15% in relation to mixed types only, and at 6.8% in relation to all Amazonian statements. Overall, we observe an increase along time, reaching its pike in the early 2010. President Dilma was the most frequent user of this mix. A close second is economic and social development being used together in about 22.9% of all mixed type statements and 5.4% of all statements. 
@@ -364,19 +361,20 @@ This is not to say that those who preceded President Bolsonaro are like him. The
 
 ## 4.3 An Amazonian three-level game? Boasting policy outside, talking to people inside
 
-```{r Figure 5: pure types in time by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+Figure 5, below, illustrates the share of pure-type problem construction by locations in Brazil. We divide locations into Amazonian states (i.e. all the Brazilian states in which the Amazon biome is present), non-Amazonian states (other brazilian states), Brasilia (the capital city in Brazil), and international (countries outside of Brazil). Notice that, consistently, presidents construct the Amazon as an issue of pure economic integration within Amazonian states more often than all other constructions in time. Alternatively, we see that pure conservation becomes increasingly less frequent in time for Amazonian states. As well, pure social development constructions, which were fairly frequent from the early-2000s and onwards, disappeared around 2015 after the mid-2010s in Amazonian states. Nonetheless, we see a large increase from the mid-2000s to the mid-2010s in the frequency in which presidents constructed the Amazon as an issue of pure social development in Brasilia and non-Amazonian states. In Brasilia, also, pure conservation constructions went down drastically during the 1990s, but increased steadily from the mid-2000s onwards. Interestingly, presidents most often constructed the Amazon as an issue of pure environmental conservation internationally only from the mid 2000s until the mid-2010s. Moreover, pure sovereignty constructions did appear in international settings until the mid-2000s. 
 
+```{r Figure 5: pure types in time by location, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 pure_types_time_location <- ama_mx %>%
-  count(president, mx_cat2, mx_cat, year, location_cat) %>%
-  group_by(president, year) %>%
+  count(mx_cat2, mx_cat, year, location_cat) %>%
+  group_by(year) %>%
   mutate(perc = n / sum(n)) %>% 
   filter(mx_cat2 == "Pure-types") %>%
-  filter(location_cat != "Non Identified") %>%
+  filter(location_cat != "Non Identified") %>% 
   ggplot(aes(x=as.numeric(year), y=perc, color=mx_cat)) +
   geom_smooth(aes(color=mx_cat), se=FALSE, size=.5) +
   scale_y_continuous(labels = percent_format(accuracy=1)) +
   labs(x = "", y = "", title ="Share of each pure type in time by location",
-       subtitle = "Sample composed by 1885 Amazonian statements in presidential speeches since 1985",
+       subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
        caption = "") +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
@@ -386,12 +384,10 @@ pure_types_time_location <- ama_mx %>%
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")+
   facet_wrap(~location_cat, scales= "free_y", ncol=2)
-
 pure_types_time_location
-
 ```
 
-Table 2, below, displays the multinomial regression coefficients for the correlation between problem constructions and locations. The regression coefficients express the relative probability in relation to the reference categories, which are Amazonian states for location and environmental conservation for problem construction. Although all the other mixed types problem-constructions were included in the model, we choose to display and focus the analysis on the pure types. From the outset, we notice that problem constructions of pure economic integration and pure social development correlate in negative statistically significant ways to both international settings and Brasilia in relation to environmental conservation problem constructions in Amazonian states. These findings indicate that constructing the Amazon as an issue of  environmental conservation is more likely to happen in international settings and in Brasilia than in Amazonian states. Additionally, pure sovereignty correlates in negative statistically significant ways to international settings in relation to conservation in Amazonian states. That is, constructing the Amazon as an issue of sovereignty is less likely in international settings than it is in Amazonian States. Interestingly, we see no statistically significant correlations between problem constructions in non-Amazonian states in relation to Amazonian states. This indicates that when presidents speak about the Amazon at the state level, constructions might be rather similar across different states. Furthermore, we also notice that some of the control variables correlate with some Amazonian problem constructions in interesting ways. For example, pure sovereignty constructions correlate negatively with election years in relation to conservation. That is, in election years conservation constructions are more likely to take place in comparison to sovereignty. As well, annual deforestation rates correlate positively with economic integration constructions in relation to conservation. This indicates that both deforestation increases and presidents are also more likely to construct the Amazon as an issue of economic integration.
+Table 2, below, displays the multinomial regression coefficients for the correlation between diverse problem constructions and locations. The regression coefficients express the log odds, that is, the logarithm odds to the reference categories. The reference categories are Amazonian states for location and environmental conservation for problem construction.  To facilitate visualization, since the model has many more columns (i.e. types of problem construction), we only display the model results for the pure-type constructions, however, the model does account for both pure and mixed-type constructions. We keep the results for the control variables for election year, annual deforestation rates, and average yearly inflation in the table.
 
 ```{r multimonial model, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 # data on deforestation rates per year (PRODES)
@@ -446,9 +442,15 @@ md <- data.frame("Dependent Variables" = c("Economic Integration vs. Environment
 kableExtra::kable(t(md), format = "simple", caption = "Table 2 - Amazon Problem-Construction by Location")
 ```
 
+The results indicate that the presidents are more likely to construct it as an environmental conservation problem far away from the Amazon. The negative statistically significant coefficients of problem constructions such as pure economic integration and pure social development in both international settings and Brasilia, in relation to environmental conservation problem constructions in Amazonian states, indicate that presidents are less likely to construct the Amazon as an issue of economic integration and social development in those locations. That is, presidents are more likely to construct the Amazon as an issue of environmental conservation in international settings and in Brasilia than in Amazonian states.
+
+Sovereignty in the Amazon is an issue within Brazil. The negative statistically significant coefficient for constructing the Amazon as a problem of pure sovereignty in international settings, in relation to conservation problem constructions in Amazonian states, indicate that presidents are less likely to construct the Amazon as an issue of economic integration and social development in those locations. The lack of statistically significant correlations between pure sovereignty constructions and Brasilia or other non-Amazonian states, corroborates that the Amazon as an issue of sovereignty is an internally performed issue.
+
+Constructing the Amazon as an issue of economic integration correlates with increases in deforestation rates. Some of the control variables correlate with some Amazonian problem constructions in interesting ways. For example, pure sovereignty constructions correlate negatively with election years in relation to conservation. That is, in election years conservation constructions are more likely to take place in comparison to sovereignty. As well, annual deforestation rates correlate positively with economic integration constructions in relation to conservation. This indicates that as deforestation increases, presidents are also more likely to construct the Amazon as an issue of economic integration, or vice-versa.
+
 @putnam1988 seminal article on the two level game between domestic and international politics analyzes how negotiations at both levels make policies possible. The author argues that both domestic and international levels need to be taken into consideration when analyzing how, often, domestic politics became entangled in international negotiations. The Amazon, as a region and a forest, has been the topic of international negotiations, national debates, and local policy implementation; though how the Amazon has been constructed as an issue differs on each of these three levels. While in Brasilia or internationally different presidents might construct the Amazon as an issue of conservation, the same presidents might construct the Amazon as an issue of economic integration or social development at the local level. This implies not only that audiences’ priorities in each setting change, but that which policies are appropriate to solve the “Amazon issue” differ. The three level game entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not for local electorates. Such might help explain diverse local implementation gaps between public policy negotiated outside and implemented within the Amazon as perceptions and expectations about the issues the same policy addresses might differ [@alesina2009; @lopez2020].
 
-Whereas presidential discourses at the top matter to define and justify public policy [@zarefsky2004], presidents shape their discourses according to who their audience might be and what "they want to hear". This democratic game contribute to the advancement of ambiguous public policies thought from the outside to the Amazon or contradictory policies from Amazon to the outside. Take, for example, the rural credit offered to local agricultural producers in Amazonian states went from 500 million reais in 1999 to over 4 billion by 2012 (cite). During the same period, the money spent in fighting deforestation in the Amazonian states also increased from … in … to … in … These policies match diverse local, national, and international expectations and match solutions to different problem constructions presented at each of these levels.
+Whereas presidential discourses at the top matter to define and justify public policy [@zarefsky2004], presidents shape their discourses according to who their audience might be and what "they want to hear". This democratic game contributes to the advancement of ambiguous public policies thought from the outside to the Amazon or contradictory policies from Amazon to the outside. Take, for example, the rural credit offered to local agricultural producers in Amazonian states went from 500 million reais in 1999 to over 4 billion by 2012 [@capobianco2021]. During the same period, the money spent in fighting deforestation in the Amazonian states also increased from … in … to … in … These policies match diverse local, national, and international expectations and match solutions to different problem constructions presented at each of these levels.
 
 # 5 Conclusion
 
