@@ -394,18 +394,10 @@ pure_types_time_location
 Table 2, below, displays the multinomial regression coefficients for the correlation between diverse problem constructions and locations. The regression coefficients express the log odds, that is, the logarithm odds to the reference categories. The reference categories are Amazonian states for location and environmental conservation for problem construction.  To facilitate visualization, since the model has many more columns (i.e. types of problem construction), we only display the model results for the pure-type constructions, however, the model does account for both pure and mixed-type constructions. We keep the results for the control variables for election year, annual deforestation rates, and average yearly inflation in the table.
 
 ```{r multimonial model, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-# data on deforestation rates per year (PRODES)
-# source: http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates
-# Since annual deforestation rates are calculated since 1988, we copy the rates of 1988 to 1985, 1986, and 1987.
-# These rates are consistent with most estimates (see for example Prates and Bracha 2010 -
-# https://www.scielo.br/j/ecos/a/59DMy3zmJdPHXzXRsHTkmNF/?lang=pt&format=pdf)
 adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
 amazon_def_year <- rbind(adr, amazon_def_year)
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
-# inflation rates per year Brazil (average for year)
-# source EU inflation: https://www.inflation.eu/en/inflation-rates/brazil/historic-inflation/cpi-inflation-brazil.aspx
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
-# remove non-identified locations and mixed-other constructions (very little data for either and not relevant)
 ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>% 
   mutate(mx_cat = factor(mx_cat, levels = c("Pure Conservation", "Pure Economic Integration",
                                             "Pure Social Development", "Pure Sovereignty", "Economic Conservation",
@@ -419,20 +411,7 @@ model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data =
 model_summary <- summary(model)
 p_values <- round((1 - pnorm(abs(summary(model)$coefficients/summary(model)$standard.errors)))*2, 5)
 # post estimation tests
-chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
-# Chi-square p value (p-value < 0.001) tells us that our model explains a
-# significant amount of the variation in the data in comparison with a null model.
-# null_model <- multinom(mx_cat ~ 1, data = ama_model) # Null model for a likelihood ration test, just in case.
-# library(lmtest)
-# lrtest(null_model, model) # We very much reject the hypothesis
-# (i.e. the more complex model is significantly better than the null model).
-# Finally, let's get a nice output:
-# model_output <- stargazer::stargazer(model, type = "text",
-#                                      covariate.labels = c("Brasilia", "International", "Non-AM state",
-#                                                           "Election", "Deforestation", "Inflation"),
-#                                      column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
-#                                                        "Sov-EI", "SD-Con", "Other"),
-#                                      dep.var.labels.include = FALSE)
+chi_square <- chisq.test(ama_model$mx_cat, predict(model))
 # too much information... Let's just focus on what we want here...
 md <- data.frame("Dependent Variables" = c("Economic Integration vs. Environmental Conservation",
                                            "Social Development vs. Environmental Conservation",
@@ -551,6 +530,31 @@ After merging the data altogether for analysis, we chose to delete the false pos
 ## Multinomial Modeling
 
 To analyze our data, we first present a series of different plots on proportions of Amazonian statements and problem-constructions over time and by presidents. We control proportions for factors that might affect the incidence of the Amazon in speeches and portray both real and controlled curves. To test whether different problem constructions change according to location, we run a multinomial regression model in which different problem constructions (as categories) are the dependent variable and location is the independent variable. We code 4 different location categories for where speeches take place, they are: Amazonian states, non-Amazonian states, Brasilia, and International. In the model, we also control for annual deforestation rates, annual inflation rates, and election years in the model as these are variables which could mitigate the correlations between problem construction and location. Annual deforestation rates data were taken from the Satellite Monitoring of Deforestation Program (PRODES). However, since annual deforestation rates are calculated from 1988, we input the rates of 1988 to 1985, 1986, and 1987 because these rates are consistent with most estimates (see Prates and Bracha 2010). The average annual inflation data is taken from the Worldwide Inflation Data. Election years are input as a dummy variable in which election years are marked 1 and non-election years are marked 0. After the model is run, post estimation tests such as the Chi-square test shows us that the model selected is highly statistically significant in explaining variance in data in comparison to a null model (i.e. our model explains a considerable amount of the variance). The likelihood ratio test also shows that the model does not suffer with issues of multicollinearity.
+
+```{r full regression results, echo=FALSE, message=FALSE, warning=FALSE, out.width="50%", paged.print=FALSE, include=TRUE}
+# data on deforestation rates per year (PRODES)
+# source: http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates
+# Since annual deforestation rates are calculated since 1988, we copy the rates of 1988 to 1985, 1986, and 1987.
+# These rates are consistent with most estimates (see for example Prates and Bracha 2010 -
+# https://www.scielo.br/j/ecos/a/59DMy3zmJdPHXzXRsHTkmNF/?lang=pt&format=pdf)
+# inflation rates per year Brazil (average for year)
+# source EU inflation: https://www.inflation.eu/en/inflation-rates/brazil/historic-inflation/cpi-inflation-brazil.aspx
+# post estimation tests
+chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
+# Chi-square p value (p-value < 0.001) tells us that our model explains a
+# significant amount of the variation in the data in comparison with a null model.
+# null_model <- multinom(mx_cat ~ 1, data = ama_model) # Null model for a likelihood ration test, just in case.
+# library(lmtest)
+# lrtest(null_model, model) # We very much reject the hypothesis
+# (i.e. the more complex model is significantly better than the null model).
+# too much information... Let's just focus on what we want here...
+stargazer::stargazer(model, type = "text",
+                     covariate.labels = c("Brasilia", "International", "Non-AM state",
+                                          "Election", "Deforestation", "Inflation"),
+                     column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
+                                       "Sov-EI", "SD-Con", "Other"),
+                     dep.var.labels.include = FALSE)
+```
 
 ## Limitations
 
