@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.11)  11 APR 2022 19:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.11)  12 APR 2022 14:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -440,31 +440,31 @@ File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
 ) (./Full_draft_20220401.aux)
 \openout1 = `Full_draft_20220401.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 113.
+Package hyperref Info: Link coloring OFF on input line 114.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
@@ -474,9 +474,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count309
 )
-LaTeX Info: Redefining \ref on input line 113.
-LaTeX Info: Redefining \pageref on input line 113.
-LaTeX Info: Redefining \nameref on input line 113.
+LaTeX Info: Redefining \ref on input line 114.
+LaTeX Info: Redefining \pageref on input line 114.
+LaTeX Info: Redefining \nameref on input line 114.
 (./Full_draft_20220401.out) (./Full_draft_20220401.out)
 \@outlinefile=\write3
 \openout3 = `Full_draft_20220401.out'.
@@ -515,249 +515,248 @@ LaTeX Info: Redefining \nameref on input line 113.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 115.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 115.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 115.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 115.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 115.
+(Font)              <12> on input line 116.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 115.
+(Font)              <8> on input line 116.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 115.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 115.
+(Font)              <6> on input line 116.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 115.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 115.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 116.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 115.
+(Font)              <5> on input line 116.
 [1
 
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 247.
+(Font)              <10> on input line 244.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 247.
+(Font)              <7> on input line 244.
 [3] [4] [5] [6] [7]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 583.
+(Font)              <9> on input line 608.
 
-LaTeX Warning: Float too large for page by 11.47276pt on input line 584.
+LaTeX Warning: Float too large for page by 11.47276pt on input line 609.
 
 [8
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.586 \end{landscape}
+l.611 \end{landscape}
                      ] [9
 
 
 ]
-<Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf, id=179, 469.755pt x 325.215pt>
+<Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf, id=154, 469.755pt x 325.215pt>
 File: Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf Graphic file (type pdf)
 <use Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf>
-Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf  used on input line 721.
+Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf  used on input line 754.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [10] [11 <./Full_draft_20220401_files/figure-latex/Figure 1: Amazonian speeches by year-1.pdf>]
-<Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf, id=196, 469.755pt x 325.215pt>
+<Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf, id=172, 469.755pt x 325.215pt>
 File: Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf Graphic file (type pdf)
 <use Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf>
-Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf  used on input line 797.
+Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf  used on input line 821.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [12 <./Full_draft_20220401_files/figure-latex/Figure 2: mixed-types in time-1.pdf>]
-<Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf, id=208, 469.755pt x 325.215pt>
+<Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf, id=184, 469.755pt x 325.215pt>
 File: Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf Graphic file (type pdf)
 <use Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf>
-Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf  used on input line 827.
+Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf  used on input line 853.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [13 <./Full_draft_20220401_files/figure-latex/Figure 3: pure types in time -1.pdf>]
-<Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf, id=220, 469.755pt x 325.215pt>
+<Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf, id=196, 469.755pt x 325.215pt>
 File: Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf Graphic file (type pdf)
 <use Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf>
-Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf  used on input line 865.
+Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf  used on input line 882.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[14 <./Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf>]
-<Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf, id=231, 469.755pt x 325.215pt>
+<Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf, id=197, 469.755pt x 325.215pt>
 File: Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf Graphic file (type pdf)
 <use Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf>
-Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf  used on input line 913.
+Package pdftex.def Info: Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf  used on input line 902.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[15 <./Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf>] [16
+[14 <./Full_draft_20220401_files/figure-latex/Figure 4: mixed-types by president -1.pdf>] [15 <./Full_draft_20220401_files/figure-latex/Figure 5: pure types in time by location-1.pdf>] [16
 pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1025 
-       ] [17] [18] [19] [20]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1409.
+l.1048 
+       ]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1099.
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## ======================================================================================================================[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                   ----------------------------------------------------------------------------------------------------[] 
  []
 
-
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 1442--1442
+[17]
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                      EI         SD        Sov     EI-Con     EI-SD    Sov-Con  SD-EI-Con  Sov-EI    SD-Con     Other[] 
  []
 
 
-Overfull \hbox (149.74318pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (149.74318pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                      (1)       (2)        (3)       (4)       (5)       (6)       (7)       (8)       (9)      (10)[] 
  []
 
-[21]
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## ----------------------------------------------------------------------------------------------------------------------[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Brasilia          -1.024*** -1.002***   -0.206    -0.341   -1.019***   0.420   -1.197*** -1.212*** -0.860*** -0.892***[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.169)   (0.205)    (0.260)   (0.248)   (0.273)   (0.257)   (0.330)   (0.342)   (0.318)   (0.172)[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## International     -0.612*** -1.583***  -1.427***  -0.265   -0.980***  -0.451   -1.110*** -1.105***  -0.117   -0.774***[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.192)   (0.303)    (0.431)   (0.292)   (0.336)   (0.367)   (0.407)   (0.395)   (0.328)   (0.202)[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Non-AM state        0.023     -0.041     0.324     0.149     0.071   0.823***   -0.466    -0.136    -0.074    -0.159[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.197)   (0.230)    (0.302)   (0.296)   (0.292)   (0.306)   (0.373)   (0.366)   (0.354)   (0.206)[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Election           -0.241     0.028    -0.684**   -0.059    -0.254    -0.573     0.064   -1.243**   -0.067   -0.451**[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.186)   (0.215)    (0.298)   (0.253)   (0.281)   (0.406)   (0.367)   (0.547)   (0.405)   (0.194)[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Deforestation     0.063***   -0.031*     0.004     0.023    0.047**    0.005    -0.013    -0.001     0.011   0.059***[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.013)   (0.016)    (0.019)   (0.017)   (0.019)   (0.027)   (0.026)   (0.028)   (0.026)   (0.013)[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Inflation         -0.001*** -0.0005***  -0.0001  -0.001*** -0.0005**  0.0002   -0.001**   -0.0004   -0.001*  -0.0002*[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                   (0.0001)   (0.0002)  (0.0002)  (0.0002)  (0.0002)  (0.0002)  (0.0004)  (0.0004)  (0.0004)  (0.0001)[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Constant            0.228    0.852***   -0.599*  -0.762**  -0.981*** -2.041*** -0.794**  -1.049*** -1.630***   0.164[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ##                    (0.210)   (0.252)    (0.333)   (0.312)   (0.335)   (0.332)   (0.371)   (0.347)   (0.319)   (0.217)[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## ----------------------------------------------------------------------------------------------------------------------[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Akaike Inf. Crit. 7,488.783 7,488.783  7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783 7,488.783[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## ======================================================================================================================[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 1442--1442
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 1132--1132
 []\T1/lmtt/m/n/10 ## Note:                                                                                      *p<0.1; **p<0.05; ***p<0.01[] 
  []
 
-[22]
-Underfull \hbox (badness 10000) in paragraph at lines 1519--1523
+
+Underfull \hbox (badness 10000) in paragraph at lines 1185--1189
 []$\T1/lmr/m/n/10 https : / / www . bloomberg . com / news / features / 2021 -[] 07 -[] 29 / amazon -[] rainforest -[] deforestation -[] land -[] grabs -[]
  []
 
-[23]
-Underfull \hbox (badness 10000) in paragraph at lines 1653--1659
+[18] [19]
+Underfull \hbox (badness 10000) in paragraph at lines 1317--1323
 \T1/lmr/m/n/10 com / Partnerships -[] for -[] Sustainability -[] in -[] Contemporary -[] Global -[] Governance -[] Pathways / Andonova -[] Faul -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1653--1659
+Underfull \hbox (badness 10000) in paragraph at lines 1317--1323
 \T1/lmr/m/n/10 Piselli / p / book / 9780367708870# : ~ : text = %22Partnerships % 20for % 20Sustainability % 20provides % 20a ,[]
  []
 
-[24] (./Full_draft_20220401.aux)
+[20] (./Full_draft_20220401.aux)
 Package rerunfilecheck Info: File `Full_draft_20220401.out' has not changed.
-(rerunfilecheck)             Checksum: 84344F45FFCBDFD4F57DA8E2E80E3F80;5750.
+(rerunfilecheck)             Checksum: D8804B288FB23FE58CF1207251616FA7;5309.
  ) 
 Here is how much of TeX's memory you used:
- 12527 strings out of 480228
- 201901 string characters out of 5894808
- 503195 words of memory out of 5000000
- 30108 multiletter control sequences out of 15000+600000
+ 12503 strings out of 480228
+ 201672 string characters out of 5894808
+ 507037 words of memory out of 5000000
+ 30098 multiletter control sequences out of 15000+600000
  543581 words of font info for 83 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  60i,17n,63p,1181b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on Full_draft_20220401.pdf (24 pages, 490332 bytes).
+Output written on Full_draft_20220401.pdf (20 pages, 466364 bytes).
 PDF statistics:
- 480 PDF objects out of 1000 (max. 8388607)
- 410 compressed objects within 5 object streams
- 121 named destinations out of 1000 (max. 500000)
- 226 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 433 PDF objects out of 1000 (max. 8388607)
+ 368 compressed objects within 4 object streams
+ 107 named destinations out of 1000 (max. 500000)
+ 186 words of extra memory for PDF output out of 10000 (max. 10000000)
 
