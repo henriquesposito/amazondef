@@ -426,12 +426,12 @@ p_values <- round((1 - pnorm(abs(summary(model)$coefficients/summary(model)$stan
 md <- tibble("Dependent Variable" = c("Economic Integration vs Environmental Conservation",
                                            "Social Development vs Environmental Conservation",
                                            "Sovereignty vs Environmental Conservation"),
-                 "Brasilia vs Amazonian States" = c("-1.024***","-1.002***", "-0.206"),
-                 "International vs Amazonian States" = c("-0.612***", "-1.583***", "-1.427***"),
-                 "Other States vs Amazonian States" = c("0.023", "-0.041", "0.324"),
-                 "Election Year" = c("-0.241", "0.028", "-0.684**"),
-                 "Annual Deforestation" = c("0.063***", "-0.031*", "0.004"),
-                 "Average Inflation" = c("-0.001***", "-0.001***", "-0.0001"))
+                 "Brasilia vs Amazonian States" = c("-1.024*** (0.169)","-1.002*** (0.205)", "-0.206 (0.260)"),
+                 "International vs Amazonian States" = c("-0.612*** (0.192)", "-1.583*** (0.303)", "-1.427*** (0.431)"),
+                 "Other States vs Amazonian States" = c("0.023 (0.197)", "-0.041 (0.230)", "0.324 (0.302)"),
+                 "Election Year" = c("-0.241 (0.186)", "0.028 (0.215)", "-0.684** (0.298)"),
+                 "Annual Deforestation" = c("0.063*** (0.013)", "-0.031* (0.016)", "0.004 (0.019)"),
+                 "Average Inflation" = c("-0.001*** (0.0001)", "-0.001*** (0.0002)", "-0.0001 (0.0002)"))
 
 kbl(t(md), booktabs = T,caption = "Table 2 - Amazon Problem-Construction by Location", align = "c")%>% kable_styling(latex_options = c("striped", "scale_down"), position= "center", font_size = 9, full_width = TRUE) %>%
   column_spec(1, width="5 cm", bold=TRUE, latex_valign = "m")%>%
@@ -443,7 +443,7 @@ kbl(t(md), booktabs = T,caption = "Table 2 - Amazon Problem-Construction by Loca
 The results indicate that the presidents are more likely to construct it as an environmental conservation problem far away from the Amazon. The negative statistically significant coefficients of problem constructions such as pure economic integration and pure social development in both international settings and Brasilia, in relation to environmental conservation problem constructions in Amazonian states, indicate that presidents are less likely to construct the Amazon as an issue of economic integration and social development in those locations. That is, presidents are more likely to construct the Amazon as an issue of environmental conservation in international settings and in Brasilia than in Amazonian states.
 
 ```{r Figure 6: probability for constructions across locations, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-logit2prob <- function(logit){
+logit2prob <- function(logit) {
   odds <- exp(logit)
   prob <- odds / (1 + odds)
   return(prob)
