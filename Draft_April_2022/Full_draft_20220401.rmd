@@ -395,7 +395,7 @@ pure_types_time_location <- ama_mx %>%
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom")+
+        legend.position = "bottom") +
   facet_wrap(~location_cat, scales= "free_y", ncol=2)
 pure_types_time_location
 ```
@@ -462,7 +462,14 @@ mplot <- md_plot %>% tidyr::pivot_longer(Brasilia:Other_States) %>%
   geom_bar(aes(color = Location, fill = Location), stat = "identity", position = position_dodge(0.8), width = 0.7) +
   labs(x = "", y = "Probability",
        title = "Probability for problem constructions across locations",
-       subtitle = "Reference location is Amazonian States")
+       subtitle = "Reference location is Amazonian States") +
+    theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")
 mplot
 ```
 
