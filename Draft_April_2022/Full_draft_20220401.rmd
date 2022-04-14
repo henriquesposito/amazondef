@@ -198,7 +198,7 @@ codebook <- tibble::tibble("Problem Construction" = c("National Sovereignty", "E
                                        "The state does not work for profits, the state needs to guarantee dignity, we find that a citizen who lives in the riverside of the Amazon river, 600 kilometers from Manaus, has the right to have the electricity in their house, to owe a fridge, to owe a television where to watch the soap operas. We have invested over 14 billion reais in this program, in three and a half years. Do you know how many electrical lines we have already built? One million kilometers of lines. (Lula 20/11/2009)",
                                        "I have put in place emergency measures, I have suspended the exports of wood logs, I have suspended the fiscal incentives and credits to projects that could damage the environment in the amazon and I have made a license mandatory to gold mining that prohibits utilizing mercury in the process. This began the restructuring of the governmental system of control and preservation of the environment, I have created the Brazilian Institute for the Environment and Natural Resources [IBAMA], which will be headed by Dr. Mesquita (Sarney 20/07/1989)"))
 
-kbl(codebook, booktabs = T, caption = "Table 1 - Amazonian Problem-Construction Codebook") %>% kable_styling(latex_options = c("striped", "repeat_header", "scale_down"),position= "center", font_size = 9, full_width = TRUE) %>% column_spec(1, width="3cm", bold=TRUE) %>% column_spec(2, width="9cm") %>% column_spec(3, width = "9cm")
+kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook") %>% kable_styling(latex_options = c("striped", "repeat_header", "scale_down"),position= "center", font_size = 9, full_width = TRUE) %>% column_spec(1, width="3cm", bold=TRUE) %>% column_spec(2, width="9cm") %>% column_spec(3, width = "9cm")
 
 ```
 
@@ -425,9 +425,9 @@ md <- tibble("Dependent Variable" = c("Economic Integration vs Environmental Con
                  "Annual Deforestation" = c("0.063*** (0.013)", "-0.031* (0.016)", "0.004 (0.019)"),
                  "Average Inflation" = c("-0.001*** (0.0001)", "-0.001*** (0.0002)", "-0.0001 (0.0002)"))
 
-kbl(t(md), booktabs = T, caption = "Table 2 - Amazon Problem-Construction by Location", align = "c") %>%
+kbl(t(md), booktabs = T, caption = "Amazon Problem-Construction by Location", align = "c") %>%
   kable_styling(latex_options = c("striped", "scale_down"), position= "center", font_size = 9, full_width = TRUE) %>%
-  footnote(general = "The multinomial regression coefficients (in log odds) and standard errors (in parentheses) are displayed. The asterisk marks the level of statistical significance for coefficient, multiple asterisks denote a statistically significant P value above the 95th percentile.") %>% 
+  footnote(general = c("The multinomial regression coefficients are displayed in log odds.", "Standard errors are displayed in parentheses.","*** for p-value ≤ 0.001", "** for p-value ≤ 0.01", "* for p-value ≤ 0.05.")) %>% 
   column_spec(1, width="5 cm", bold=TRUE, latex_valign = "m") %>%
   column_spec(2, width="5cm", latex_valign = "m") %>%
   column_spec(3, width = "5cm", latex_valign = "m") %>%
@@ -487,35 +487,15 @@ While unprecedented, this new balance was not long-standing. Democratic decay is
 
 This paper answers how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985. Our findings show that these constructions are not monolithic within governments, in time, or across different locations. Conceptually, this contributes to understanding the social construction of the Amazon in discourses and how these might relate to outcomes such as policies and environmental outcomes. Empirically, we build the first comprehensive overview of the Amazon in presidential discourse.
 
-# References
-
 # Appendix
 
-## Multinomial Modeling
+````{=tex}
+\begin{landscape}
 
 ```{r full regression results, echo=FALSE, message=FALSE, warning=FALSE, out.width="50%", paged.print=FALSE, include=TRUE}
-# data on deforestation rates per year (PRODES)
-# source: http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates
-# Since annual deforestation rates are calculated since 1988, we copy the rates of 1988 to 1985, 1986, and 1987.
-# These rates are consistent with most estimates (see for example Prates and Bracha 2010 -
-# https://www.scielo.br/j/ecos/a/59DMy3zmJdPHXzXRsHTkmNF/?lang=pt&format=pdf)
-# inflation rates per year Brazil (average for year)
-# source EU inflation: https://www.inflation.eu/en/inflation-rates/brazil/historic-inflation/cpi-inflation-brazil.aspx
-# post estimation tests
+
 chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
-# Chi-square p value (p-value < 0.001) tells us that our model explains a
-# significant amount of the variation in the data in comparison with a null model.
-# null_model <- multinom(mx_cat ~ 1, data = ama_model) # Null model for a likelihood ration test, just in case.
-# library(lmtest)
-# lrtest(null_model, model) # We very much reject the hypothesis
-# (i.e. the more complex model is significantly better than the null model).
-# too much information... Let's just focus on what we want here...
-# stargazer::stargazer(model, type = "text",
-#                      covariate.labels = c("Brasilia", "International", "Non-AM state",
-#                                           "Election", "Deforestation", "Inflation"),
-#                      column.labels = c("EI", "SD", "Sov", "EI-Con", "EI-SD", "Sov-Con", "SD-EI-Con",
-#                                        "Sov-EI", "SD-Con", "Other"),
-#                      dep.var.labels.include = FALSE)
+
 full_md <- tibble("Dependent Variable" = c("EI", "SD", "SOV", "EI-CON", "EI-SD", "SOV-CON", "SD-EI-CON",
                                            "SOV-EI", "SD-CON", "Other"),
                   "Brasilia" = c("-1.024*** (0.169)","-1.002*** (0.205)", "-0.206 (0.260)", "-0.341 (0.248)",
@@ -540,6 +520,7 @@ full_md <- tibble("Dependent Variable" = c("EI", "SD", "SOV", "EI-CON", "EI-SD",
 kbl(t(full_md), booktabs = T,caption = "Multinomial Regression Full", align = "c") %>%
   kable_styling(latex_options = c("striped", "scale_down"),
                 position= "center", font_size = 9, full_width = TRUE) %>%
+                footnote(general = c("The multinomial regression coefficients are displayed in log odds.", "Standard errors are displayed in parentheses.","*** for p-value ≤ 0.001", "** for p-value ≤ 0.01", "* for p-value ≤ 0.05.")) %>% 
   column_spec(1, width="3 cm", bold=TRUE, latex_valign = "m") %>%
   column_spec(2, width="2 cm", latex_valign = "m") %>%
   column_spec(3, width = "2 cm", latex_valign = "m") %>%
@@ -552,3 +533,11 @@ kbl(t(full_md), booktabs = T,caption = "Multinomial Regression Full", align = "c
   column_spec(10, width = "2 cm", latex_valign = "m") %>% 
   column_spec(11, width = "2 cm", latex_valign = "m")
 ```
+
+\end{landscape}
+````
+
+# References
+
+
+
