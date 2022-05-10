@@ -246,13 +246,22 @@ pop2 <- left_join(pop2, amazon_def_year, by = "year")
 model <- lm(perc ~ AAI+ def_year + president, data=pop2)
 pop2$predicted = predict(model, pop2)
 Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
-  geom_line(size=.85, aes(x=year, y=perc, color="Real share"))+
-  geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share"))+
-  scale_color_manual(values=c("Real share"="darkolivegreen", "Predicted share"= "gray40"))+
-  scale_y_continuous(labels = percent_format())+
+  geom_line(size=.85, aes(x=year, y=perc, color="Real share")) +
+  geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share")) +
+  geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+  geom_vline(xintercept = 1988, linetype="dotted") +
+  geom_text(aes(x = 1992, y = 0.27, label = "Earth Summmit"), size = 3) + 
+  geom_vline(xintercept = 1992, linetype="dotted") +
+  geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summmit"), size = 3) + 
+  geom_vline(xintercept = 2009, linetype="dotted") +
+  geom_text(aes(x = 2015, y = 0.21, label = "Paris Summmit"), size = 3) + 
+  geom_vline(xintercept = 2015, linetype="dotted") +
+  scale_color_manual(values = c("Real share" = "darkolivegreen", "Predicted share" = "gray40")) +
+  scale_y_continuous(labels = percent_format()) +
   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-       caption = "Predicted share controls for deforestation rates, inflation, and president.", color='Y series') +
+       caption = "Predicted share controls for deforestation rates, inflation, and president.",
+       color='Y series') +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
         axis.text = element_text(color = "black", size = 10),
@@ -277,9 +286,10 @@ Figure 2 portrays plots with the proportions of different mixed and pure problem
 
 ```{r Figure 2: mixed-types in time, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 prob_construction_year <- ama_mx %>%
-  count(year, mx_cat)%>%
+  filter(!(mx_cat == "Other" | mx_cat == "Other Mixed-types")) %>% 
+  count(year, mx_cat) %>%
   group_by(year) %>%
-  mutate(perc = n / sum(n)) %>%
+  mutate(perc = n / sum(n)) %>% 
   ggplot(aes(x=year, y=perc, fill=mx_cat)) +
   geom_bar(stat="identity", position="dodge") +
   geom_smooth(color="black", size=.3, se= FALSE) +
@@ -293,7 +303,7 @@ prob_construction_year <- ama_mx %>%
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "none") +
-  facet_wrap(~ mx_cat, ncol=3, scales="free_y")
+  facet_wrap(~ mx_cat, ncol = 2)
 prob_construction_year
 ```
 
@@ -303,13 +313,13 @@ As of the mid 2010s, we a reverse of this trend with a twist: economic integrati
 
 ```{r Figure 3: pure types in time , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 pure_types_time <- ama_mx %>%
-  count(president, mx_cat2, mx_cat, year) %>%
-  group_by(president, year) %>%
+  count(mx_cat, mx_cat2, year) %>%
+  group_by(year) %>%
   mutate(perc = n / sum(n)) %>% 
   filter(mx_cat2 == "Pure-types") %>% 
-  ggplot(aes(x=as.numeric(year), y=perc, color=mx_cat)) +
-  geom_smooth(aes(color=mx_cat), se=FALSE, size=.5) +
-  scale_y_continuous(labels = percent_format(accuracy=1)) +
+  ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
+  geom_smooth(aes(fill = mx_cat), size = .5) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of each pure type by year",
        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
        caption = "") +
@@ -447,21 +457,25 @@ md_plot <- data.frame("Construction" = c("Economic Integration", "Social Develop
 md_plot$Brasilia <- logit2prob(md_plot$Brasilia)
 md_plot$International <- logit2prob(md_plot$International)
 md_plot$Other_States <- logit2prob(md_plot$Other_States)
-mplot <- md_plot %>% tidyr::pivot_longer(Brasilia:Other_States) %>%
-  rename(Location = name, Probability = value) %>% 
-  ggplot(aes(Construction, Probability)) +
-  geom_bar(aes(fill = Location), stat = "identity", position = position_dodge(0.8), width = 0.7) +
-    scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+mplot <- md_plot %>%
+  tidyr::pivot_longer(Brasilia:Other_States) %>%
+  mutate(Probability = round(value, digit = 2)) %>% 
+  rename(Location = name) %>% 
+  ggplot(aes(Location, Probability, fill = Construction)) +
+  geom_bar(stat = "identity", position = position_dodge(0.8), width = 0.7) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  geom_text(aes(label = Probability), vjust = 1.5, size = 3, position = position_dodge(0.8)) +
+  geom_hline(yintercept = 0.5, linetype = "dotted", color = "red") +
   labs(x = "", y = "Probability",
        title = "Probability for problem constructions across locations",
        subtitle = "Reference category is environmental conservation problem-construction in Amazonian States") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
-        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-        axis.text = element_text(color = "black", size = 10),
-        title = element_text(color = "black", size = 10, face = "bold"),
-        legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom")
+          panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+          axis.text = element_text(color = "black", size = 10),
+          title = element_text(color = "black", size = 10, face = "bold"),
+          legend.title = element_blank(),
+          plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+          legend.position = "bottom")
 mplot
 ```
 
