@@ -398,7 +398,7 @@ pure_types_time_location <- ama_mx %>%
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom") +
-  facet_wrap(~location_cat, scales= "free_y", ncol=2)
+  facet_wrap(~location_cat, ncol=2)
 pure_types_time_location
 ```
 
