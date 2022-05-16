@@ -33,15 +33,14 @@ options(stringsAsFactors = FALSE, scipen = 999)
 ```
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
+# Load data
 pop<- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
 pop <-  pop %>% select(-c(title, date, text, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
 ama <-  ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
 AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
-```
-
-```{r data prep for prob_construction, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# Prepare data for problem constructions
 sov <- ama %>% 
   filter(sov==1) %>% 
   count(sov, year) %>%
@@ -75,14 +74,13 @@ other <- ama %>%
   group_by(year) %>%
   select(-c(other))%>%
   rename (other = n)
-temp <- ei %>% left_join(other) %>% 
-                left_join(con) %>%
-                left_join(sd) %>%
-                left_join(sov) %>%
-                replace(is.na(.), 0)
-```
-
-```{r data prep for mixed_types, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+temp <- ei %>% 
+  left_join(other) %>% 
+  left_join(con) %>% 
+  left_join(sd) %>% 
+  left_join(sov) %>% 
+  replace(is.na(.), 0)
+# Get mixed types in
 ama_mx <-  ama %>%
   unite(mixed_type, sov:con, sep="_") %>%
   mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ "Pure Sovereignty",
@@ -108,7 +106,8 @@ ama_mx <-  ama %>%
                              grepl("Economic Conservation|Economic and Social Development|
                                    |Sovereign Conservation|Sustainable Development|
                                    |Sovereign Integration|Social Conservation|Other Mixed-types",
-                                   mx_cat) ~ "Mixed-types"))
+                                   mx_cat) ~ "Mixed-types"),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))
 ```
 
 \pagebreak
@@ -233,34 +232,27 @@ First, we observe a steady increase from about 5% in 1985 to 32% 1989. This is t
 
 ```{r Figure 1: Amazonian speeches by year, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc1 <- pop %>%
-  count(amazon_speech, year)%>%
-  group_by(year)%>%
+  count(amazon_speech, year) %>%
+  group_by(year) %>%
   mutate(perc=n / sum(n)) %>%
-  select(c(perc,amazon_speech, year))
-pop2 <- pop %>% count(amazon_speech, year, president) %>%
-  group_by(year, president) %>%
-  left_join(perc1) %>%
-  filter(amazon_speech==1)
-pop2 <- left_join(pop2, AAI, by = "year")
-pop2 <- left_join(pop2, amazon_def_year, by = "year")
-model <- lm(perc ~ AAI+ def_year + president, data=pop2)
-pop2$predicted = predict(model, pop2)
-Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
-  geom_line(size=.85, aes(x=year, y=perc, color="Real share")) +
-  geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share")) +
-  geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
-  geom_vline(xintercept = 1988, linetype="dotted") +
-  geom_text(aes(x = 1992, y = 0.27, label = "Earth Summmit"), size = 3) + 
-  geom_vline(xintercept = 1992, linetype="dotted") +
-  geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summmit"), size = 3) + 
-  geom_vline(xintercept = 2009, linetype="dotted") +
-  geom_text(aes(x = 2015, y = 0.21, label = "Paris Summmit"), size = 3) + 
-  geom_vline(xintercept = 2015, linetype="dotted") +
-  scale_color_manual(values = c("Real share" = "darkolivegreen", "Predicted share" = "gray40")) +
+  filter(amazon_speech == 1) %>% 
+  select(c(perc, amazon_speech, year))
+######## We have an issue with data here btw, 1992 only has 4 obs in the population... #######
+######## Issue is with biblioteca presidencial, not with scarping btw ######
+# summary(as.factor(pop$year))
+# Simple plot
+Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+  geom_line(color = "darkgreen") +
   scale_y_continuous(labels = percent_format()) +
+  geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+  geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+  geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
+  geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+  geom_vline(xintercept = c(1988, 1992, 2009, 2015),
+             linetype = "dotted") +
   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-       caption = "Predicted share controls for deforestation rates, inflation, and president.",
+       caption = "",
        color='Y series') +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
@@ -269,6 +261,95 @@ Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
+# # # With a few lines under the
+# cat1 <- ama_mx %>%
+#   mutate(cat = ifelse(mx_cat2 == "Mixed-types", "Mixed-types", paste(mx_cat))) %>%
+#   count(cat, year) %>%
+#   group_by(year) %>%
+#   mutate(perc = n / sum(n),
+#          perc_type = ifelse(perc == 1, 0.25, perc)) %>% 
+#   arrange(year) %>%
+#   select(c(cat, year, perc_type))
+# year_share <- merge(perc1, cat1, "year") %>%
+#   mutate(year_perc = perc*perc_type)
+# Amazon_year <- year_share %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(aes(y = perc)) +
+#   scale_y_continuous(labels = percent_format()) +
+#   geom_line(aes(x = year, y = year_perc, fill = cat, group = cat, color = cat)) +
+#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
+#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+#   geom_vline(xintercept = c(1988, 1992, 2009, 2015),
+#              linetype = "dotted") +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#        caption = "",
+#        color='Y series') +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# # For filling the area under the line
+# Amazon_year <- year_share %>% ggplot(., aes(x = year, y = year_perc, fill = cat)) +
+#   geom_line() +
+#   geom_area() +
+#   scale_y_continuous(labels = percent_format()) +
+#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+#   geom_vline(xintercept = 1988, linetype = "dotted") +
+#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+#   geom_vline(xintercept = 1992, linetype = "dotted") +
+#   geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summit"), size = 3) +
+#   geom_vline(xintercept = 2009, linetype = "dotted") +
+#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+#   geom_vline(xintercept = 2015, linetype = "dotted") +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#        caption = "",
+#        color = 'Y series') +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# # Controling for inflation and deforastation
+# pop2 <- pop %>% count(amazon_speech, year, president) %>%
+#   group_by(year, president) %>%
+#   left_join(perc1) %>%
+#   filter(amazon_speech==1)
+# pop2 <- left_join(pop2, AAI, by = "year")
+# pop2 <- left_join(pop2, amazon_def_year, by = "year")
+# model <- lm(perc ~ AAI+ def_year + president, data=pop2)
+# pop2$predicted = predict(model, pop2)
+# Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(size=.85, aes(x=year, y=perc, color="Real share")) +
+#   geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share")) +
+#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+#   geom_vline(xintercept = 1988, linetype="dotted") +
+#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) + 
+#   geom_vline(xintercept = 1992, linetype="dotted") +
+#   geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summit"), size = 3) + 
+#   geom_vline(xintercept = 2009, linetype="dotted") +
+#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) + 
+#   geom_vline(xintercept = 2015, linetype="dotted") +
+#   scale_color_manual(values = c("Real share" = "darkolivegreen", "Predicted share" = "gray40")) +
+#   scale_y_continuous(labels = percent_format()) +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#        caption = "Predicted share controls for deforestation rates, inflation, and president.",
+#        color='Y series') +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
 Amazon_year
 ```
 
@@ -312,13 +393,18 @@ The plots reveal several trends. We start with analyzing pure types. Pure econom
 As of the mid 2010s, we a reverse of this trend with a twist: economic integration starts picking up again in detriment of conservation and social development problem constructions, but with sovereignty increasing steadily. Figure 3 (below) shows these shifts and reversal more clearly. It highlights the decrease of economic integration and increase of social and conservation problem constructions preceding Lula's presidential mandate. Relatedly, figure 3 also shows that while the reversal precedes the mandate of President Bolsonaro, it was with him and his dismantling of social and environmental policies that sovereignty and economic integration reaches their actual maximum and a new local maximum (respectively).
 
 ```{r Figure 3: pure types in time , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
+                end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
+                label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
+                presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
+                           "Rousseff", "Temer", "Bolsonaro"))
 pure_types_time <- ama_mx %>%
   count(mx_cat, mx_cat2, year) %>%
   group_by(year) %>%
   mutate(perc = n / sum(n)) %>% 
   filter(mx_cat2 == "Pure-types") %>% 
   ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
-  geom_smooth(aes(fill = mx_cat), size = .5) +
+  geom_smooth(aes(fill = mx_cat), se = FALSE, size = .5) + # to add CI here set se to TRUE
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of each pure type by year",
        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
@@ -329,7 +415,13 @@ pure_types_time <- ama_mx %>%
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom")
+        legend.position = "bottom") +
+  annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.44,
+           fill = c("mediumpurple4", "mediumorchid1", "mediumpurple4", "mediumorchid1",
+                    "mediumpurple4", "mediumorchid1", "mediumpurple4", "mediumorchid1"),
+           alpha = 0.1) +
+  annotate(geom = "text", x = hp$label, y = 0.4, angle = 40,
+           label = hp$presid, alpha = 0.4)
 pure_types_time
 ```
 
@@ -349,18 +441,19 @@ We interpret the appearance of mixed types as more complex understandings of Ama
 
 ```{r Figure 4: mixed-types by president , echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 mixed_types_presid <- ama_mx %>%
-  filter(mx_cat2 == "Mixed-types") %>%
-  count(president, mx_cat) %>%
+  count(president, mx_cat, mx_cat2) %>%
   group_by(president) %>%
-  mutate(perc = n / sum(n)) %>%
-  mutate(president = factor(president,
-                            levels = c("Sarney", "Collor", "Itamar", "FHC", "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
-  ggplot(aes(x=president, y=perc, fill=mx_cat,label= scales::percent(perc, accuracy=.1))) +
-  geom_bar(stat="identity", position="stack") +
-  geom_text(size = 3, position = position_stack(vjust=.5)) +
+  mutate(perc = n / sum(n)) %>% 
+  filter(mx_cat2 == "Mixed-types") %>% 
+  mutate(president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(aes(x = president, y = perc, fill = mx_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 3, position = position_stack(vjust = .5)) +
   scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
   labs(x = "", y = "", title ="Share of each mixed type problem-constructions by president",
-       subtitle = "Sample composed of Amazonian statements that were coded as a mixed-type (n=431)",
+       subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
        caption = "") +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
@@ -372,7 +465,7 @@ mixed_types_presid <- ama_mx %>%
 mixed_types_presid
 ```
 
-We also observe the comeback of sovereignty being used in mixed types, mostly in detriment of conservation social development. This becomes more apparent in a comparison between Lula and Bolsonaro, the two presidents that mix the most with proportions more than 11% above presidential averages: 29.4% and 31.3% respectively. While the former frequently mixed conservation with other problem constructions, the latter prefers mixing with sovereignty. The combination of sovereignty with economic integration, which was also characteristic of the military dictatorship policies for the region, reaches its highest level with Bolsonaro: 22.7% of all mixed types. Now that we've inspected and de veloped pure and mixed types, we can check if these specific problem constructions vary depending on where the president is speaking.
+We also observe the comeback of sovereignty being used in mixed types, mostly in detriment of conservation social development. This becomes more apparent in a comparison between Lula and Bolsonaro, the two presidents that mix the most with proportions more than 11% above presidential averages: 29.4% and 31.3% respectively. While the former frequently mixed conservation with other problem constructions, the latter prefers mixing with sovereignty. The combination of sovereignty with economic integration, which was also characteristic of the military dictatorship policies for the region, reaches its highest level with Bolsonaro: 22.7% of all mixed types. Now that we've inspected and developed pure and mixed types, we can check if these specific problem constructions vary depending on where the president is speaking.
 
 ## 4.3 An Amazonian three-level game? Boasting policy outside, talking to people inside
 
@@ -417,14 +510,27 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                             "Economic Conservation",
                                             "Economic and Social Development", "Sovereign Conservation",
                                             "Sustainable Development","Sovereign Integration",
-                                            "Social Conservation", "Other")),
-         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))
+                                            "Social Conservation", "Other")))
 # model
-model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model, model = TRUE, trace = FALSE)
+model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI,
+                  data = ama_model, model = TRUE, trace = FALSE)
 # summary statistics
 model_summary <- summary(model)
 p_values <- round((1 - pnorm(abs(summary(model)$coefficients/summary(model)$standard.errors)))*2, 5)
-# too much information... Let's just focus on what we want here...
+# Independence of Irrelevant Alternatives (Hausman-McFadden) test, in practice
+iia_data <- filter(ama_model, mx_cat != "Pure Economic Integration")
+iia <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI,
+                data = iia_data, model = TRUE, trace = FALSE)
+iia_summary <- summary(iia)
+iia_p_values <- round((1 - pnorm(abs(summary(iia)$coefficients/summary(iia)$standard.errors)))*2, 5)
+# Model coefficients, and p-values, are statistically identical even when we drop the largest
+# factor category from model. Therefore, we can proceed with a multinomial logit model,
+# instead of a multinomial probit model, since the independence of irrelevant alternatives 
+# Other post estimation tests
+chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
+# Chi-square p value (p-value < 0.001) tells us that our model explains a
+# significant amount of the variation in the data in comparison with a null model.
+# But too much information on the summary tables... Let's just focus on what we want here:
 md <- tibble("Dependent Variable" = c("Economic Integration vs Environmental Conservation",
                                            "Social Development vs Environmental Conservation",
                                            "Sovereignty vs Environmental Conservation"),
@@ -442,19 +548,6 @@ kbl(t(md), booktabs = T, caption = "Amazon Problem-Construction by Location", al
   column_spec(2, width="5cm", latex_valign = "m") %>%
   column_spec(3, width = "5cm", latex_valign = "m") %>%
   column_spec(4, width = "5cm", latex_valign = "m")
-
-# #####
-# # Mixed effects multinomial regression with model controls for president
-# # Should we consider this method? We might have time effects?
-# # See: https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.1522?casa_token=Ui3Ya1qHE7cAAAAA:_a4xLBxFfsU5I2C7eP0hY-__55UurKhRfvpShTCCdiYO8aVmVV9aqJMWYzrLAg2DXAP5czu5h3yu-sUT 
-# m1 <- mclogit::mblogit(mx_cat ~ location_cat + election_year + def_year + AAI,
-#                        random = ~ 1|president, data = ama_model)
-# summary(m1)
-# # what about the independence of our response categories? Maybe we should fit a mutinomial probit model
-# # the package MNP does this but it is not clear that MNP is better even if IIA (see: file:///Users/henriquesposito/Downloads/Choosing_between_multinomial_logit_and_multinomial_probit_models_for_analysis_of_unordered_choice_data_accessible.pdf)
-# m2 <- MNP::mnp(mx_cat ~ location_cat + election_year + def_year + AAI, data = ama_model)
-# summary(m2)
-# #####
 ```
 
 ```{r Figure 6: probability for constructions across locations, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
