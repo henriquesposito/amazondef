@@ -1,4 +1,4 @@
-# In this script we prepare the data with some text pre-processing,
+1# In this script we prepare the data with some text pre-processing,
 # by extracting Amazonian statements, and 
 # by adding locations for all speeches.
 
@@ -35,13 +35,8 @@ Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("amazon", text)
 #Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
 #Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
 
-# Get 2 sentences before and 2 sentences after
-context2 <- function(string, var) {
-  match <- paste0("([^.]+\\.){0,2}[^.]+(", string, ").*?\\.([^.]+\\.){0,2}")
-  s <- stringr::str_extract_all(var, match)
-  s
-}
-Amazon_speeches$AM2 <- context2("amazon", var = Amazon_speeches$text)
+# Get 2 sentences before and 2 sentences after with poldis
+Amazon_speeches$AM2 <- poldis::context("amazon", Amazon_speeches$text, "sentences", 2)
 
 # Get and save long data coding
 amazon_speeches_long <- Amazon_speeches %>%
