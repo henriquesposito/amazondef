@@ -2,7 +2,7 @@
 title: How has the Brazilian Amazon been constructed as a problem? The economy, the environment, the people, and the nation in the presidential speeches since 1985
 author:
 - Livio Silva-Muller
-- Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Both of them are PhD candidates at The Geneva Graduate Institute. Livio is affiliated to the Albert Hirschman Centre on Democracy. Henrique is affiliated to the Centre for International Environmental Studies.]
+- Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Both of them are PhD candidates at The Geneva Graduate Institute. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Instituteis affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute affiliated to the Centre for International Environmental Studies.]
 date: "May 2022"
 output:
   pdf_document: default
@@ -40,6 +40,8 @@ ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds
 ama <-  ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
 AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
+adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050)) # Missing year data
+amazon_def_year <- rbind(adr, amazon_def_year) 
 hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
                 label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
@@ -233,13 +235,35 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom") +
-  annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.35,
-           fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
-                    "grey50", "ghostwhite", "grey50", "ghostwhite"),
-           alpha = 0.1) +
-  annotate(geom = "text", x = hp$label, y = 0.04, vjust = 0.3,
-           label = hp$presid, alpha = 0.4)
+        legend.position = "bottom")
+# # Same plot but annotated
+# Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(color = "darkgreen") +
+#   scale_y_continuous(labels = percent_format()) +
+#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
+#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
+#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+#   geom_vline(xintercept = c(1988, 1992, 2009, 2015),
+#              linetype = "dotted") +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#        caption = "",
+#        color='Y series') +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom") +
+#   annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.35,
+#            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
+#                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
+#            alpha = 0.1) +
+#   annotate(geom = "text", x = hp$label, y = 0.04, vjust = 0.3,
+#            label = hp$presid, alpha = 0.4) +
+#   annotate(geom = "segment", x = amazon_def_year$year, y = amazon_def_year$def_year)
 # # # With a few lines under the
 # cat1 <- ama_mx %>%
 #   mutate(cat = ifelse(mx_cat2 == "Mixed-types", "Mixed-types", paste(mx_cat))) %>%
@@ -450,8 +474,6 @@ Problem constructions depend on where presidents speak. To facilitate analysis a
 Figure 5, below, shows the relative probability of problem-constructions by location in relation to environmental conservation internationally derived from the regression model. The plot illustrates the percentage of constructing the Amazon as a certain issue according to location in relation to the reference category. From the figure we see, for example, that presidents are 33% more likely to construct the Amazon as an issue of economic integration within other Amazonian countries in comparison to other countries. Although without the same strength, the finding also holds at the state level within Brazil, as presidents are 11% more likely to construct the Amazon as an issue of economic integration within Amazonian states and 15% more likely in non Amazonian states. Interestingly, presidents are less likely to construct the Amazon as an issue of economic integration in Brasilia than internationally. That is, when speaking internationally or in Brasilia, presidents often construct the Amazon as an issue of environmental conservation.
 
 ```{r Figure 6: probability for constructions across locations, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
-amazon_def_year <- rbind(adr, amazon_def_year)
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>%
