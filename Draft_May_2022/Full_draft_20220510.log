@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  20 MAY 2022 18:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  20 MAY 2022 18:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -291,21 +291,37 @@ Package graphics Info: Driver file: pdftex.def on input line 107.
 )
 \Gin@req@height=\dimen160
 \Gin@req@width=\dimen161
+)
+\cslhangindent=\skip53
+\csllabelwidth=\skip54
+\cslentryspacingunit=\skip55
+(/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count285
+\calc@Bcount=\count286
+\calc@Adimen=\dimen162
+\calc@Bdimen=\dimen163
+\calc@Askip=\skip56
+\calc@Bskip=\skip57
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count287
+\calc@Cskip=\skip58
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/floatrow/floatrow.sty
 Package: floatrow 2008/08/02 v0.3b floatrow: float package extension
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2022/03/17 v2.3b caption3 kernel (AR)
-\caption@tempdima=\dimen162
-\captionmargin=\dimen163
-\caption@leftmargin=\dimen164
-\caption@rightmargin=\dimen165
-\caption@width=\dimen166
-\caption@indent=\dimen167
-\caption@parindent=\dimen168
-\caption@hangindent=\dimen169
+\caption@tempdima=\dimen164
+\captionmargin=\dimen165
+\caption@leftmargin=\dimen166
+\caption@rightmargin=\dimen167
+\caption@width=\dimen168
+\caption@indent=\dimen169
+\caption@parindent=\dimen170
+\caption@hangindent=\dimen171
 Package caption Info: Standard document class detected.
 )
-\c@float@type=\count285
+\c@float@type=\count288
 \float@exts=\toks25
 \float@box=\box52
 \@floatcapt=\box53
@@ -313,95 +329,95 @@ Package floatrow Info: Modified float package code loaded on input line 455.
 Package floatrow Info: Modified rotfloat package code loaded on input line 473.
 \FR@everyfloat=\toks26
 \flrow@foot=\insert252
-\FB@wd=\dimen170
-\FBo@wd=\dimen171
-\FBc@wd=\dimen172
-\FBo@ht=\skip53
-\FBc@ht=\skip54
-\FBf@ht=\skip55
-\FBo@max=\skip56
-\FBc@max=\skip57
-\FBf@max=\skip58
-\c@FBl@b=\count286
-\floatbox@depth=\count287
-\c@FRobj=\count288
-\c@FRsobj=\count289
-\Xhsize=\skip59
-\sXhsize=\skip60
-\Zhsize=\skip61
-\sZhsize=\skip62
+\FB@wd=\dimen172
+\FBo@wd=\dimen173
+\FBc@wd=\dimen174
+\FBo@ht=\skip59
+\FBc@ht=\skip60
+\FBf@ht=\skip61
+\FBo@max=\skip62
+\FBc@max=\skip63
+\FBf@max=\skip64
+\c@FBl@b=\count289
+\floatbox@depth=\count290
+\c@FRobj=\count291
+\c@FRsobj=\count292
+\Xhsize=\skip65
+\sXhsize=\skip66
+\Zhsize=\skip67
+\sZhsize=\skip68
 \flrow@rowbox=\box54
-\FR@Zunitlength=\dimen173
-\c@FBcnt=\count290
-\FPOScnt=\count291
-\LTleft=\skip63
-\LTright=\skip64
-\LTleft=\skip65
-\LTright=\skip66
+\FR@Zunitlength=\dimen175
+\c@FBcnt=\count293
+\FPOScnt=\count294
+\LTleft=\skip69
+\LTright=\skip70
+\LTleft=\skip71
+\LTright=\skip72
 \flrow@types=\toks27
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen174
-\lightrulewidth=\dimen175
-\cmidrulewidth=\dimen176
-\belowrulesep=\dimen177
-\belowbottomsep=\dimen178
-\aboverulesep=\dimen179
-\abovetopsep=\dimen180
-\cmidrulesep=\dimen181
-\cmidrulekern=\dimen182
-\defaultaddspace=\dimen183
-\@cmidla=\count292
-\@cmidlb=\count293
-\@aboverulesep=\dimen184
-\@belowrulesep=\dimen185
-\@thisruleclass=\count294
-\@lastruleclass=\count295
-\@thisrulewidth=\dimen186
+\heavyrulewidth=\dimen176
+\lightrulewidth=\dimen177
+\cmidrulewidth=\dimen178
+\belowrulesep=\dimen179
+\belowbottomsep=\dimen180
+\aboverulesep=\dimen181
+\abovetopsep=\dimen182
+\cmidrulesep=\dimen183
+\cmidrulekern=\dimen184
+\defaultaddspace=\dimen185
+\@cmidla=\count295
+\@cmidlb=\count296
+\@aboverulesep=\dimen186
+\@belowrulesep=\dimen187
+\@thisruleclass=\count297
+\@lastruleclass=\count298
+\@thisrulewidth=\dimen188
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
-\LTleft=\skip67
-\LTright=\skip68
-\LTpre=\skip69
-\LTpost=\skip70
-\LTchunksize=\count296
-\LTcapwidth=\dimen187
+\LTleft=\skip73
+\LTright=\skip74
+\LTpre=\skip75
+\LTpost=\skip76
+\LTchunksize=\count299
+\LTcapwidth=\dimen189
 \LT@head=\box55
 \LT@firsthead=\box56
 \LT@foot=\box57
 \LT@lastfoot=\box58
 \LT@gbox=\box59
-\LT@cols=\count297
-\LT@rows=\count298
-\c@LT@tables=\count299
-\c@LT@chunks=\count300
+\LT@cols=\count300
+\LT@rows=\count301
+\c@LT@tables=\count302
+\c@LT@chunks=\count303
 \LT@p@ftn=\toks28
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/tools/array.sty
 Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
-\col@sep=\dimen188
+\col@sep=\dimen190
 \ar@mcellbox=\box60
-\extrarowheight=\dimen189
+\extrarowheight=\dimen191
 \NC@list=\toks29
-\extratabsurround=\skip71
-\backup@length=\skip72
+\extratabsurround=\skip77
+\backup@length=\skip78
 \ar@cellbox=\box61
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
-\multirow@colwidth=\skip73
-\multirow@cntb=\count301
-\multirow@dima=\skip74
-\bigstrutjot=\dimen190
+\multirow@colwidth=\skip79
+\multirow@cntb=\count304
+\multirow@dima=\skip80
+\bigstrutjot=\dimen192
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
-\wrapoverhang=\dimen191
-\WF@size=\dimen192
-\c@WF@wrappedlines=\count302
+\wrapoverhang=\dimen193
+\WF@size=\dimen194
+\c@WF@wrappedlines=\count305
 \WF@box=\box62
 \WF@everypar=\toks30
 Package: wrapfig 2003/01/31  v 3.6
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
 \everycr=\toks31
-\minrowclearance=\skip75
+\minrowclearance=\skip81
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/pdflscape/pdflscape.sty
 Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/graphics/lscape.sty
@@ -413,32 +429,32 @@ Package: tabu 2019/01/11 v2.9 - flexible LaTeX tabulars (FC+tabu-fixed)
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box63
-\sift@deathcycles=\count303
-\@vwid@loff=\dimen193
-\@vwid@roff=\dimen194
+\sift@deathcycles=\count306
+\@vwid@loff=\dimen195
+\@vwid@roff=\dimen196
 )
-\c@taburow=\count304
-\tabu@nbcols=\count305
-\tabu@cnt=\count306
-\tabu@Xcol=\count307
-\tabu@alloc=\count308
-\tabu@nested=\count309
-\tabu@target=\dimen195
-\tabu@spreadtarget=\dimen196
-\tabu@naturalX=\dimen197
-\tabucolX=\dimen198
-\tabu@Xsum=\dimen199
-\extrarowdepth=\dimen256
-\abovetabulinesep=\dimen257
-\belowtabulinesep=\dimen258
-\tabustrutrule=\dimen259
+\c@taburow=\count307
+\tabu@nbcols=\count308
+\tabu@cnt=\count309
+\tabu@Xcol=\count310
+\tabu@alloc=\count311
+\tabu@nested=\count312
+\tabu@target=\dimen197
+\tabu@spreadtarget=\dimen198
+\tabu@naturalX=\dimen199
+\tabucolX=\dimen256
+\tabu@Xsum=\dimen257
+\extrarowdepth=\dimen258
+\abovetabulinesep=\dimen259
+\belowtabulinesep=\dimen260
+\tabustrutrule=\dimen261
 \tabu@thebody=\toks32
 \tabu@footnotes=\toks33
 \tabu@box=\box64
 \tabu@arstrutbox=\box65
 \tabu@hleads=\box66
 \tabu@vleads=\box67
-\tabu@cellskip=\skip76
+\tabu@cellskip=\skip82
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/threeparttable/threeparttable.sty
 Package: threeparttable 2003/06/13  v 3.0
 \@tempboxb=\box68
@@ -449,55 +465,55 @@ Package: environ 2014/05/04 v0.3 A new way to define environments
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty
 Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 ))
-\TPTL@width=\skip77
+\TPTL@width=\skip83
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/ulem/ulem.sty
 \UL@box=\box69
 \UL@hyphenbox=\box70
-\UL@skip=\skip78
+\UL@skip=\skip84
 \UL@hook=\toks34
-\UL@height=\dimen260
-\UL@pe=\count310
-\UL@pixel=\dimen261
+\UL@height=\dimen262
+\UL@pe=\count313
+\UL@pixel=\dimen263
 \ULC@box=\box71
 Package: ulem 2019/11/18
-\ULdepth=\dimen262
+\ULdepth=\dimen264
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
-\rotheadsize=\dimen263
-\c@nlinenum=\count311
+\rotheadsize=\dimen265
+\c@nlinenum=\count314
 \TeXr@lab=\toks35
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-04-20 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count312
+\l__color_backend_stack_int=\count315
 \l__pdf_internal_box=\box72
 ) (./Full_draft_20220510.aux)
 \openout1 = `Full_draft_20220510.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 95.
+Package hyperref Info: Link coloring OFF on input line 118.
 (./Full_draft_20220510.out) (./Full_draft_20220510.out)
 \@outlinefile=\write3
 \openout3 = `Full_draft_20220510.out'.
@@ -542,48 +558,48 @@ Package caption Info: End \AtBeginDocument code.
 Package: fr-longtable 2007/11/28 v0.1b (beta) floatrow: additions for longtable
 \flrow@LT@lasthead=\box73
 \flrow@LT@prelastfoot=\box74
-\c@FBLTpage=\count313
+\c@FBLTpage=\count316
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 97.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 97.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 97.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 97.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 97.
+(Font)              <12> on input line 120.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 97.
+(Font)              <8> on input line 120.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 97.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 97.
+(Font)              <6> on input line 120.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 97.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 97.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 120.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 97.
+(Font)              <5> on input line 120.
 [1
 
 {/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5]
-Overfull \hbox (2.80064pt too wide) in paragraph at lines 521--521
+Overfull \hbox (2.80064pt too wide) in paragraph at lines 546--546
 [][]\T1/lmr/bx/n/14.4 3 Method-ol-ogy: op-er-a-tional-iz-ing Ama-zo-nian problem-constructions 
  []
 
@@ -591,7 +607,7 @@ Overfull \hbox (2.80064pt too wide) in paragraph at lines 521--521
 <figure1pic.png, id=134, 977.616pt x 551.004pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 572.
+Package pdftex.def Info: figure1pic.png  used on input line 597.
 (pdftex.def)             Requested size: 650.44958pt x 366.60643pt.
 [8 <./figure1pic.png>] [9
 
@@ -600,33 +616,43 @@ Package pdftex.def Info: figure1pic.png  used on input line 572.
 <Full_draft_20220510_files/figure-latex/Figure 2-1.pdf, id=148, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 2-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf  used on input line 684.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf  used on input line 709.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [10 <./Full_draft_20220510_files/figure-latex/Figure 2-1.pdf>]
 <Full_draft_20220510_files/figure-latex/Figure 3-1.pdf, id=162, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 3-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf  used on input line 755.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf  used on input line 780.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [11] [12 <./Full_draft_20220510_files/figure-latex/Figure 3-1.pdf>]
 <Full_draft_20220510_files/figure-latex/Figure 4-1.pdf, id=184, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 4-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf  used on input line 806.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf  used on input line 831.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [13 <./Full_draft_20220510_files/figure-latex/Figure 4-1.pdf>]
 <Full_draft_20220510_files/figure-latex/Figure 5-1.pdf, id=198, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 5-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf  used on input line 873.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf  used on input line 898.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [14] [15 <./Full_draft_20220510_files/figure-latex/Figure 5-1.pdf>] [16]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 990.
+(Font)              <9> on input line 1015.
 
-LaTeX Warning: Float too large for page by 10.47276pt on input line 991.
+LaTeX Warning: Float too large for page by 10.47276pt on input line 1016.
 
-[17] [18] [19
+[17] [18]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 1059.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 1059.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1071--1075
+[]$\T1/lmr/m/n/10 https : / / www . bloomberg . com / news / features / 2021 -[] 07 -[] 29 / amazon -[] rainforest -[] deforestation -[] land -[] grabs -[]
+ []
+
+[19
 
 
 
@@ -636,18 +662,18 @@ Package rerunfilecheck Info: File `Full_draft_20220510.out' has not changed.
 (rerunfilecheck)             Checksum: 2C79E1AE484AB0E5C7C48BBBA8A3130C;4875.
  ) 
 Here is how much of TeX's memory you used:
- 13689 strings out of 480260
- 223086 string characters out of 5892848
- 525674 words of memory out of 5000000
- 31300 multiletter control sequences out of 15000+600000
- 527609 words of font info for 69 fonts, out of 8000000 for 9000
+ 13830 strings out of 480260
+ 225254 string characters out of 5892848
+ 526605 words of memory out of 5000000
+ 31412 multiletter control sequences out of 15000+600000
+ 540269 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,17n,77p,1181b,597s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb>
-Output written on Full_draft_20220510.pdf (19 pages, 1211641 bytes).
+ 72i,17n,77p,1181b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb>
+Output written on Full_draft_20220510.pdf (19 pages, 1244954 bytes).
 PDF statistics:
- 303 PDF objects out of 1000 (max. 8388607)
- 248 compressed objects within 3 object streams
- 67 named destinations out of 1000 (max. 500000)
+ 355 PDF objects out of 1000 (max. 8388607)
+ 297 compressed objects within 3 object streams
+ 86 named destinations out of 1000 (max. 500000)
  186 words of extra memory for PDF output out of 10000 (max. 10000000)
 
