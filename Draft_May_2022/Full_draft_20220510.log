@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  20 MAY 2022 18:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  21 MAY 2022 00:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -599,56 +599,56 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5]
-Overfull \hbox (2.80064pt too wide) in paragraph at lines 546--546
+Overfull \hbox (2.80064pt too wide) in paragraph at lines 553--553
 [][]\T1/lmr/bx/n/14.4 3 Method-ol-ogy: op-er-a-tional-iz-ing Ama-zo-nian problem-constructions 
  []
 
 [6] [7]
-<figure1pic.png, id=134, 977.616pt x 551.004pt>
+<figure1pic.png, id=135, 977.616pt x 551.004pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 597.
+Package pdftex.def Info: figure1pic.png  used on input line 604.
 (pdftex.def)             Requested size: 650.44958pt x 366.60643pt.
 [8 <./figure1pic.png>] [9
 
 
 ]
-<Full_draft_20220510_files/figure-latex/Figure 2-1.pdf, id=148, 469.755pt x 325.215pt>
+<Full_draft_20220510_files/figure-latex/Figure 2-1.pdf, id=149, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 2-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf  used on input line 709.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 2-1.pdf  used on input line 712.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [10 <./Full_draft_20220510_files/figure-latex/Figure 2-1.pdf>]
-<Full_draft_20220510_files/figure-latex/Figure 3-1.pdf, id=162, 469.755pt x 325.215pt>
+<Full_draft_20220510_files/figure-latex/Figure 3-1.pdf, id=163, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 3-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf  used on input line 780.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 3-1.pdf  used on input line 783.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [11] [12 <./Full_draft_20220510_files/figure-latex/Figure 3-1.pdf>]
-<Full_draft_20220510_files/figure-latex/Figure 4-1.pdf, id=184, 469.755pt x 325.215pt>
+<Full_draft_20220510_files/figure-latex/Figure 4-1.pdf, id=185, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 4-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf  used on input line 831.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 4-1.pdf  used on input line 834.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [13 <./Full_draft_20220510_files/figure-latex/Figure 4-1.pdf>]
-<Full_draft_20220510_files/figure-latex/Figure 5-1.pdf, id=198, 469.755pt x 325.215pt>
+<Full_draft_20220510_files/figure-latex/Figure 5-1.pdf, id=199, 469.755pt x 325.215pt>
 File: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf Graphic file (type pdf)
 <use Full_draft_20220510_files/figure-latex/Figure 5-1.pdf>
-Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf  used on input line 898.
+Package pdftex.def Info: Full_draft_20220510_files/figure-latex/Figure 5-1.pdf  used on input line 901.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [14] [15 <./Full_draft_20220510_files/figure-latex/Figure 5-1.pdf>] [16]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 1015.
+(Font)              <9> on input line 1018.
 
-LaTeX Warning: Float too large for page by 10.47276pt on input line 1016.
+LaTeX Warning: Float too large for page by 10.47276pt on input line 1019.
 
 [17] [18]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 1059.
+(Font)              <10> on input line 1062.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 1059.
+(Font)              <7> on input line 1062.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1071--1075
+Underfull \hbox (badness 10000) in paragraph at lines 1106--1110
 []$\T1/lmr/m/n/10 https : / / www . bloomberg . com / news / features / 2021 -[] 07 -[] 29 / amazon -[] rainforest -[] deforestation -[] land -[] grabs -[]
  []
 
@@ -657,23 +657,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 1071--1075
 
 
 
-] (./Full_draft_20220510.aux)
+]
+Underfull \hbox (badness 10000) in paragraph at lines 1262--1268
+\T1/lmr/m/n/10 com / Partnerships -[] for -[] Sustainability -[] in -[] Contemporary -[] Global -[] Governance -[] Pathways / Andonova -[] Faul -[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1262--1268
+\T1/lmr/m/n/10 Piselli / p / book / 9780367708870# : ~ : text = %22Partnerships % 20for % 20Sustainability % 20provides % 20a ,[]
+ []
+
+
+Underfull \hbox (badness 1043) in paragraph at lines 1269--1272
+[]\T1/lmr/m/n/10 Sposito, Hen-rique. 2021. \T1/lmr/m/it/10 Poldis: Tools for An-a-lyz-ing Po-lit-i-cal Dis-course\T1/lmr/m/n/10 . []$https : / / github . com /
+ []
+
+[20] [21] (./Full_draft_20220510.aux)
 Package rerunfilecheck Info: File `Full_draft_20220510.out' has not changed.
 (rerunfilecheck)             Checksum: 2C79E1AE484AB0E5C7C48BBBA8A3130C;4875.
  ) 
 Here is how much of TeX's memory you used:
- 13830 strings out of 480260
- 225254 string characters out of 5892848
- 526605 words of memory out of 5000000
- 31412 multiletter control sequences out of 15000+600000
+ 13853 strings out of 480260
+ 225622 string characters out of 5892848
+ 524605 words of memory out of 5000000
+ 31406 multiletter control sequences out of 15000+600000
  540269 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,17n,77p,1181b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,17n,77p,1181b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb>
-Output written on Full_draft_20220510.pdf (19 pages, 1244954 bytes).
+Output written on Full_draft_20220510.pdf (21 pages, 1254702 bytes).
 PDF statistics:
- 355 PDF objects out of 1000 (max. 8388607)
- 297 compressed objects within 3 object streams
- 86 named destinations out of 1000 (max. 500000)
+ 427 PDF objects out of 1000 (max. 8388607)
+ 366 compressed objects within 4 object streams
+ 115 named destinations out of 1000 (max. 500000)
  186 words of extra memory for PDF output out of 10000 (max. 10000000)
 
