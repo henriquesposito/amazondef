@@ -1,11 +1,7 @@
-unnamed-chunk-1	iris	plot
-unnamed-chunk-2	iris	plot
-unnamed-chunk-3	runif
-unnamed-chunk-4	rnorm
-unnamed-chunk-5	rbinom
-unnamed-chunk-6	rcauchy
-unnamed-chunk-7	%>%	addTiles	leaflet	library	setView
-unnamed-chunk-8	::	head	mtcars
-unnamed-chunk-9	::	%>%	c	F	head	mtcars
-refs	::	myBib
-unnamed-chunk-10	::	head	library	list	mtcars
+setup	::	$	library	options
+data	::	.	%>%	==	~	c	case_when	count	data.frame	date	factor	false_positives	filter	grepl	group_by	ifelse	is.na	left_join	library	location	mixed_type	mutate	n	rbind	readRDS	rename	replace	select	text	title	ungroup	unite	year
+Figure 2	.	%>%	==	aes	amazon_speech	c	count	element_blank	element_line	element_rect	element_text	filter	geom_line	geom_text	geom_vline	ggplot	group_by	labs	mutate	n	perc	percent_format	pop	scale_y_continuous	select	sum	theme	year
+Figure 3	%>%	==	$	aes	ama_mx	annotate	as.numeric	c	count	element_blank	element_line	element_rect	element_text	filter	geom_smooth	ggplot	group_by	hp	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	scale_y_continuous	sum	theme	year
+Figure 4	::	%>%	==	aes	ama_mx	c	count	element_blank	element_line	element_rect	element_text	factor	filter	geom_bar	geom_text	ggplot	group_by	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	position_stack	president	scale_fill_brewer	scale_y_continuous	sum	theme
+Figure 5	::	%>%	$	$<-	aes	Brasilia	c	Construction	data.frame	element_blank	element_line	element_rect	element_text	exp	factor	geom_bar	geom_hline	geom_text	ggplot	labs	Location	mutate	name	Percentage	position_dodge	return	round	scale_fill_brewer	scale_y_continuous	select	seq	theme	value
+refs	::

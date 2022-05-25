@@ -169,14 +169,14 @@ a, a > code {
 
 div.remark-slide-container h2 {
 	font-family: 'Open Sans', sans-serif;
-	color: #535353;
+	color: #006600;
 	letter-spacing: -1px;
 	font-size: 1.5em
 }
 
 div.remark-slide-container h3 {
 	font-family: 'Open Sans', sans-serif;
-	color: #000;
+	color: black;
 	letter-spacing: -1px;
 	font-size: 1.25em;
 	padding-top: 1.3em
@@ -335,7 +335,7 @@ pre {
 
 /* background colour classes */
 .iheid-red {
-  background-color: #006600;
+  background-color: #FF0000;
   color: white;
 }
 .writing-grey {
@@ -734,7 +734,7 @@ slides > slide {
 
 /* H2 fonts */
 .title-slide h2 {
-  color: black !important; /* first of type is master brand red */
+  color: #006600 !important; /* first of type is master brand red */
   font-size: 35px;
   padding-left: 20px;
   padding-bottom: 10px;
