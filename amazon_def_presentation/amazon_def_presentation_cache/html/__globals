@@ -1,0 +1,11 @@
+unnamed-chunk-1	iris	plot
+unnamed-chunk-2	iris	plot
+unnamed-chunk-3	runif
+unnamed-chunk-4	rnorm
+unnamed-chunk-5	rbinom
+unnamed-chunk-6	rcauchy
+unnamed-chunk-7	%>%	addTiles	leaflet	library	setView
+unnamed-chunk-8	::	head	mtcars
+unnamed-chunk-9	::	%>%	c	F	head	mtcars
+refs	::	myBib
+unnamed-chunk-10	::	head	library	list	mtcars
