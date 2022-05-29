@@ -1,6 +1,6 @@
 ---
 title: "How has the Brazilian Amazon been constructed as a problem?"
-subtitle: "The Economy, the environment, the people, and the nation in the presidential speeches since 1985"
+subtitle: "The economy, the environment, the people, and the nation in the presidential speeches since 1985"
 author: "<large>Henrique Sposito and Livio Silva-Muller</large>"
 date: "<small>`r format(Sys.Date(), '%A, %e %B, %Y')`<small>"
 output:
@@ -23,13 +23,20 @@ output:
           </div>
         </div>`
 ---
-class: center middle
+class: split two middle
 
-# The Brazilian Amazon as a problem in discourse over time, by geographical location, and between/within governments
+.pull-left[
+## The Brazilian Amazon as a problem in presidential discourse:
+- in time
+- by geographical location
+- between/within governments
+]
 
-![:scale 40%](assets/Images/presid.jpeg)
+.pull-right[
+![:scale 120%](assets/Images/presid.jpeg)
+]
 
-How does the social-cultural construction of the Amazon matters to environmental outcomes?
+- The social-cultural construction of the Amazon and environmental outcomes
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
@@ -158,24 +165,22 @@ class: split two
 - Chosen problems (Hirschman 1963; Bacchi 2009)
 
 - Presidential discourse (Zarefsky 2004)
-
-- Policy issues (Drummond and Barros-Platiau 2006)
 ]
 
 --
 .pull-right[**Problem-construction**
 
-- National Sovereignty (Hecht and Cockburn 1990)
+- National sovereignty (Hecht and Cockburn 1990)
 
-- Economic Integration (Acker 2014)
+- Economic integration (Acker 2014)
 
-- Environmetal Conservation (Hochstetler and Keck 2007)
+- Environmental conservation (Hochstetler and Keck 2007)
 
-- What about social development?
+- And social development?
 ]
 
 ---
-class: split two
+class: split two middle
 
 # Data and Methods
 
@@ -192,9 +197,9 @@ class: split two
 ]
 
 --
-.pull-right[*Operationalization*
+.pull-right[
 
-![:scale 120%](assets/Images/figure1pic.png)
+![:scale 200%](assets/Images/figure1pic.png)
 ]
 
 ---
@@ -202,7 +207,7 @@ class: split two
 # The rises and falls of the Amazon as a topic in presidential speeches
 
 .center[
-```{r Figure 2, echo=FALSE, fig.height=6.5, fig.width=11}
+```{r Figure 2, echo=FALSE, fig.height=6.5, fig.width=12}
 perc1 <- pop %>%
   count(amazon_speech, year) %>%
   group_by(year) %>%
@@ -237,7 +242,7 @@ Amazon_year
 # How has the Amazon been constructed as a problem? *Pure-type problem constructions*
 
 .center[
-```{r Figure 3, echo=FALSE, fig.height=6.5, fig.width=11}
+```{r Figure 3, echo=FALSE, fig.height=6.5, fig.width=12}
 pure_types_time <- ama_mx %>%
   count(mx_cat, mx_cat2, year) %>%
   group_by(year) %>%
@@ -270,7 +275,7 @@ pure_types_time
 # How has the Amazon been constructed as a problem? *Mixed-type problem constructions*
 
 .center[
-```{r Figure 4, echo=FALSE, fig.height=6.5, fig.width=11}
+```{r Figure 4, echo=FALSE, fig.height=6.5, fig.width=12}
 mixed_types_presid <- ama_mx %>%
   count(president, mx_cat, mx_cat2) %>%
   group_by(president) %>%
@@ -302,7 +307,7 @@ mixed_types_presid
 # The Amazonian multi-level game: boasting policy outside and talking to people inside
 
 .center[
-```{r Figure 5, echo=FALSE, fig.height=6.5, fig.width=11}
+```{r Figure 5, echo=FALSE, fig.height=6.5, fig.width=12}
 logit2prob <- function(logit) {
   odds <- exp(logit)
   prob <- odds / (1 + odds)
@@ -343,8 +348,9 @@ mplot
 ```
 ]
 ---
+class: split two middle
 
-# Discussion: The Amazon, Democracy, and Environment
+# The Amazon, democracy, and the environment
 
 .pull-left[
 
@@ -356,8 +362,13 @@ mplot
 ]
 
 .pull-right[
-![:scale 100%](assets/Images/photolivio.png)
+![:scale 120%](assets/Images/photolivio.png)
 ]
+
+---
+
+background-image: url(https://media.giphy.com/media/xUPGcxpCV81ebKh7Vu/giphy.gif)
+background-size: contain
 
 ---
 # References
