@@ -31,18 +31,28 @@ library(RColorBrewer)
 library(nnet)
 library(stargazer)
 library(kableExtra)
+library(tm)
+library(tidytext)
+library(topicmodels)
+library(tibble)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
 # Load data
-pop<- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
-pop <-  pop %>% select(-c(title, date, text, location))
+##### We are missing many observations for Collor from 1991 and 1992...
+##### These are not in the repository for some reason...
+##### Should we try and complete or should we at least disclose these in a footnote?
+pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
+pop <- pop %>% select(-c(title, date, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
-ama <-  ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
+ama <- ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
 AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
+location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/location_km.xlsx") %>% 
+  select(-location_cat)
+ama <- left_join(ama, location_km, by = "location")
 adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050)) # Missing year data
 amazon_def_year <- rbind(adr, amazon_def_year) 
 hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
@@ -94,18 +104,18 @@ temp <- ei %>%
 ama_mx <-  ama %>%
   unite(mixed_type, sov:con, sep="_") %>%
   mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ "Pure Sovereignty",
-                                      mixed_type == '0_1_0_0' ~ "Pure Economic Integration", 
-                                      mixed_type == '0_0_1_0' ~ "Pure Social Development",
-                                      mixed_type == '0_0_0_1' ~ "Pure Conservation",
-                                      mixed_type == '0_0_0_0' ~ "Other",
-                                      mixed_type == '0_1_0_1' ~ "Economic Conservation",
-                                      mixed_type == '0_1_1_0' ~ "Social Economic",
-                                      mixed_type == '1_0_0_1' ~ "Sovereign Conservation",
-                                      mixed_type == '0_1_1_1' ~ "Economic, Social,\nand Conservation",
-                                      mixed_type == '1_1_0_0' ~ "Economic Sovereignty",
-                                      mixed_type == '0_0_1_1' ~ "Social Conservation",
-                                      grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
-                                            mixed_type) ~ "Other Mixed-types"),
+                                   mixed_type == '0_1_0_0' ~ "Pure Economic Integration", 
+                                   mixed_type == '0_0_1_0' ~ "Pure Social Development",
+                                   mixed_type == '0_0_0_1' ~ "Pure Conservation",
+                                   mixed_type == '0_0_0_0' ~ "Other",
+                                   mixed_type == '0_1_0_1' ~ "Economic Conservation",
+                                   mixed_type == '0_1_1_0' ~ "Social Economic",
+                                   mixed_type == '1_0_0_1' ~ "Sovereign Conservation",
+                                   mixed_type == '0_1_1_1' ~ "Economic, Social,\nand Conservation",
+                                   mixed_type == '1_1_0_0' ~ "Economic Sovereignty",
+                                   mixed_type == '0_0_1_1' ~ "Social Conservation",
+                                   grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
+                                         mixed_type) ~ "Other Mixed-types"),
          levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development",
                     "Pure Sovereignty", "Other", "Economic Conservation", 
                     "Social Economic", "Sovereign Conservation", "Economic, Social,\nand Conservation",
@@ -247,124 +257,93 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
-# # Same plot but annotated
-# Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
-#   geom_line(color = "darkgreen") +
-#   scale_y_continuous(labels = percent_format()) +
-#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
-#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
-#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
-#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-#   geom_vline(xintercept = c(1988, 1992, 2009, 2015),
-#              linetype = "dotted") +
-#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-#        caption = "",
-#        color='Y series') +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom") +
-#   annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.35,
-#            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
-#                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
-#            alpha = 0.1) +
-#   annotate(geom = "text", x = hp$label, y = 0.04, vjust = 0.3,
-#            label = hp$presid, alpha = 0.4) +
-#   annotate(geom = "segment", x = amazon_def_year$year, y = amazon_def_year$def_year)
-# # # With a few lines under the
-# cat1 <- ama_mx %>%
-#   mutate(cat = ifelse(mx_cat2 == "Mixed-types", "Mixed-types", paste(mx_cat))) %>%
-#   count(cat, year) %>%
-#   group_by(year) %>%
-#   mutate(perc = n / sum(n),
-#          perc_type = ifelse(perc == 1, 0.25, perc)) %>% 
-#   arrange(year) %>%
-#   select(c(cat, year, perc_type))
-# year_share <- merge(perc1, cat1, "year") %>%
-#   mutate(year_perc = perc*perc_type)
-# Amazon_year <- year_share %>% ggplot(., aes(x = year, y = perc)) +
-#   geom_line(aes(y = perc)) +
-#   scale_y_continuous(labels = percent_format()) +
-#   geom_line(aes(x = year, y = year_perc, fill = cat, group = cat, color = cat)) +
-#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
-#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
-#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
-#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-#   geom_vline(xintercept = c(1988, 1992, 2009, 2015),
-#              linetype = "dotted") +
-#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-#        caption = "",
-#        color='Y series') +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom")
-# # For filling the area under the line
-# Amazon_year <- year_share %>% ggplot(., aes(x = year, y = year_perc, fill = cat)) +
-#   geom_line() +
-#   geom_area() +
-#   scale_y_continuous(labels = percent_format()) +
-#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
-#   geom_vline(xintercept = 1988, linetype = "dotted") +
-#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
-#   geom_vline(xintercept = 1992, linetype = "dotted") +
-#   geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summit"), size = 3) +
-#   geom_vline(xintercept = 2009, linetype = "dotted") +
-#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-#   geom_vline(xintercept = 2015, linetype = "dotted") +
-#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-#        caption = "",
-#        color = 'Y series') +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom")
-# # Controling for inflation and deforastation
-# pop2 <- pop %>% count(amazon_speech, year, president) %>%
-#   group_by(year, president) %>%
-#   left_join(perc1) %>%
-#   filter(amazon_speech==1)
-# pop2 <- left_join(pop2, AAI, by = "year")
-# pop2 <- left_join(pop2, amazon_def_year, by = "year")
-# model <- lm(perc ~ AAI+ def_year + president, data=pop2)
-# pop2$predicted = predict(model, pop2)
-# Amazon_year <- pop2 %>% ggplot(., aes(x = year, y = perc)) +
-#   geom_line(size=.85, aes(x=year, y=perc, color="Real share")) +
-#   geom_line(size=.45, aes(x=year, y=predicted, color= "Predicted share")) +
-#   geom_text(aes(x = 1988, y = 0.34, label = "Chico Mendes/NYT"), size = 3) +
-#   geom_vline(xintercept = 1988, linetype="dotted") +
-#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) + 
-#   geom_vline(xintercept = 1992, linetype="dotted") +
-#   geom_text(aes(x = 2009, y = 0.25, label = "Copenhagen Summit"), size = 3) + 
-#   geom_vline(xintercept = 2009, linetype="dotted") +
-#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) + 
-#   geom_vline(xintercept = 2015, linetype="dotted") +
-#   scale_color_manual(values = c("Real share" = "darkolivegreen", "Predicted share" = "gray40")) +
-#   scale_y_continuous(labels = percent_format()) +
-#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
-#        caption = "Predicted share controls for deforestation rates, inflation, and president.",
-#        color='Y series') +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom")
 Amazon_year
+
+# Word frequency year
+popc <- filter(pop, amazon_speech == 1) %>%
+  select(year, text) %>% 
+  group_by(year) %>% 
+  rename(doc_id = year)
+popc$text <- stringr::str_replace_all(popc$text, "meio ambiente", "meioambiente")
+popc$text <- stringr::str_replace_all(popc$text, "forcas armadas", "forcasarmadas")
+popc$text <- stringr::str_replace_all(popc$text, "estados unidos", "estadosunidos")
+popc$text <- stringr::str_replace_all(popc$text, "rio de janeiro", "riodejaneiro")
+popc$text <- stringr::str_replace_all(popc$text, "direitos humanos", "direitoshumanos")
+popc$text <- stringr::str_replace_all(popc$text, "rio grande do sul", "riograndedosul")
+popc$text <- stringr::str_replace_all(popc$text, "copa do mundo", "copadomundo")
+popc$text <- stringr::str_replace_all(popc$text, "sao paulo", "saopaulo")
+popc$text <- stringr::str_replace_all(popc$text, "rio grande do norte", "riograndedonorte")
+popc$text <- stringr::str_replace_all(popc$text, "floresta amazonica", "florestaamazonica")
+popc$text <- stringr::str_replace_all(popc$text, "regiao amazonica", "regiaoamazonica")
+popc$text <- stringr::str_replace_all(popc$text, "mato grosso|mato-grosso", "matogrosso")
+popc$text <- stringr::str_replace_all(popc$text, "minas gerais", "minasgerais")
+popc$text <- stringr::str_remove_all(popc$text, " [a-z] ")
+popc$text <- tm::removeWords(tm::removePunctuation(popc$text),
+                             c(tm::stopwords("pt"), 
+                               "nao", "amazonas", "voce", "vao", "dar", "du",
+                               "our", "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
+                               "no", "hoje", "presidente", "governador", 
+                               "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
+                               "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
+                               "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
+                               "cumprimentar", "gente", "estado", "querido", "queria",
+                               "todos", "companheiro", "senhores", "alguns",
+                               "companheiras", "companheiros", "companheira", "entao",
+                               "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
+                               "grosso","ministro", "ministra", "josé", "jose",
+                               "palacio", "planalto", "pronunciamento", "sobre",
+                               "ministros", "luiz", "disse", "fizemos", "nesse",
+                               "antonio", "vou", "eduardo braga", "pais", "coisa",
+                               "então", "pouco", "pode", "sera", "dias",
+                               "outro", "onde", "discurso", "parte", "fala",
+                               "anos", "cada", "todo", "visite site", "disse",
+                               "site secretaria", "minas gerais", "lula silva",
+                               "inácio lula", "amapa", "bahia", "é", "lá", "et", "in",
+                               "httpwwwimprensaplanaltogovbr", "secretaria", "visitesite",
+                               "ta", "tudo", "pessoas", "falar", "neves", "tancredo",
+                               "brasiliadf", "cardoso", "httpwwwinfoplanaltogovbr", 
+                               "sip", "and", "to", "en", "des", "el", "le", "les", "dia",
+                               "palavra dorsdne", "fernando henrique", "dorsdne eete",
+                               "inacio lula", "lula silva", "inacio", "republica",
+                               "quegente", "muitas vezes", "ainda", "realmente",
+                               "assim", "possa", "coisas", "apenas", "acho", "ano",
+                               "vez", "portanto", "todas", "questao", "lado", "outros",
+                               "prezado", "vem", "sempre", "sarney", "luis", "serao", 
+                               "tao", "meses", "quase", "diante", "brasil", "sendo",
+                               "rsdneennoerqe", "brasil", "neste", "digo", "quase", 
+                               "queremos", "nesse", "nessa", "mim", "eete", "obrigado", "muita"))
+popc <- tm::VCorpus(tm::DataframeSource(popc))
+popn <- tidytext::tidy(popc) %>%
+  unnest_tokens(word, text) %>% 
+  group_by(id, word) %>% 
+  summarise(count = n()) %>% 
+  arrange(-count) %>% 
+  slice(1:10)
+popn <- aggregate(popn$word, list(popn$id), paste, collapse=", ") %>% 
+  rename(Year = "Group.1", Terms = "x")
+tibble(popn)
+##### LDA per year just in case
+pop_dtm  <- DocumentTermMatrix(popc)
+pop_lda <- topicmodels::LDA(pop_dtm, k = 10, control = list(seed = 1234))
+pop_lday <- tidy(pop_lda, matrix = "gamma") %>%
+  arrange(desc(gamma)) %>%
+  group_by(document) %>%
+  filter(row_number() %in% 1:1) %>% # get the top 3 topics per speaker
+  arrange(document) %>%
+  mutate(gamma = round(gamma, 1)) %>%
+  distinct() %>% 
+  rename (Year = document)
+pop_10 <- tidy(pop_lda, matrix = "beta") %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  filter(row_number() %in% 1:10) %>%
+  arrange(topic)
+pop_10 <- aggregate(pop_10$term, list(pop_10$topic), paste, collapse=", ") %>%
+  rename(topic = "Group.1", Terms = "x")
+popt <- dplyr::left_join(pop_10, pop_lday, by = "topic") %>%
+  select(Year, Terms) %>% 
+  arrange(Year)
+tibble(popt)
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of “we do not promise, we deliver” when the stakes about climate change were high [@franchini2019].
@@ -491,12 +470,18 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
   mutate(mx_cat = factor(mx_cat, levels = c("Pure Conservation", "Pure Economic Integration",
                                             "Pure Social Development", "Pure Sovereignty",
                                             "Economic Conservation", "Social Economic",
-                                            "Sovereign Conservation", "Economic, Social,\nand Conservation",
+                                            "Sovereign Conservation", 
+                                            "Economic, Social,\nand Conservation",
                                             "Economic Sovereignty", "Social Conservation", "Other")),
-         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname", location),
-                                     "Amazonian Countries", location_cat),
+         location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+                                     location, ignore.case = TRUE), # minor coding issues to fix
+                               "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat), # minor coding issues to fix
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                            location), "Amazonian Countries", location_cat),
                                levels = c("International", "Amazonian States",
-                                          "Amazonian Countries", "Brasilia", "Non Amazonian States"))) # separating Amazonian countries
+                                          "Amazonian Countries", "Brasilia", "Non Amazonian States")))
 # model
 model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI,
                   data = ama_model, model = TRUE, trace = FALSE)
