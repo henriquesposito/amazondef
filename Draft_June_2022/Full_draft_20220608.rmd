@@ -5,10 +5,10 @@ author:
 - Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
 date: "8 June 2022"
 output:
+  pdf_document: default
+  fig_caption: yes
   html_document:
     df_print: paged
-  fig_caption: yes
-  pdf_document: default
   word_document:
     reference_docx: template.docx
 header-includes:
@@ -23,12 +23,10 @@ abstract: The Amazon Rainforest is one of the most important ecosystems in the w
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
-library(ggplot2)
 library(tidyr)
 library(skimr)
 library(scales)
 library(RColorBrewer)
-library(nnet)
 library(stargazer)
 library(kableExtra)
 library(tm)
@@ -36,6 +34,7 @@ library(tidytext)
 library(topicmodels)
 library(tibble)
 library(readxl)
+library(ggplot2)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
@@ -375,7 +374,7 @@ pure_types_time <- ama_mx %>%
   mutate(perc = n / sum(n)) %>% 
   filter(mx_cat2 == "Pure-types") %>% 
   ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
-  geom_smooth(aes(fill = mx_cat), se = FALSE, size = .5) + # to add CI here set se to TRUE
+  geom_smooth(aes(fill = mx_cat), se = FALSE, size = .5) +
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of each pure type by year",
        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
@@ -387,11 +386,11 @@ pure_types_time <- ama_mx %>%
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom") +
-  annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.40,
+  ggplot2::annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.40,
            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
            alpha = 0.1) +
-  annotate(geom = "text", x = hp$label, y = 0.01, vjus = 0.3, hjust = 0.3, angle = 25,
+  ggplot2::annotate(geom = "text", x = hp$label, y = 0.01, vjus = 0.3, hjust = 0.3, angle = 25,
            label = hp$presid, alpha = 0.4)
 pure_types_time
 ```
@@ -476,7 +475,10 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                             "Sovereign Conservation", 
                                             "Economic, Social,\nand Conservation",
                                             "Economic Sovereignty", "Social Conservation", "Other")),
-         env_vs_all <- ifelse(mx_cat == "Pure Conservation", 1, 0),
+         con_vs_all = ifelse(mx_cat == "Pure Conservation", 1, 0),
+         EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
+         SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
+         sov_vs_all = ifelse(mx_cat == "Pure Sovereignty", 1, 0),
          location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
                                      location, ignore.case = TRUE), # minor coding issues to fix
                                "Non Amazonian States", location_cat),
@@ -486,43 +488,58 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                             location), "Amazonian Countries", location_cat),
                                levels = c("International", "Amazonian States",
                                           "Amazonian Countries", "Brasilia", "Non Amazonian States")))
-# model
-model <- glm(env_vs_all ~ km_to_manaus + election_year + def_year + AAI,
-             family = binomial(link = 'logit'), data = ama_model)
-# summary statistics
-model_summary <- summary(model)
-md_plot <- data.frame("Construction" = c("Economic Integration", "Social Development", "Sovereignty"),
-                      "Amazonian_Countries" = c(1.3411972, 1.2460915, 0.9310706),
-                      "Amazonian_States" = c(0.4578251, 1.4725563, 1.6281365),
-                      "Non_Amazonian_States" = c(0.6198104, 1.5838611, 1.9830952),
-                      "Brasilia" = c(-0.29279984, 0.59564579, 1.38333572))
-md_plot$Brasilia <- logit2prob(md_plot$Brasilia)
-md_plot$'Amazonian States' <- logit2prob(md_plot$Amazonian_States)
-md_plot$'Non Amazonian States' <- logit2prob(md_plot$Non_Amazonian_States)
-md_plot$'Amazonian Countries' <- logit2prob(md_plot$Amazonian_Countries)
-mplot <- md_plot %>%
-  select(-c("Amazonian_Countries", "Amazonian_States", "Non_Amazonian_States")) %>% 
-  tidyr::pivot_longer('Amazonian Countries':Brasilia) %>%
-  mutate(Percentage = 100*round(value, digit = 2)-50) %>%
-  mutate(Location = factor(name, levels = c("Amazonian Countries", "Amazonian States",
-                           "Non Amazonian States", "Brasilia"))) %>% 
-  ggplot(aes(x = Location, y = Percentage, fill = Construction)) +
-  geom_bar(stat = "identity", position = position_dodge(0.8), width = 0.7) +
-  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
-  scale_y_continuous(breaks = seq(-15, 40, 10), limits = c(-15, 40)) +
-  geom_text(aes(label = Percentage), vjust = 1.5, size = 3, position = position_dodge(0.8)) +
-  geom_hline(yintercept = 0, linetype = "dotted", color = "red") +
-  labs(x = "", y = "Percentage",
-       title = "Percentage for problem constructions across locations in relation\nto environmental conservation problem constructions Internationally",
-       subtitle = "Bars reflect how much more (or less) likely are specific problem constructions in a specific location in relation to reference category") +
+# plot
+mplot <- ama_model %>%
+  select(con_vs_all, km_to_manaus) %>%
+  ggplot(aes(x = km_to_manaus, y = con_vs_all)) +
+  geom_smooth(se = FALSE, size = .5, color = "darkgreen") +
+  scale_y_continuous(labels = percent_format()) +
+  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), linetype = "dotted") +
+  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), y = 0.5,
+                    label = c("Brasilia", "New York", "Paris", "Cape Town", "Beijing"), alpha = 0.4) +
+  labs(x = "Distance to Manaus (km)",
+       y = "Environmental conservation",
+       title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance to Manaus",
+       subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
+       caption = "Curve in the plot is smoothed using loess method.") +
+    theme(panel.background = element_rect("white", "black", .5, "solid"),
+          panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+          axis.text = element_text(color = "black", size = 10),
+          title = element_text(color = "black", size = 10, face = "bold"),
+          legend.title = element_blank(),
+          plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
+mplot
+mplot_all <- ama_model %>%
+  select(con_vs_all, EI_vs_all, SD_vs_all, sov_vs_all, km_to_manaus) %>%
+  rename("Pure Conservation" = con_vs_all,
+         "Pure Economic Integration" = EI_vs_all,
+         "Pure Social Development" = SD_vs_all, 
+         "Pure Sovereignty" = sov_vs_all) %>% 
+  pivot_longer(-km_to_manaus, names_to = "variable", values_to = "value") %>% 
+  ggplot(aes(x = km_to_manaus, y = value, color = variable)) +
+  geom_smooth(se = FALSE, size = .5) +
+  scale_y_continuous(labels = percent_format()) +
+  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), linetype = "dotted") +
+  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), y = 0.5,
+                    label = c("Brasilia", "New York", "Paris", "Cape Town", "Beijing"), alpha = 0.4) +
+  labs(x = "Distance to Manaus (km)",
+       y = "Problem Construction",
+       title = "Amazon problem constructions in relation to distance to Manaus",
+       subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
+       caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
           panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
           axis.text = element_text(color = "black", size = 10),
           title = element_text(color = "black", size = 10, face = "bold"),
           legend.title = element_blank(),
           plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-          legend.position = c(0.5, 0.15))
-mplot
+          legend.position = "bottom")
+mplot_all
+# model
+model <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+             family = binomial(link = 'logit'), data = ama_model)
+# summary statistics
+summary(model)
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.
