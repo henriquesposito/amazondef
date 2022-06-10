@@ -35,6 +35,7 @@ library(tm)
 library(tidytext)
 library(topicmodels)
 library(tibble)
+library(readxl)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
@@ -475,6 +476,7 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                             "Sovereign Conservation", 
                                             "Economic, Social,\nand Conservation",
                                             "Economic Sovereignty", "Social Conservation", "Other")),
+         env_vs_all <- ifelse(mx_cat == "Pure Conservation", 1, 0),
          location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
                                      location, ignore.case = TRUE), # minor coding issues to fix
                                "Non Amazonian States", location_cat),
@@ -485,30 +487,10 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                levels = c("International", "Amazonian States",
                                           "Amazonian Countries", "Brasilia", "Non Amazonian States")))
 # model
-model <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI,
-                  data = ama_model, model = TRUE, trace = FALSE)
+model <- glm(env_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+             family = binomial(link = 'logit'), data = ama_model)
 # summary statistics
 model_summary <- summary(model)
-p_values <- round((1 - pnorm(abs(summary(model)$coefficients/summary(model)$standard.errors)))*2, 5)
-# Independence of Irrelevant Alternatives (Hausman-McFadden) test, in practice
-iia_data <- filter(ama_model, mx_cat != "Pure Economic Integration")
-iia <- multinom(mx_cat ~ location_cat + election_year + def_year + AAI,
-                data = iia_data, model = TRUE, trace = FALSE)
-iia_summary <- summary(iia)
-iia_p_values <- round((1 - pnorm(abs(summary(iia)$coefficients/summary(iia)$standard.errors)))*2, 5)
-# Model coefficients, and p-values, are statistically identical even when we drop the largest
-# factor category from model. Therefore, we can proceed with a multinomial logit model,
-# instead of a multinomial probit model, since the independence of irrelevant alternatives 
-# Other post estimation tests
-chi_square <- chisq.test(ama_model$mx_cat, predict(model)) 
-# Chi-square p value (p-value < 0.001) tells us that our model explains a
-# significant amount of the variation in the data in comparison with a null model.
-# But too much information on the summary tables... Let's just focus on what we want here:
-logit2prob <- function(logit) {
-  odds <- exp(logit)
-  prob <- odds / (1 + odds)
-  return(prob)
-} # to transform log odds in probabilities
 md_plot <- data.frame("Construction" = c("Economic Integration", "Social Development", "Sovereignty"),
                       "Amazonian_Countries" = c(1.3411972, 1.2460915, 0.9310706),
                       "Amazonian_States" = c(0.4578251, 1.4725563, 1.6281365),
