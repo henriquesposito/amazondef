@@ -152,7 +152,7 @@ This article proceeds as follows: first, we propose a conceptual framework to un
 
 Governments often have a choice in how they construct problems and what policy solutions they implement. In "Journey towards Progress", @hirschman1963 draws a conceptual distinction between pressing problems (pressured from outside parties to the government) and chosen problems (chosen by the government at their own discretion). Pressing problems can be either privileged or neglected, depending on the degree of pressure exercised by the interested groups. Chosen problems are those governments select at their discretion. Problems can change from pressing to chosen across time and in space as a function of (a) solutions becoming available, (b) a change of level of government control in society, or (c) a shift of interests from top policymakers [@hirschman1963].
 
-Additionally, @bacchi2009 [p. 10] argues that policies have a cultural dimension as "it takes shape within specific historical and national or international contexts". The existence or proposal of a policy implies that there is a (public) problem that needs (governmental) action to be fixed. The alleged problem is not always explicitly stated in policy: policies are represented as solutions for implicit problems.\@hirschman1975[p. 388] exemplifies chosen problems with the case of the construction of Brasilia. Building Brasilia could solve a problem of regional inequality, a problem of a dormant economy without state investment, a problem of political representation, or all three. It is up to the discretion of the government to highlight or not the implicit problem a policy solves. A same policy object (e.g. Brasilia, the Amazon, criminality, poverty), thus, can be constructed as pressing or not depending on how a government represents it.
+Additionally, @bacchi2009 [p. 10] argues that policies have a cultural dimension as "it takes shape within specific historical and national or international contexts". The existence or proposal of a policy implies that there is a (public) problem that needs (governmental) action to be fixed. The alleged problem is not always explicitly stated in policy: policies are represented as solutions for implicit problems. @hirschman1975 [p. 388] exemplifies chosen problems with the case of the construction of Brasilia. Building Brasilia could solve a problem of regional inequality, a problem of a dormant economy without state investment, a problem of political representation, or all three. It is up to the discretion of the government to highlight or not the implicit problem a policy solves. A same policy object (e.g. Brasilia, the Amazon, criminality, poverty), thus, can be constructed as pressing or not depending on how a government represents it.
 
 Governments can choose to emphasize (or not) one or more implicit problems that a policy solves depending on which interest group they are in communication with. Relative to how the policy is represented to be, it can be a solution of problems that are considered pressing or not for different groups and it is up to the discretion of the political actor to construct a particular problem in a particular way given context. @putnam1988 seminal article on the two-level game can help us make sense of this variation conceptually. The author argues that the outcomes of international negotiations lie within the overlap between the pressure of domestic groups and international groups. Relatedly, @hochstetler2012 argue that international commitments in the Brazilian case shift as a function of domestic cost-benefit calculations, as the country as a large emitter does not abide to the global commons framings. Taking the example of the 2012 Forest Code and the Amazon, President Dilma could emphasize its rural character for environmentalists at the Paris Summit, or the amnesty for deforestation for agricultural elites. The same policy, then, can solve the problem of environmental conservation as well as economic integration.
 
@@ -488,16 +488,16 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                             location), "Amazonian Countries", location_cat),
                                levels = c("International", "Amazonian States",
                                           "Amazonian Countries", "Brasilia", "Non Amazonian States")))
-# plot
-mplot <- ama_model %>%
-  select(con_vs_all, km_to_manaus) %>%
-  ggplot(aes(x = km_to_manaus, y = con_vs_all)) +
-  geom_smooth(se = FALSE, size = .5, color = "darkgreen") +
-  scale_y_continuous(labels = percent_format()) +
-  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), linetype = "dotted") +
-  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), y = 0.5,
-                    label = c("Brasilia", "New York", "Paris", "Cape Town", "Beijing"), alpha = 0.4) +
-  labs(x = "Distance to Manaus (km)",
+# model
+model <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+             family = binomial(link = 'logit'), data = ama_model)
+# summary statistics
+stargazer::stargazer(model, type = "text")
+# Plot model
+ama_model$predicted = predict(model, ama_model, type = "response")
+ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) + 
+  geom_smooth(size = .5, color = "darkgreen") +
+    labs(x = "Distance to Manaus (km)",
        y = "Environmental conservation",
        title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance to Manaus",
        subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
@@ -508,38 +508,7 @@ mplot <- ama_model %>%
           title = element_text(color = "black", size = 10, face = "bold"),
           legend.title = element_blank(),
           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
-mplot
-mplot_all <- ama_model %>%
-  select(con_vs_all, EI_vs_all, SD_vs_all, sov_vs_all, km_to_manaus) %>%
-  rename("Pure Conservation" = con_vs_all,
-         "Pure Economic Integration" = EI_vs_all,
-         "Pure Social Development" = SD_vs_all, 
-         "Pure Sovereignty" = sov_vs_all) %>% 
-  pivot_longer(-km_to_manaus, names_to = "variable", values_to = "value") %>% 
-  ggplot(aes(x = km_to_manaus, y = value, color = variable)) +
-  geom_smooth(se = FALSE, size = .5) +
-  scale_y_continuous(labels = percent_format()) +
-  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), linetype = "dotted") +
-  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76, 9678.78, 15904.47), y = 0.5,
-                    label = c("Brasilia", "New York", "Paris", "Cape Town", "Beijing"), alpha = 0.4) +
-  labs(x = "Distance to Manaus (km)",
-       y = "Problem Construction",
-       title = "Amazon problem constructions in relation to distance to Manaus",
-       subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
-       caption = "Curve in the plot is smoothed using loess method.") +
-    theme(panel.background = element_rect("white", "black", .5, "solid"),
-          panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-          axis.text = element_text(color = "black", size = 10),
-          title = element_text(color = "black", size = 10, face = "bold"),
-          legend.title = element_blank(),
-          plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-          legend.position = "bottom")
-mplot_all
-# model
-model <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
-             family = binomial(link = 'logit'), data = ama_model)
-# summary statistics
-summary(model)
+
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.

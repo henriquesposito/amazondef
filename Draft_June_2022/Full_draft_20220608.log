@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  10 JUN 2022 13:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.20)  13 JUN 2022 16:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -634,64 +634,63 @@ File: Full_draft_20220608_files/figure-latex/Figure 4-1.pdf Graphic file (type p
 Package pdftex.def Info: Full_draft_20220608_files/figure-latex/Figure 4-1.pdf  used on input line 893.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [13 <./Full_draft_20220608_files/figure-latex/Figure 4-1.pdf>]
-<Full_draft_20220608_files/figure-latex/Figure 5-1.pdf, id=200, 469.755pt x 325.215pt>
-File: Full_draft_20220608_files/figure-latex/Figure 5-1.pdf Graphic file (type pdf)
-<use Full_draft_20220608_files/figure-latex/Figure 5-1.pdf>
-Package pdftex.def Info: Full_draft_20220608_files/figure-latex/Figure 5-1.pdf  used on input line 958.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Full_draft_20220608_files/figure-latex/Figure 5-2.pdf, id=201, 469.755pt x 325.215pt>
-File: Full_draft_20220608_files/figure-latex/Figure 5-2.pdf Graphic file (type pdf)
-<use Full_draft_20220608_files/figure-latex/Figure 5-2.pdf>
-Package pdftex.def Info: Full_draft_20220608_files/figure-latex/Figure 5-2.pdf  used on input line 959.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 958--960
-[][]
+Overfull \hbox (133.99323pt too wide) in paragraph at lines 996--996
+[]\T1/lmtt/m/n/10 ## % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com[] 
  []
 
-[14] [15 <./Full_draft_20220608_files/figure-latex/Figure 5-1.pdf>] [16 <./Full_draft_20220608_files/figure-latex/Figure 5-2.pdf>] [17] [18]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 1103.
+[14]
+Overfull \hbox (13.24358pt too wide) in paragraph at lines 996--996
+[]\T1/lmtt/m/n/10 ## \textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\[] 
+ []
 
-LaTeX Warning: Float too large for page by 10.47276pt on input line 1104.
-
-[19] [20]
+<Full_draft_20220608_files/figure-latex/Figure 5-1.pdf, id=205, 469.755pt x 325.215pt>
+File: Full_draft_20220608_files/figure-latex/Figure 5-1.pdf Graphic file (type pdf)
+<use Full_draft_20220608_files/figure-latex/Figure 5-1.pdf>
+Package pdftex.def Info: Full_draft_20220608_files/figure-latex/Figure 5-1.pdf  used on input line 1000.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[15 <./Full_draft_20220608_files/figure-latex/Figure 5-1.pdf>] [16] [17]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 1147.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 1147.
+(Font)              <9> on input line 1117.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1191--1195
+LaTeX Warning: Float too large for page by 10.47276pt on input line 1118.
+
+[18] [19]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 1161.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 1161.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1205--1209
 []$\T1/lmr/m/n/10 https : / / www . bloomberg . com / news / features / 2021 -[] 07 -[] 29 / amazon -[] rainforest -[] deforestation -[] land -[] grabs -[]
  []
 
-[21
+[20
 
 
 
 
 ]
-Underfull \hbox (badness 1043) in paragraph at lines 1370--1373
+Underfull \hbox (badness 1043) in paragraph at lines 1389--1392
 []\T1/lmr/m/n/10 Sposito, Hen-rique. 2021. \T1/lmr/m/it/10 Poldis: Tools for An-a-lyz-ing Po-lit-i-cal Dis-course\T1/lmr/m/n/10 . []$https : / / github . com /
  []
 
-[22] [23] (./Full_draft_20220608.aux)
+[21] [22] (./Full_draft_20220608.aux)
 Package rerunfilecheck Info: File `Full_draft_20220608.out' has not changed.
 (rerunfilecheck)             Checksum: F91ED50C2215801E6B94FE92C328CC42;4880.
  ) 
 Here is how much of TeX's memory you used:
- 13907 strings out of 480260
- 226782 string characters out of 5892848
+ 13901 strings out of 480260
+ 226411 string characters out of 5892848
  524606 words of memory out of 5000000
- 31451 multiletter control sequences out of 15000+600000
+ 31445 multiletter control sequences out of 15000+600000
  540588 words of font info for 82 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,77p,1181b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on Full_draft_20220608.pdf (23 pages, 1296431 bytes).
+Output written on Full_draft_20220608.pdf (22 pages, 1292049 bytes).
 PDF statistics:
- 455 PDF objects out of 1000 (max. 8388607)
- 388 compressed objects within 4 object streams
- 119 named destinations out of 1000 (max. 500000)
- 191 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 446 PDF objects out of 1000 (max. 8388607)
+ 382 compressed objects within 4 object streams
+ 120 named destinations out of 1000 (max. 500000)
+ 186 words of extra memory for PDF output out of 10000 (max. 10000000)
 
