@@ -41,9 +41,7 @@ options(stringsAsFactors = FALSE, scipen = 999)
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
 # Load data
-##### We are missing many observations for Collor from 1991 and 1992...
-##### These are not in the repository for some reason...
-##### Should we try and complete or should we at least disclose these in a footnote?
+# Add a footnote about 1992 missing obs
 pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
 pop <- pop %>% select(-c(title, date, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
@@ -116,12 +114,16 @@ ama_mx <-  ama %>%
                                    mixed_type == '0_0_1_1' ~ "Social Conservation",
                                    grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
                                          mixed_type) ~ "Other Mixed-types"),
-         levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development",
+         levels = c("Pure Economic Integration", "Pure Conservation",
+                    "Pure Social Development",
                     "Pure Sovereignty", "Other", "Economic Conservation", 
-                    "Social Economic", "Sovereign Conservation", "Economic, Social,\nand Conservation",
-                    "Economic Sovereignty", "Social Conservation", "Other Mixed-types")),
+                    "Social Economic", "Sovereign Conservation",
+                    "Economic, Social,\nand Conservation",
+                    "Economic Sovereignty", "Social Conservation",
+                    "Other Mixed-types")),
          mx_cat2 = case_when(grepl("Pure Economic Integration|Pure Conservation|
-                                   |Pure Social Development|Pure Sovereignty", mx_cat) ~ "Pure-types",
+                                   |Pure Social Development|Pure Sovereignty",
+                                   mx_cat) ~ "Pure-types",
                              grepl("^Other$", mx_cat) ~ "Other",
                              grepl("Economic Conservation|Social Economic|Sovereign Conservation|
                                    |Economic, Social,\nand Conservation|Economic Sovereignty|
@@ -246,7 +248,7 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-  geom_vline(xintercept = c(1988.7, 1992, 2009, 2015),
+  geom_vline(xintercept = c(1988.9, 1992, 2009, 2015),
              linetype = "dotted") +
   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
        subtitle = "Sample composed by 6130 presidential speeches since 1985",
@@ -260,92 +262,6 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
 Amazon_year
-
-# Word frequency year
-popc <- filter(pop, amazon_speech == 1) %>%
-  select(year, text) %>% 
-  group_by(year) %>% 
-  rename(doc_id = year)
-popc$text <- stringr::str_replace_all(popc$text, "meio ambiente", "meioambiente")
-popc$text <- stringr::str_replace_all(popc$text, "forcas armadas", "forcasarmadas")
-popc$text <- stringr::str_replace_all(popc$text, "estados unidos", "estadosunidos")
-popc$text <- stringr::str_replace_all(popc$text, "rio de janeiro", "riodejaneiro")
-popc$text <- stringr::str_replace_all(popc$text, "direitos humanos", "direitoshumanos")
-popc$text <- stringr::str_replace_all(popc$text, "rio grande do sul", "riograndedosul")
-popc$text <- stringr::str_replace_all(popc$text, "copa do mundo", "copadomundo")
-popc$text <- stringr::str_replace_all(popc$text, "sao paulo", "saopaulo")
-popc$text <- stringr::str_replace_all(popc$text, "rio grande do norte", "riograndedonorte")
-popc$text <- stringr::str_replace_all(popc$text, "floresta amazonica", "florestaamazonica")
-popc$text <- stringr::str_replace_all(popc$text, "regiao amazonica", "regiaoamazonica")
-popc$text <- stringr::str_replace_all(popc$text, "mato grosso|mato-grosso", "matogrosso")
-popc$text <- stringr::str_replace_all(popc$text, "minas gerais", "minasgerais")
-popc$text <- stringr::str_remove_all(popc$text, " [a-z] ")
-popc$text <- tm::removeWords(tm::removePunctuation(popc$text),
-                             c(tm::stopwords("pt"), 
-                               "nao", "amazonas", "voce", "vao", "dar", "du",
-                               "our", "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
-                               "no", "hoje", "presidente", "governador", 
-                               "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
-                               "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
-                               "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
-                               "cumprimentar", "gente", "estado", "querido", "queria",
-                               "todos", "companheiro", "senhores", "alguns",
-                               "companheiras", "companheiros", "companheira", "entao",
-                               "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
-                               "grosso","ministro", "ministra", "josé", "jose",
-                               "palacio", "planalto", "pronunciamento", "sobre",
-                               "ministros", "luiz", "disse", "fizemos", "nesse",
-                               "antonio", "vou", "eduardo braga", "pais", "coisa",
-                               "então", "pouco", "pode", "sera", "dias",
-                               "outro", "onde", "discurso", "parte", "fala",
-                               "anos", "cada", "todo", "visite site", "disse",
-                               "site secretaria", "minas gerais", "lula silva",
-                               "inácio lula", "amapa", "bahia", "é", "lá", "et", "in",
-                               "httpwwwimprensaplanaltogovbr", "secretaria", "visitesite",
-                               "ta", "tudo", "pessoas", "falar", "neves", "tancredo",
-                               "brasiliadf", "cardoso", "httpwwwinfoplanaltogovbr", 
-                               "sip", "and", "to", "en", "des", "el", "le", "les", "dia",
-                               "palavra dorsdne", "fernando henrique", "dorsdne eete",
-                               "inacio lula", "lula silva", "inacio", "republica",
-                               "quegente", "muitas vezes", "ainda", "realmente",
-                               "assim", "possa", "coisas", "apenas", "acho", "ano",
-                               "vez", "portanto", "todas", "questao", "lado", "outros",
-                               "prezado", "vem", "sempre", "sarney", "luis", "serao", 
-                               "tao", "meses", "quase", "diante", "brasil", "sendo",
-                               "rsdneennoerqe", "brasil", "neste", "digo", "quase", 
-                               "queremos", "nesse", "nessa", "mim", "eete", "obrigado", "muita"))
-popc <- tm::VCorpus(tm::DataframeSource(popc))
-popn <- tidytext::tidy(popc) %>%
-  unnest_tokens(word, text) %>% 
-  group_by(id, word) %>% 
-  summarise(count = n()) %>% 
-  arrange(-count) %>% 
-  slice(1:10)
-popn <- aggregate(popn$word, list(popn$id), paste, collapse=", ") %>% 
-  rename(Year = "Group.1", Terms = "x")
-tibble(popn)
-##### LDA per year just in case
-pop_dtm  <- DocumentTermMatrix(popc)
-pop_lda <- topicmodels::LDA(pop_dtm, k = 10, control = list(seed = 1234))
-pop_lday <- tidy(pop_lda, matrix = "gamma") %>%
-  arrange(desc(gamma)) %>%
-  group_by(document) %>%
-  filter(row_number() %in% 1:1) %>% # get the top 3 topics per speaker
-  arrange(document) %>%
-  mutate(gamma = round(gamma, 1)) %>%
-  distinct() %>% 
-  rename (Year = document)
-pop_10 <- tidy(pop_lda, matrix = "beta") %>%
-  arrange(desc(beta)) %>%
-  group_by(topic) %>%
-  filter(row_number() %in% 1:10) %>%
-  arrange(topic)
-pop_10 <- aggregate(pop_10$term, list(pop_10$topic), paste, collapse=", ") %>%
-  rename(topic = "Group.1", Terms = "x")
-popt <- dplyr::left_join(pop_10, pop_lday, by = "topic") %>%
-  select(Year, Terms) %>% 
-  arrange(Year)
-tibble(popt)
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of "we do not promise, we deliver" when the stakes about climate change were high [@franchini2019].
@@ -361,13 +277,6 @@ We subsequently observe a steady increase from 6% in 2016 to almost 24% in the f
 We conceptualize four pure problem constructions: sovereignty, economic integration, social development, and conservation. At the level of the speech, though, presidents might mix multiple problem construction in an Amazonian statement. Figure 3, below, illustrates the share of each pure type in time. Pure problem constructions dominate, with an average of 56% of all amazonian statements across time. As above, we observe a strong variation over time for most of these constructions.
 
 ```{r Figure 3, fig.cap="Pure types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-mmt1 <- ama_mx %>%
-  filter(mx_cat2 == "Mixed-types") %>%
-  count(mx_cat) %>%
-  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
-mmt2 <- ama_mx %>%
-  count(mx_cat)%>%
-  mutate(perc = n / sum(n)) # averages in relation to full sample
 pure_types_time <- ama_mx %>%
   count(mx_cat, mx_cat2, year) %>%
   group_by(year) %>%
@@ -428,33 +337,6 @@ mixed_types_presid <- ama_mx %>%
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "right")
 mixed_types_presid
-# mixed_types_time <- ama_mx %>%
-#   count(mx_cat, mx_cat2, year) %>%
-#   group_by(year) %>%
-#   mutate(perc = n / sum(n),
-#          perc = ifelse(perc == 1, 0.25, perc)) %>% # Issue with 1992 
-#   filter(mx_cat2 == "Mixed-types") %>% 
-#   ggplot(aes(x = as.numeric(year), y = perc, color = mx_cat)) +
-#   geom_smooth(aes(fill = mx_cat), se = FALSE, size = .5) +
-#   scale_y_continuous(labels = percent_format(accuracy = 1)) +
-#   scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
-#   labs(x = "", y = "", title ="Share of mixed type problem-constructions in time",
-#        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
-#        caption = "") +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom") +
-#   annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.12,
-#            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
-#                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
-#            alpha = 0.1) +
-#   annotate(geom = "text", x = hp$label, y = 0.10, angle = 40,
-#            label = hp$presid, alpha = 0.4)
-# mixed_types_time
 ```
 
 The most frequent mixed-type problem construction of the Amazon in time is economic corsevation. The mixed-type is composed of Amazonian statements that construct the Amazon as problems of both economic integration and environmental conservation. Economic conservation averages at 6.8% in relation to all Amazonian statements. The mixed type generally increased in time, with Bolsonaro employing the mixed-type higher than all other presidents. The second most common mixed-type in time mixes social development and economic integration and appears, on average, in 5.4% of all statements. Notoriously, Lula employs such a mix-type more frequently than all other presidents. In fact, both Lula and Bolsonaro construct the Amazon as multifaceted issues in discourse more frequently than other presidents. While Lula, on the one hand, often mixes economic integration with environmental conservation and social development when constructing the Amazon as an issue, Bolsonaro, on the other hand, often mixes national sovereignty with other problem constructions. Indeed, we see that Bolsonaro constructs the Amazon as an issue of national sovereignty and economic integration more than any other president, which was also characteristic of the military dictatorship discourses and policies for the region [@hecht1990].
@@ -500,7 +382,7 @@ ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) +
     labs(x = "Distance to Manaus (km)",
        y = "Environmental conservation",
        title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance to Manaus",
-       subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
+       subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
        caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
           panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
@@ -508,7 +390,6 @@ ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) +
           title = element_text(color = "black", size = 10, face = "bold"),
           legend.title = element_blank(),
           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
-
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.

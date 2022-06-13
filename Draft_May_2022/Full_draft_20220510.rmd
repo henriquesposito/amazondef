@@ -427,7 +427,7 @@ mixed_types_presid <- ama_mx %>%
   mutate(perc = n / sum(n)) %>%
   filter(mx_cat2 == "Mixed-types") %>%
   mutate(president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
-                                                  "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro")))
   ggplot(aes(x = president, y = perc, fill = mx_cat,
              label = scales::percent(perc, accuracy=.1))) +
   geom_bar(stat = "identity", position = "stack") +
