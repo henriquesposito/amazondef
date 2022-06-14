@@ -5,10 +5,10 @@ author:
 - Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
 date: "8 June 2022"
 output:
+  pdf_document: default
+  fig_caption: yes
   html_document:
     df_print: paged
-  fig_caption: yes
-  pdf_document: default
   word_document:
     reference_docx: template.docx
 header-includes:
@@ -24,14 +24,10 @@ abstract: The Amazon Rainforest is one of the most important ecosystems in the w
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
 library(tidyr)
-library(skimr)
 library(scales)
 library(RColorBrewer)
 library(stargazer)
 library(kableExtra)
-library(tm)
-library(tidytext)
-library(topicmodels)
 library(tibble)
 library(readxl)
 library(ggplot2)
@@ -41,19 +37,21 @@ options(stringsAsFactors = FALSE, scipen = 999)
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
 # Load data
-##### We are missing many observations for Collor from 1991 and 1992...
-##### These are not in the repository for some reason...
-##### Should we try and complete or should we at least disclose these in a footnote?
+##### We are missing many observations for Collor from late 1991 and 1992...
+##### These are not in the repository for some reason, this is an issue not on our side.
+##### We should we at least disclose these in a footnote.
 pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
-pop <- pop %>% select(-c(title, date, location))
+pop <-  pop %>% select(-c(title, date, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
 ama <- ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
 AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
-amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
 location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/location_km.xlsx") %>% 
-  select(-location_cat)
+  select(-location_cat) %>%
+  distinct()
 ama <- left_join(ama, location_km, by = "location")
-adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050)) # Missing year data
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
+adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
+# Missing year data
 amazon_def_year <- rbind(adr, amazon_def_year) 
 hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
@@ -118,16 +116,19 @@ ama_mx <-  ama %>%
                                          mixed_type) ~ "Other Mixed-types"),
          levels = c("Pure Economic Integration", "Pure Conservation", "Pure Social Development",
                     "Pure Sovereignty", "Other", "Economic Conservation", 
-                    "Social Economic", "Sovereign Conservation", "Economic, Social,\nand Conservation",
+                    "Social Economic", "Sovereign Conservation",
+                    "Economic, Social,\nand Conservation",
                     "Economic Sovereignty", "Social Conservation", "Other Mixed-types")),
          mx_cat2 = case_when(grepl("Pure Economic Integration|Pure Conservation|
-                                   |Pure Social Development|Pure Sovereignty", mx_cat) ~ "Pure-types",
+                                   |Pure Social Development|Pure Sovereignty",
+                                   mx_cat) ~ "Pure-types",
                              grepl("^Other$", mx_cat) ~ "Other",
                              grepl("Economic Conservation|Social Economic|Sovereign Conservation|
                                    |Economic, Social,\nand Conservation|Economic Sovereignty|
                                    |Social Conservation|Other Mixed-types",
                                    mx_cat) ~ "Mixed-types"),
-         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018", year), 1, 0))
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0))
 ```
 
 \pagebreak
@@ -235,9 +236,6 @@ perc1 <- pop %>%
   mutate(perc=n / sum(n)) %>%
   filter(amazon_speech == 1) %>% 
   select(c(perc, amazon_speech, year))
-######## We have an issue with data here btw, 1992 only has 4 obs in the population... #######
-######## Issue is with biblioteca presidencial, not with scarping btw ######
-# summary(as.factor(pop$year))
 # Simple plot
 Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(color = "darkgreen") +
@@ -246,7 +244,7 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-  geom_vline(xintercept = c(1988.7, 1992, 2009, 2015),
+  geom_vline(xintercept = c(1988.9, 1992, 2009, 2015),
              linetype = "dotted") +
   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
        subtitle = "Sample composed by 6130 presidential speeches since 1985",
@@ -260,7 +258,71 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
 Amazon_year
-
+# # comparison with inequality, crime and inflation in speeches
+# pop <- pop %>%
+#   mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
+#          crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
+#                               text, ignore.case = TRUE), 1, 0),
+#          inf = ifelse(grepl("inflacao|inflaçao",
+#                              text, ignore.case = TRUE), 1, 0),
+#          unemploy = ifelse(grepl("desempreg",
+#                              text, ignore.case = TRUE), 1, 0))
+# perc2 <- pop %>%
+#   count(desigual, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(desigual == 1) %>%
+#   select(c(perc, desigual, year))
+# perc3 <- pop %>%
+#   count(crime, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(crime == 1) %>%
+#   select(c(perc, crime, year))
+# perc4 <- pop %>%
+#   count(inf, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(inf == 1) %>%
+#   select(c(perc, inf, year))
+# perc5 <- pop %>%
+#   count(unemploy, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(unemploy == 1) %>%
+#   select(c(perc, unemploy, year))
+# colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
+#             "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
+#             "Unemployment Speech" = "purple")
+# Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(aes(color = "Amazon Speech")) +
+#   geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
+#   geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
+#   geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
+#   geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
+#   scale_y_continuous(labels = percent_format()) +
+#   scale_color_manual(values = colors) +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
+#        caption = "",
+#        color = "Legend\n") +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# Amazon_vs_other
+# Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
+#                                                            "Criminality", "Inflation",
+#                                                            "Unemployment"),
+#                                        "Mean share in time" = c(mean(perc1$perc),
+#                                                                 mean(perc2$perc),
+#                                                                 mean(perc3$perc),
+#                                                                 mean(perc4$perc),
+#                                                                 mean(perc5$perc)))
+# Amazon_vs_other_mean
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of "we do not promise, we deliver" when the stakes about climate change were high [@franchini2019].
@@ -305,7 +367,7 @@ pure_types_time <- ama_mx %>%
            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
            alpha = 0.1) +
-  ggplot2::annotate(geom = "text", x = hp$label, y = 0.01, vjus = 0.3, hjust = 0.3, angle = 25,
+  ggplot2::annotate(geom = "text", x = hp$label, y = 0.01, vjust = 0.3, hjust = 0.3, angle = 25,
            label = hp$presid, alpha = 0.4)
 pure_types_time
 ```
@@ -343,33 +405,6 @@ mixed_types_presid <- ama_mx %>%
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "right")
 mixed_types_presid
-# mixed_types_time <- ama_mx %>%
-#   count(mx_cat, mx_cat2, year) %>%
-#   group_by(year) %>%
-#   mutate(perc = n / sum(n),
-#          perc = ifelse(perc == 1, 0.25, perc)) %>% # Issue with 1992 
-#   filter(mx_cat2 == "Mixed-types") %>% 
-#   ggplot(aes(x = as.numeric(year), y = perc, color = mx_cat)) +
-#   geom_smooth(aes(fill = mx_cat), se = FALSE, size = .5) +
-#   scale_y_continuous(labels = percent_format(accuracy = 1)) +
-#   scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
-#   labs(x = "", y = "", title ="Share of mixed type problem-constructions in time",
-#        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
-#        caption = "") +
-#   theme(panel.background = element_rect("white", "black", .5, "solid"),
-#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-#         axis.text = element_text(color = "black", size = 10),
-#         title = element_text(color = "black", size = 10, face = "bold"),
-#         legend.title = element_blank(),
-#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-#         legend.position = "bottom") +
-#   annotate(geom = "rect", xmin = hp$beg, xmax = hp$end, ymin = 0, ymax = 0.12,
-#            fill = c("grey50", "ghostwhite", "grey50", "ghostwhite",
-#                     "grey50", "ghostwhite", "grey50", "ghostwhite"),
-#            alpha = 0.1) +
-#   annotate(geom = "text", x = hp$label, y = 0.10, angle = 40,
-#            label = hp$presid, alpha = 0.4)
-# mixed_types_time
 ```
 
 The most frequent mixed-type problem construction of the Amazon in time is economic corsevation. The mixed-type is composed of Amazonian statements that construct the Amazon as problems of both economic integration and environmental conservation. Economic conservation averages at 6.8% in relation to all Amazonian statements. The mixed type generally increased in time, with Bolsonaro employing the mixed-type higher than all other presidents. The second most common mixed-type in time mixes social development and economic integration and appears, on average, in 5.4% of all statements. Notoriously, Lula employs such a mix-type more frequently than all other presidents. In fact, both Lula and Bolsonaro construct the Amazon as multifaceted issues in discourse more frequently than other presidents. While Lula, on the one hand, often mixes economic integration with environmental conservation and social development when constructing the Amazon as an issue, Bolsonaro, on the other hand, often mixes national sovereignty with other problem constructions. Indeed, we see that Bolsonaro constructs the Amazon as an issue of national sovereignty and economic integration more than any other president, which was also characteristic of the military dictatorship discourses and policies for the region [@hecht1990].
@@ -402,28 +437,48 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
          location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
                                             location), "Amazonian Countries", location_cat),
                                levels = c("International", "Amazonian States",
-                                          "Amazonian Countries", "Brasilia", "Non Amazonian States")))
+                                          "Amazonian Countries", "Brasilia",
+                                          "Non Amazonian States")))
 # model
-
-model_logit <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,family=binomial(link = "logit"), data = ama_model)
-
-model_lm <- lm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI, data = ama_model)
-
-# summary statistics
-stargazer::stargazer(model_lm, type = "text")
-
-plot_model(model_lm)
-summary(model_lm)
-
+model_logit_con <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_ei <- glm(EI_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_sd <- glm(SD_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_sov <- glm(sov_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+# # summary statistics, in appendix for now
+# stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd, model_logit_sov,
+#                      type = "text") # Negative for EI and SD
+# # simple pooled OLS with time effects vs random effects
+# ols <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+#                 data = ama_model, model = "pooling", index = c("year"))
+# random <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+#                    data = ama_model, model = "random", index = c("year"))
+# summary(ols)
+# summary(random) # does not change when it comes independent variable
+# # Colinearity test
+# car::vif(model_logit_con) # All good!
 # Plot model
-
-ama_model$predicted = predict(model_lm, ama_model, type = "response")
-ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) + 
+ama_model$predicted_con = predict(model_logit_con, ama_model, type = "response")
+# ama_model$predicted_ei = predict(model_logit_ei, ama_model, type = "response")
+# ama_model$predicted_sd = predict(model_logit_sd, ama_model, type = "response")
+# ama_model$predicted_sov = predict(model_logit_sov, ama_model, type = "response")
+# Plot all regressions, just in case
+# ama_model_all <- ama_model %>% 
+#   pivot_longer(predicted_con:predicted_sov, names_to = "variable", values_to = "value")
+# ggplot(ama_model_all, aes(x = km_to_manaus, y = value, color = variable)) +
+#   geom_smooth(se = FALSE, size = .5)
+ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) + 
   geom_jitter(alpha=.5)+
   geom_smooth(size = .5, color = "darkgreen") +
-    labs(x = "Distance from the Amazon (km)",
+  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
+  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
+                    label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
+  labs(x = "Distance from the Amazon (km)",
        y = "Share of environmental conservation",
-       title = "Amazon constructions as an issue of  environmental conservation\nin relation to distance from the Amazon",
+       title = "Amazon constructions as an issue of environmental conservation\nin relation to distance from the Amazon",
        subtitle = "Distance as a straight line from state, or country, capital from the Amazon in kilometers",
        caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
@@ -432,7 +487,6 @@ ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) +
           title = element_text(color = "black", size = 10, face = "bold"),
           legend.title = element_blank(),
           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
-
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.
@@ -472,53 +526,23 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 
 ```{r full regression results, fig.cap="Multinomial Regression Results", echo=FALSE, message=FALSE, warning=FALSE, out.width="50%", paged.print=FALSE, include=TRUE}
 
-full_md <- tibble("Dependent Variable" = c("EI", "SD", "SOV", "EI-CON", "EI-SD", "SOV-CON", "SD-EI-CON",
-                                           "SOV-EI", "SD-CON", "Other"),
-                  "Amazonian States" = c("0.458 (0.193)", "1.473*** (0.215)",
-                  "1.623*** (0.235)", "-0.056 (0.292)", "1.625*** (0.198)",
-                  "0.960*** (0.284)", "1.192*** (0.271)", "1.345*** (0.290)",
-                  "0.129 (0.323)", "0.999*** (0.207)"),
-                  "Amazonian Countries" = c("1.341*** (0.212)", "1.246*** (0.308)",
-                  "0.931** (0.383)", "0.304 (0.394)", "1.569*** (0.288)",
-                  "0.613*** (0.090)", "0.949*** (0.0857)", "2.609*** (0.345)",
-                  "0.660** (0.332)", "1.760*** (0.226)"),
-                  "Brasilia" = c("-0.293** (0.183)","0.596*** (0.210)",
-                  "1.383*** (0.209)", "-0.245 (0.265)", "0.823*** (0.193)",
-                  "0.890*** (0.237)", "0.123 (0.277)", "0.276 (0.310)",
-                  "-0.594** (0.317)", "0.0649 (0.202)"),
-                  "Non Amazonian States" = c("0.620** (0.212)", "1.584*** (0.219)", "1.983*** (0.238)",
-                  "0.242 (0.311)", "1.637*** (0.223)", "1.309*** (0.283)",
-                  "0.871*** (0.308)", "1.418*** (0.323)", "0.217 (0.342)", "0.849*** (0.231)"),
-                  "Election Year" = c("-0.517*** (0.160)", "-0.007 (0.192)",
-                  "-0.733*** (0.277)",
-                  "-0.016 (0.232)", "-0.453* (0.255)", "-0.691* (0.378)",
-                  "0.080 (0.343)", 
-                  "-1.400*** (0.429)","0.0008 (0.378)", "-0.713*** (0.170)"),
-                  "Annual Deforestation" = c("0.082*** (0.011)", "-0.037** (0.015)",
-                  "0.001 (0.018)", 
-                  "0.0197 (0.0170)", "0.060*** (0.017)", "0.012 (0.024)",
-                  "-0.026 (0.026)", 
-                  "-0.007 (0.027)", "-0.002 (0.027)", "0.076*** (0.0120)"),
-                  "Average Inflation" = c("-0.0005*** (0.0001)", "-0.0005*** (0.0001)",
-                  "-0.0001 (0.0002)", "-0.0006*** (0.0001)", "-0.0005** (0.0002)",
-                  "0.0001 (0.0002)", "-0.0008** (0.0004)", "-0.0004 (0.0004)",
-                  "-0.0006* (0.0004)", "-0.0003*** (0.0001)"))
-kbl(t(full_md), booktabs = T,caption = "Multinomial Regression Full", align = "c") %>%
+model_comp <- tibble::tibble("Dependent Variable" = c("Environmental Conservation", 
+"Economic Integration", "Social Development", "National Sovereignty"),
+"Distance to Manaus(km)" = c("0.0001*** (0.00002)", "-0.0001** (0.00002)", "-0.0001** (0.00004)", "0.00001 (0.00002)"),
+"Election Year" = c("0.288* (0.157)", "-0.022 (0.133)", "0.329* (0.171)", "-0.449* (0.269)"),
+"Deforestation Year" = c("-0.032*** (0.011)", "0.041*** (0.008)", "-0.072*** (0.013)", "-0.032* (0.017)"),
+"Annual Average Inflation" = c("0.0004*** (0.0001)", "-0.0002** (0.0001)", "-0.0002 (0.0002)", "0.0002 (0.0002)"),
+"Constant" = c("-1.718*** (0.191)", "-1.569*** (0.160)", "-0.910*** (0.214)", "-2.301*** (0.289)"))
+kbl(t(model_comp), booktabs = T,caption = "Logistic Regression Models Compared", align = "c") %>%
   kable_styling(latex_options = c("striped", "scale_down"),
                 position= "center", font_size = 9, full_width = TRUE) %>%
-                footnote(general = c("The multinomial regression coefficients are displayed in log odds and standard errors are displayed in parentheses.",
+                footnote(general = c("The regression coefficients are displayed in log odds and standard errors are displayed in parentheses.",
                 "*** for p-value < 0.01, ** for p-value < 0.05, * for p-value < 0.1")) %>% 
   column_spec(1, width="3 cm", bold=TRUE, latex_valign = "m") %>%
   column_spec(2, width="2 cm", latex_valign = "m") %>%
   column_spec(3, width = "2 cm", latex_valign = "m") %>%
   column_spec(4, width = "2 cm", latex_valign = "m") %>%
-  column_spec(5, width="2 cm", latex_valign = "m") %>%
-  column_spec(6, width = "2 cm", latex_valign = "m") %>%
-  column_spec(7, width = "2 cm", latex_valign = "m") %>% 
-  column_spec(8, width="2 cm", latex_valign = "m") %>%
-  column_spec(9, width = "2 cm", latex_valign = "m") %>%
-  column_spec(10, width = "2 cm", latex_valign = "m") %>% 
-  column_spec(11, width = "2 cm", latex_valign = "m")
+  column_spec(5, width="2 cm", latex_valign = "m")
 ```
 
 \end{landscape}
