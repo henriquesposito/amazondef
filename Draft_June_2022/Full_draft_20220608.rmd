@@ -477,9 +477,9 @@ ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) +
   ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
                     label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
   labs(x = "Distance from the Amazon (km)",
-       y = "Share of environmental conservation",
-       title = "Amazon constructions as an issue of environmental conservation\nin relation to distance from the Amazon",
-       subtitle = "Distance as a straight line from state, or country, capital from the Amazon in kilometers",
+       y = "The Amazon as an issue of environmental conservation",
+       title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance from Manaus",
+       subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
        caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
           panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
