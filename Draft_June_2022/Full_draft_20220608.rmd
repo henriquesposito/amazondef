@@ -5,10 +5,10 @@ author:
 - Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
 date: "8 June 2022"
 output:
-  pdf_document: default
-  fig_caption: yes
   html_document:
     df_print: paged
+  fig_caption: yes
+  pdf_document: default
   word_document:
     reference_docx: template.docx
 header-includes:
@@ -261,91 +261,6 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         legend.position = "bottom")
 Amazon_year
 
-# Word frequency year
-popc <- filter(pop, amazon_speech == 1) %>%
-  select(year, text) %>% 
-  group_by(year) %>% 
-  rename(doc_id = year)
-popc$text <- stringr::str_replace_all(popc$text, "meio ambiente", "meioambiente")
-popc$text <- stringr::str_replace_all(popc$text, "forcas armadas", "forcasarmadas")
-popc$text <- stringr::str_replace_all(popc$text, "estados unidos", "estadosunidos")
-popc$text <- stringr::str_replace_all(popc$text, "rio de janeiro", "riodejaneiro")
-popc$text <- stringr::str_replace_all(popc$text, "direitos humanos", "direitoshumanos")
-popc$text <- stringr::str_replace_all(popc$text, "rio grande do sul", "riograndedosul")
-popc$text <- stringr::str_replace_all(popc$text, "copa do mundo", "copadomundo")
-popc$text <- stringr::str_replace_all(popc$text, "sao paulo", "saopaulo")
-popc$text <- stringr::str_replace_all(popc$text, "rio grande do norte", "riograndedonorte")
-popc$text <- stringr::str_replace_all(popc$text, "floresta amazonica", "florestaamazonica")
-popc$text <- stringr::str_replace_all(popc$text, "regiao amazonica", "regiaoamazonica")
-popc$text <- stringr::str_replace_all(popc$text, "mato grosso|mato-grosso", "matogrosso")
-popc$text <- stringr::str_replace_all(popc$text, "minas gerais", "minasgerais")
-popc$text <- stringr::str_remove_all(popc$text, " [a-z] ")
-popc$text <- tm::removeWords(tm::removePunctuation(popc$text),
-                             c(tm::stopwords("pt"), 
-                               "nao", "amazonas", "voce", "vao", "dar", "du",
-                               "our", "amazonia", "governo", "amazonica", "ja", "aqui", "tambem",
-                               "no", "hoje", "presidente", "governador", 
-                               "sao", "voces", "ser", "bem", "la", "so", "desta", "porque",
-                               "fazer", "quero", "ter", "vamos", "the", "of", "ha", "ai",
-                               "ate", "vai", "dizer", "estao", "it", "ver", "r", "	it",
-                               "cumprimentar", "gente", "estado", "querido", "queria",
-                               "todos", "companheiro", "senhores", "alguns",
-                               "companheiras", "companheiros", "companheira", "entao",
-                               "senhor", "senhora", "agora", "senhores", "senhoras", "caro",
-                               "grosso","ministro", "ministra", "josé", "jose",
-                               "palacio", "planalto", "pronunciamento", "sobre",
-                               "ministros", "luiz", "disse", "fizemos", "nesse",
-                               "antonio", "vou", "eduardo braga", "pais", "coisa",
-                               "então", "pouco", "pode", "sera", "dias",
-                               "outro", "onde", "discurso", "parte", "fala",
-                               "anos", "cada", "todo", "visite site", "disse",
-                               "site secretaria", "minas gerais", "lula silva",
-                               "inácio lula", "amapa", "bahia", "é", "lá", "et", "in",
-                               "httpwwwimprensaplanaltogovbr", "secretaria", "visitesite",
-                               "ta", "tudo", "pessoas", "falar", "neves", "tancredo",
-                               "brasiliadf", "cardoso", "httpwwwinfoplanaltogovbr", 
-                               "sip", "and", "to", "en", "des", "el", "le", "les", "dia",
-                               "palavra dorsdne", "fernando henrique", "dorsdne eete",
-                               "inacio lula", "lula silva", "inacio", "republica",
-                               "quegente", "muitas vezes", "ainda", "realmente",
-                               "assim", "possa", "coisas", "apenas", "acho", "ano",
-                               "vez", "portanto", "todas", "questao", "lado", "outros",
-                               "prezado", "vem", "sempre", "sarney", "luis", "serao", 
-                               "tao", "meses", "quase", "diante", "brasil", "sendo",
-                               "rsdneennoerqe", "brasil", "neste", "digo", "quase", 
-                               "queremos", "nesse", "nessa", "mim", "eete", "obrigado", "muita"))
-popc <- tm::VCorpus(tm::DataframeSource(popc))
-popn <- tidytext::tidy(popc) %>%
-  unnest_tokens(word, text) %>% 
-  group_by(id, word) %>% 
-  summarise(count = n()) %>% 
-  arrange(-count) %>% 
-  slice(1:10)
-popn <- aggregate(popn$word, list(popn$id), paste, collapse=", ") %>% 
-  rename(Year = "Group.1", Terms = "x")
-tibble(popn)
-##### LDA per year just in case
-pop_dtm  <- DocumentTermMatrix(popc)
-pop_lda <- topicmodels::LDA(pop_dtm, k = 10, control = list(seed = 1234))
-pop_lday <- tidy(pop_lda, matrix = "gamma") %>%
-  arrange(desc(gamma)) %>%
-  group_by(document) %>%
-  filter(row_number() %in% 1:1) %>% # get the top 3 topics per speaker
-  arrange(document) %>%
-  mutate(gamma = round(gamma, 1)) %>%
-  distinct() %>% 
-  rename (Year = document)
-pop_10 <- tidy(pop_lda, matrix = "beta") %>%
-  arrange(desc(beta)) %>%
-  group_by(topic) %>%
-  filter(row_number() %in% 1:10) %>%
-  arrange(topic)
-pop_10 <- aggregate(pop_10$term, list(pop_10$topic), paste, collapse=", ") %>%
-  rename(topic = "Group.1", Terms = "x")
-popt <- dplyr::left_join(pop_10, pop_lday, by = "topic") %>%
-  select(Year, Terms) %>% 
-  arrange(Year)
-tibble(popt)
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of "we do not promise, we deliver" when the stakes about climate change were high [@franchini2019].
@@ -489,18 +404,27 @@ ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Othe
                                levels = c("International", "Amazonian States",
                                           "Amazonian Countries", "Brasilia", "Non Amazonian States")))
 # model
-model <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
-             family = binomial(link = 'logit'), data = ama_model)
+
+model_logit <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,family=binomial(link = "logit"), data = ama_model)
+
+model_lm <- lm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI, data = ama_model)
+
 # summary statistics
-stargazer::stargazer(model, type = "text")
+stargazer::stargazer(model_lm, type = "text")
+
+plot_model(model_lm)
+summary(model_lm)
+
 # Plot model
-ama_model$predicted = predict(model, ama_model, type = "response")
+
+ama_model$predicted = predict(model_lm, ama_model, type = "response")
 ggplot(ama_model, aes(x = km_to_manaus, y = predicted)) + 
+  geom_jitter(alpha=.5)+
   geom_smooth(size = .5, color = "darkgreen") +
-    labs(x = "Distance to Manaus (km)",
-       y = "Environmental conservation",
-       title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance to Manaus",
-       subtitle = "Distance as a straight line from state, or country, capital to Manaus in kilometers",
+    labs(x = "Distance from the Amazon (km)",
+       y = "Share of environmental conservation",
+       title = "Amazon constructions as an issue of  environmental conservation\nin relation to distance from the Amazon",
+       subtitle = "Distance as a straight line from state, or country, capital from the Amazon in kilometers",
        caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
           panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
