@@ -128,7 +128,26 @@ ama_mx <-  ama %>%
                                    |Social Conservation|Other Mixed-types",
                                    mx_cat) ~ "Mixed-types"),
          election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
-                                      year), 1, 0))
+                                      year), 1, 0),
+                  location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+                                     location, ignore.case = TRUE), # minor coding issues to fix
+                               "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat), # minor coding issues to fix
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                            location), "Amazonian Countries", location_cat),
+                               levels = c("International", "Amazonian States",
+                                          "Amazonian Countries", "Brasilia",
+                                          "Non Amazonian States")))
+# # Table of Amazonian speeches internationally vs. in Brazil
+# amazon_in_out <- pop %>% select(amazon_speech, location_cat)
+# table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
+# amazon_in_out <- mutate(amazon_in_out,
+#                         location_cat = ifelse(grepl("International", location_cat), 0, 1))
+# amazon_in_out <- table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
+# rownames(amazon_in_out) <- c("Not Amazon Speech", "Amazon Speech")
+# colnames(amazon_in_out) <- c("Outside of Brazil", "Within Brazil")
+# amazon_in_out
 ```
 
 \pagebreak
@@ -419,26 +438,10 @@ Figure 5, below, shows the percentage of problem-constructions by location deriv
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 ama_model <- filter(ama_model, location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>%
-  mutate(mx_cat = factor(mx_cat, levels = c("Pure Conservation", "Pure Economic Integration",
-                                            "Pure Social Development", "Pure Sovereignty",
-                                            "Economic Conservation", "Social Economic",
-                                            "Sovereign Conservation", 
-                                            "Economic, Social,\nand Conservation",
-                                            "Economic Sovereignty", "Social Conservation", "Other")),
-         con_vs_all = ifelse(mx_cat == "Pure Conservation", 1, 0),
+  mutate(con_vs_all = ifelse(mx_cat == "Pure Conservation", 1, 0),
          EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
          SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
-         sov_vs_all = ifelse(mx_cat == "Pure Sovereignty", 1, 0),
-         location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
-                                     location, ignore.case = TRUE), # minor coding issues to fix
-                               "Non Amazonian States", location_cat),
-         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
-                               "International", location_cat), # minor coding issues to fix
-         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
-                                            location), "Amazonian Countries", location_cat),
-                               levels = c("International", "Amazonian States",
-                                          "Amazonian Countries", "Brasilia",
-                                          "Non Amazonian States")))
+         sov_vs_all = ifelse(mx_cat == "Pure Sovereignty", 1, 0))
 # model
 model_logit_con <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
