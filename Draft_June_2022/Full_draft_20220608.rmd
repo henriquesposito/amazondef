@@ -143,7 +143,8 @@ ama_mx <-  ama %>%
 # amazon_in_out <- pop %>% select(amazon_speech, location_cat)
 # table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
 # amazon_in_out <- mutate(amazon_in_out,
-#                         location_cat = ifelse(grepl("International", location_cat), 0, 1))
+#                         location_cat = ifelse(grepl("International|Non Identified",
+#                                               location_cat), 0, 1))
 # amazon_in_out <- table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
 # rownames(amazon_in_out) <- c("Not Amazon Speech", "Amazon Speech")
 # colnames(amazon_in_out) <- c("Outside of Brazil", "Within Brazil")
@@ -252,7 +253,7 @@ The frequency in which the Amazon appears across all official presidential speec
 perc1 <- pop %>%
   count(amazon_speech, year) %>%
   group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
+  mutate(perc = n / sum(n)) %>%
   filter(amazon_speech == 1) %>% 
   select(c(perc, amazon_speech, year))
 # Simple plot
@@ -342,6 +343,36 @@ Amazon_year
 #                                                                 mean(perc4$perc),
 #                                                                 mean(perc5$perc)))
 # Amazon_vs_other_mean
+# # Same plot with location
+# perc_in <- pop %>%
+#   mutate(location_cat = ifelse(grepl("International|Non Identified", location_cat),
+#                                "Outside of Brazil", "Within Brazil")) %>%
+#   count(amazon_speech, year, location_cat) %>%
+#   group_by(year) %>%
+#   mutate(perc = n / sum(n)) %>%
+#   filter(amazon_speech == 1) %>% 
+#   select(c(perc, amazon_speech, year, location_cat))
+# Amazon_year_in <- perc_in %>% ggplot(., aes(x = year, y = perc, fill = location_cat)) +
+#   geom_line(aes(color = location_cat)) +
+#   scale_y_continuous(labels = percent_format()) +
+#   geom_text(aes(x = 1988.7, y = 0.34, label = "Chico Mendes"), size = 3) +
+#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
+#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+#   geom_vline(xintercept = c(1988.9, 1992, 2009, 2015),
+#              linetype = "dotted") +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#        caption = "",
+#        color='Y series') +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# Amazon_year_in
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of "we do not promise, we deliver" when the stakes about climate change were high [@franchini2019].
@@ -465,23 +496,25 @@ model_logit_sov <- glm(sov_vs_all ~ km_to_manaus + election_year + def_year + AA
 # car::vif(model_logit_con) # All good!
 # Plot model
 ama_model$predicted_con = predict(model_logit_con, ama_model, type = "response")
-# ama_model$predicted_ei = predict(model_logit_ei, ama_model, type = "response")
-# ama_model$predicted_sd = predict(model_logit_sd, ama_model, type = "response")
-# ama_model$predicted_sov = predict(model_logit_sov, ama_model, type = "response")
+ama_model$predicted_ei = predict(model_logit_ei, ama_model, type = "response")
+ama_model$predicted_sd = predict(model_logit_sd, ama_model, type = "response")
+ama_model$predicted_sov = predict(model_logit_sov, ama_model, type = "response")
 # Plot all regressions, just in case
-# ama_model_all <- ama_model %>% 
-#   pivot_longer(predicted_con:predicted_sov, names_to = "variable", values_to = "value")
-# ggplot(ama_model_all, aes(x = km_to_manaus, y = value, color = variable)) +
-#   geom_smooth(se = FALSE, size = .5)
-ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) + 
-  geom_jitter(alpha=.5)+
-  geom_smooth(size = .5, color = "darkgreen") +
+ama_model_all <- ama_model %>%
+  rename("Environmental Conservation" = predicted_con,
+         "Economic Integration" = predicted_ei,
+         "Social development" = predicted_sd,
+         "National Sovereignty" = predicted_sov) %>% 
+  pivot_longer('Environmental Conservation':'National Sovereignty',
+               names_to = "Construction", values_to = "Share")
+ggplot(ama_model_all, aes(x = km_to_manaus, y = Share, color = Construction)) +
+  geom_smooth(size = .5) +
   geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
-  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
+  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.4,
                     label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
   labs(x = "Distance from the Amazon (km)",
-       y = "The Amazon as an issue of environmental conservation",
-       title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance from Manaus",
+       y = "Share of problem construction",
+       title = "How is the Amazon constructed as an issue across locations?",
        subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
        caption = "Curve in the plot is smoothed using loess method.") +
     theme(panel.background = element_rect("white", "black", .5, "solid"),
@@ -490,6 +523,24 @@ ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) +
           title = element_text(color = "black", size = 10, face = "bold"),
           legend.title = element_blank(),
           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
+# # Environmental conservation and location
+# ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) + 
+#   geom_jitter(alpha=.5)+
+#   geom_smooth(size = .5, color = "darkgreen") +
+#   geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
+#   ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
+#                     label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
+#   labs(x = "Distance from the Amazon (km)",
+#        y = "The Amazon as an issue of environmental conservation",
+#        title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance from Manaus",
+#        subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
+#        caption = "Curve in the plot is smoothed using loess method.") +
+#     theme(panel.background = element_rect("white", "black", .5, "solid"),
+#           panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#           axis.text = element_text(color = "black", size = 10),
+#           title = element_text(color = "black", size = 10, face = "bold"),
+#           legend.title = element_blank(),
+#           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.
