@@ -5,10 +5,10 @@ author:
 - Henrique Sposito^[Both co-authors contributed equally to the article; names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
 date: "8 June 2022"
 output:
-  pdf_document: default
-  fig_caption: yes
   html_document:
     df_print: paged
+  fig_caption: yes
+  pdf_document: default
   word_document:
     reference_docx: template.docx
 header-includes:
@@ -140,6 +140,7 @@ ama_mx <-  ama %>%
                                           "Amazonian Countries", "Brasilia",
                                           "Non Amazonian States")))
 # # Table of Amazonian speeches internationally vs. in Brazil
+<<<<<<< Updated upstream
 # amazon_in_out <- pop %>% select(amazon_speech, location_cat)
 # table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
 # amazon_in_out <- mutate(amazon_in_out,
@@ -149,6 +150,17 @@ ama_mx <-  ama %>%
 # rownames(amazon_in_out) <- c("Not Amazon Speech", "Amazon Speech")
 # colnames(amazon_in_out) <- c("Outside of Brazil", "Within Brazil")
 # amazon_in_out
+=======
+
+amazon_in_out <- pop %>% select(amazon_speech, location_cat)
+table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
+amazon_in_out <- mutate(amazon_in_out,
+                         location_cat = ifelse(grepl("International", location_cat), 0, 1))
+amazon_in_out <- table(amazon_in_out$amazon_speech, amazon_in_out$location_cat)
+rownames(amazon_in_out) <- c("Not Amazon Speech", "Amazon Speech")
+colnames(amazon_in_out) <- c("Outside of Brazil", "Within Brazil")
+amazon_in_out
+>>>>>>> Stashed changes
 ```
 
 \pagebreak
@@ -247,7 +259,9 @@ This approach also comes with limitations. Our codebook is developed using speci
 
 ## 4.1 The rises and falls of the Amazon as a topic in presidential speeches
 
-The frequency in which the Amazon appears across all official presidential speeches varies in time. Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches per year. We observe five local maxima: 1989, 1992, 2009, 2015, and 2019. These points, usually, coincide with events that help us explain the rises and falls of the Amazon in presidential discourse in time. For instance, in 1985 the Amazon appeared in about 4% of all the presidential speeches but by 1988 this had increased to around 14%. This is the period when the Brazilian Constitution was written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and the protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. However, in 1989, the Amazon appeared in 32% of all speeches. This spike is likely explained by the brutal murder of Chico Mendes and the very end of 1988. An incident that caught unprecedented international attention and Sarney responded to this with a set of policies to address deforestation [@capobianco2021].
+On average, presidents speak about the Amazon in about 15% of their speeches. In Brazil, the average is higher than outside Brazil. The frequency in which the Amazon appears across all official presidential speeches, though, varies in time. Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches per year. We observe four local maxima both inside and outside Brazil: 1989, 1992, 2009, and 2015. Thus, there
+
+These points, usually, coincide with events that help us explain the rises and falls of the Amazon in presidential discourse in time. For instance, in 1985 the Amazon appeared in about 4% of all the presidential speeches but by 1988 this had increased to around 14%. This is the period when the Brazilian Constitution was written. Indigenous and traditional populations were instrumental in advocating for constitutional environmental rights and the protection of their territories [@hecht1990]. These were eventually enshrined in article 225, which gives all Brazilians a right to a balanced environment, and in article 231, which grants indigenous and traditional populations a right over their territory. However, in 1989, the Amazon appeared in 32% of all speeches. This spike is likely explained by the brutal murder of Chico Mendes and the very end of 1988. An incident that caught unprecedented international attention and Sarney responded to this with a set of policies to address deforestation [@capobianco2021].
 
 ```{r Figure 2, fig.cap="Amazonian speeches by year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc1 <- pop %>%
@@ -256,6 +270,7 @@ perc1 <- pop %>%
   mutate(perc = n / sum(n)) %>%
   filter(amazon_speech == 1) %>% 
   select(c(perc, amazon_speech, year))
+
 # Simple plot
 Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(color = "darkgreen") +
@@ -277,7 +292,8 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
         legend.title = element_blank(),
         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
-Amazon_year
+#Amazon_year
+
 # # comparison with inequality, crime and inflation in speeches
 # pop <- pop %>%
 #   mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
@@ -343,28 +359,85 @@ Amazon_year
 #                                                                 mean(perc4$perc),
 #                                                                 mean(perc5$perc)))
 # Amazon_vs_other_mean
-# # Same plot with location
-# perc_in <- pop %>%
-#   mutate(location_cat = ifelse(grepl("International|Non Identified", location_cat),
-#                                "Outside of Brazil", "Within Brazil")) %>%
-#   count(amazon_speech, year, location_cat) %>%
+# Same plot with location
+perc_in <- pop %>%
+  mutate(location_cat = ifelse(grepl("International|Non Identified", location_cat),
+                               "Outside of Brazil", "Within Brazil")) %>%
+  count(amazon_speech, year, location_cat) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(amazon_speech == 1) %>%
+  select(c(perc, amazon_speech, year, location_cat))
+Amazon_year_in <- perc_in %>% ggplot(., aes(x = year, y = perc, fill = location_cat)) +
+  geom_line(aes(color = location_cat)) +
+  scale_y_continuous(labels = percent_format()) +
+  geom_text(aes(x = 1988.7, y = 0.34, label = "Chico Mendes"), size = 3) +
+  geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
+  geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
+  geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
+  geom_vline(xintercept = c(1988.9, 1992, 2009, 2015),
+             linetype = "dotted") +
+  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
+       subtitle = "Sample composed by 6130 presidential speeches since 1985",
+       caption = "",
+       color='Y series') +
+  theme(panel.background = element_rect("white", "black", .5, "solid"),
+        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "bottom")
+Amazon_year_in
+
+# comparison with inequality, crime and inflation in speeches
+# pop <- pop %>%
+#   mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
+#          crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
+#                               text, ignore.case = TRUE), 1, 0),
+#          inf = ifelse(grepl("inflacao|inflaçao",
+#                              text, ignore.case = TRUE), 1, 0),
+#          unemploy = ifelse(grepl("desempreg",
+#                              text, ignore.case = TRUE), 1, 0))
+# perc2 <- pop %>%
+#   count(desigual, year) %>%
 #   group_by(year) %>%
-#   mutate(perc = n / sum(n)) %>%
-#   filter(amazon_speech == 1) %>% 
-#   select(c(perc, amazon_speech, year, location_cat))
-# Amazon_year_in <- perc_in %>% ggplot(., aes(x = year, y = perc, fill = location_cat)) +
-#   geom_line(aes(color = location_cat)) +
+#   mutate(perc=n / sum(n)) %>%
+#   filter(desigual == 1) %>%
+#   select(c(perc, desigual, year))
+# perc3 <- pop %>%
+#   count(crime, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(crime == 1) %>%
+#   select(c(perc, crime, year))
+# perc4 <- pop %>%
+#   count(inf, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(inf == 1) %>%
+#   select(c(perc, inf, year))
+# perc5 <- pop %>%
+#   count(unemploy, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(unemploy == 1) %>%
+#   select(c(perc, unemploy, year))
+# colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
+#             "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
+#             "Unemployment Speech" = "purple")
+# Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(aes(color = "Amazon Speech")) +
+#   geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
+#   geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
+#   geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
+#   geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
 #   scale_y_continuous(labels = percent_format()) +
-#   geom_text(aes(x = 1988.7, y = 0.34, label = "Chico Mendes"), size = 3) +
-#   geom_text(aes(x = 1992, y = 0.27, label = "Earth Summit"), size = 3) +
-#   geom_text(aes(x = 2009, y = 0.24, label = "Copenhagen Summit"), size = 3) +
-#   geom_text(aes(x = 2015, y = 0.21, label = "Paris Summit"), size = 3) +
-#   geom_vline(xintercept = c(1988.9, 1992, 2009, 2015),
-#              linetype = "dotted") +
-#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon by year",
-#        subtitle = "Sample composed by 6130 presidential speeches since 1985",
+#   scale_color_manual(values = colors) +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
 #        caption = "",
-#        color='Y series') +
+#        color = "Legend\n") +
 #   theme(panel.background = element_rect("white", "black", .5, "solid"),
 #         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
 #         axis.text = element_text(color = "black", size = 10),
@@ -372,7 +445,17 @@ Amazon_year
 #         legend.title = element_blank(),
 #         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
 #         legend.position = "bottom")
-# Amazon_year_in
+# Amazon_vs_other
+# Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
+#                                                            "Criminality", "Inflation",
+#                                                            "Unemployment"),
+#                                        "Mean share in time" = c(mean(perc1$perc),
+#                                                                 mean(perc2$perc),
+#                                                                 mean(perc3$perc),
+#                                                                 mean(perc4$perc),
+#                                                                 mean(perc5$perc)))
+# Amazon_vs_other_mean
+
 ```
 
 In 1990 the Amazon appeared in 12% of all speeches and, by 1992, this increased to 25% of all speeches. The 1992 Earth Summit, held in Brazil brought international attention to environmental topics in the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Programme, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon appeared, on average, on 15% of all speeches. Exceptionally, in 2009 we see another spike in the Amazon appearing in official speeches. This spike coincides with the 2009 Copenhagen Summit as well as the steepest decrease in deforestation rates since data is available. Lula led the delegation to Copenhagen with a self-image of "we do not promise, we deliver" when the stakes about climate change were high [@franchini2019].
@@ -482,57 +565,44 @@ model_logit_sd <- glm(SD_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_sov <- glm(sov_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
-# # summary statistics, in appendix for now
-# stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd, model_logit_sov,
-#                      type = "text") # Negative for EI and SD
-# # simple pooled OLS with time effects vs random effects
-# ols <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
-#                 data = ama_model, model = "pooling", index = c("year"))
-# random <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
-#                    data = ama_model, model = "random", index = c("year"))
-# summary(ols)
-# summary(random) # does not change when it comes independent variable
-# # Colinearity test
-# car::vif(model_logit_con) # All good!
+# summary statistics, in appendix for now
+#stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd, model_logit_sov,
+#                     type = "text") # Negative for EI and SD
+# simple pooled OLS with time effects vs random effects
+ols <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                data = ama_model, model = "pooling", index = c("year"))
+random <- plm::plm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
+                   data = ama_model, model = "random", index = c("year"))
+summary(ols)
+summary(random) # does not change when it comes independent variable
+# Colinearity test
+car::vif(model_logit_con) # All good!
 # Plot model
 ama_model$predicted_con = predict(model_logit_con, ama_model, type = "response")
 ama_model$predicted_ei = predict(model_logit_ei, ama_model, type = "response")
 ama_model$predicted_sd = predict(model_logit_sd, ama_model, type = "response")
 ama_model$predicted_sov = predict(model_logit_sov, ama_model, type = "response")
 # Plot all regressions, just in case
-ama_model_all <- ama_model %>%
-  rename("Environmental Conservation" = predicted_con,
-         "Economic Integration" = predicted_ei,
-         "Social development" = predicted_sd,
-         "National Sovereignty" = predicted_sov) %>% 
-  pivot_longer('Environmental Conservation':'National Sovereignty',
-               names_to = "Construction", values_to = "Share")
-ggplot(ama_model_all, aes(x = km_to_manaus, y = Share, color = Construction)) +
-  geom_smooth(size = .5) +
-  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
-  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.4,
-                    label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
-  labs(x = "Distance from the Amazon (km)",
-       y = "Share of problem construction",
-       title = "How is the Amazon constructed as an issue across locations?",
-       subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
-       caption = "Curve in the plot is smoothed using loess method.") +
-    theme(panel.background = element_rect("white", "black", .5, "solid"),
-          panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-          axis.text = element_text(color = "black", size = 10),
-          title = element_text(color = "black", size = 10, face = "bold"),
-          legend.title = element_blank(),
-          plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
-# # Environmental conservation and location
+# ama_model_all <- ama_model %>% rename("Environmental Conservation" = predicted_con,
+#          "Economic Integration" = predicted_ei,
+#          "Social development" = predicted_sd,
+#          "National Sovereignty" = predicted_sov) %>% 
+#   pivot_longer('Environmental Conservation':'National Sovereignty',
+#                names_to = "Construction", values_to = "Share") %>% 
+#   ggplot(ama_model_all, aes(x = km_to_manaus, y = Share, color = Construction)) +
+#   geom_smooth(size = .5) + pivot_longer(predicted_con:predicted_sov, names_to = "variable", values_to = "value")
+# 
+# ggplot(ama_model_all, aes(x = km_to_manaus, y = value, color = variable)) +
+#   geom_smooth(se = FALSE, size = .5)
 # ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) + 
 #   geom_jitter(alpha=.5)+
 #   geom_smooth(size = .5, color = "darkgreen") +
 #   geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
-#   ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
+#   ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.4,
 #                     label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
 #   labs(x = "Distance from the Amazon (km)",
-#        y = "The Amazon as an issue of environmental conservation",
-#        title = "Amazon constructions as an issue of pure environmental conservation\nin relation to distance from Manaus",
+#        y = "Share of problem construction",
+#        title = "How is the Amazon constructed as an issue across locations?",
 #        subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
 #        caption = "Curve in the plot is smoothed using loess method.") +
 #     theme(panel.background = element_rect("white", "black", .5, "solid"),
@@ -541,6 +611,24 @@ ggplot(ama_model_all, aes(x = km_to_manaus, y = Share, color = Construction)) +
 #           title = element_text(color = "black", size = 10, face = "bold"),
 #           legend.title = element_blank(),
 #           plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
+# # Environmental conservation and location
+ggplot(ama_model, aes(x = km_to_manaus, y = predicted_con)) +
+  geom_jitter(alpha=.5)+
+  geom_smooth(size = .5, color = "darkgreen") +
+  geom_vline(xintercept = c(1933.78, 5075.48, 8306.76), linetype = "dotted") +
+  ggplot2::annotate(geom = "text", x = c(1933.78, 5075.48, 8306.76), y = 0.5,
+                    label = c("Brasilia", "New York", "Paris"), alpha = 0.4) +
+  labs(x = "Distance from the Amazon (km)",
+       y = "The Amazon as an issue of environmental conservation",
+       title = "Share of speeches that constructed the as an issue of pure environmental conservation\nin relation to distance from Manaus",
+       subtitle = "Distance as a straight line from state or country's capital to Manaus in kilometers",
+       caption = "Curve in the plot is smoothed using loess method.") +
+    theme(panel.background = element_rect("white", "black", .5, "solid"),
+          panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+          axis.text = element_text(color = "black", size = 10),
+          title = element_text(color = "black", size = 10, face = "bold"),
+          legend.title = element_blank(),
+          plot.subtitle = element_text(color = "black", size = 9, face = "plain"))
 ```
 
 Along these lines, constructing the Amazon as an issue of social development takes place, overwhelmingly, within Brazil or other Amazonian countries. Presidents are at least 14% more likely to construct the Amazon as an issue of social development in these locations than internationally. The same is true for sovereignty, whereas constructing the Amazon as an issue of sovereignty takes place within Brazil or in neighboring Amazonian countries. Notice, as well, how Amazonian constructions within Amazonia states and non Amazonian states are strikingly similar. This indicates that presidents are consistent when constructing the Amazon locally across the federation, when outside of Brasilia.
