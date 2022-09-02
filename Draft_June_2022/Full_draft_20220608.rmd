@@ -300,60 +300,61 @@ perc_out <- pop %>%
 
 Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(color = "darkgreen") +
-  geom_line(aes(y=mean(perc)), color="black", size=.5)+
+  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
   scale_y_continuous(labels = percent_format()) + 
+  annotate("text", x = 1985, y = 0.16, label = "15.4%", size = 3.5)+
   annotate("text", x = 1988.7, y = 0.34, label = "Chico Mendes", size = 3)+
   annotate("text", x = 1992, y = 0.27, label = "Earth Summit", size = 3)+
   annotate("text", x = 2009, y = 0.24, label = "Copenhagen Summit", size = 3)+
   annotate("text", x = 2015, y = 0.21, label = "Paris Summit", size = 3)+
   annotate("text", x = 2019, y = 0.26, label = "August Fires", size=3) +
   labs(x = "", y = "",
-       subtitle = "All speeches inside and outside Brazil (n=6130)",
-       caption = "",
+       title = "Share of speeches that mention the Amazon per year (n=6130)",
+       subtitle = "We annotate five local maxima with highest frequencies.",
        color='Y series') +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
         axis.text = element_text(color = "black", size = 10),
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "bold"),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "bottom")
 
 # location plots
 Amazon_year_in <- perc_in %>%
   ggplot(., aes(x = year, y = perc))+
   geom_line(color="darkgreen")+
-  geom_line(aes(y=mean(perc)), color="black", size=.5)+
-  geom_vline(xintercept = c(1988.9, 1992, 2009, 2015, 2019), linetype = "dotted")+
+  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
+  annotate("text", x = 1985, y = 0.17, label = "16.17%", size = 3.5)+
   scale_y_continuous(labels = percent_format())+
   labs(x = "", y = "",
-       subtitle = "Speeches in Brazil (n=4344)",
-       caption= " ",
+       title = "Share of speeches inside Brazil that mention the Amazon per year",
+       subtitle= " 4344 speeches out of 6130",
        color='Y series') +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
         axis.text = element_text(color = "black", size = 10),
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "bold"),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "")
 
 Amazon_year_out <- perc_out %>% 
   ggplot(., aes(x = year, y = perc))+
   geom_line(color="darkgreen")+
-  geom_line(aes(y=mean(perc)), color="black", size=.5)+
-  geom_vline(xintercept = c(1988.9, 1992, 2009, 2015, 2019), linetype = "dotted")+
+  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
+  annotate("text", x = 1985, y = 0.165, label = "15.49%", size = 3.5)+  
   scale_y_continuous(labels = percent_format())+
   labs(x = "", y = "",
-       subtitle = "Speeches outside of Brazil (n=1786)",
-       caption= "Black lines portray the means.",
+ title = "Share of speeches outside Brazil that mention the Amazon per year",
+       subtitle= " 1786 speeches out of 6130",
        color='Y series') +
   theme(panel.background = element_rect("white", "black", .5, "solid"),
         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
         axis.text = element_text(color = "black", size = 10),
         title = element_text(color = "black", size = 10, face = "bold"),
         legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "bold"),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
         legend.position = "")
 
 grid.arrange(Amazon_year, arrangeGrob(Amazon_year_in, Amazon_year_out, ncol=2), nrow=2, top="Speeches mentioning the Amazon since 1985")
@@ -362,136 +363,136 @@ grid.arrange(Amazon_year, arrangeGrob(Amazon_year_in, Amazon_year_out, ncol=2), 
 
 ```{r comparison, eval=FALSE, include=FALSE}
 
-# comparison with inequality, crime and inflation in speeches
-pop <- pop %>%
-  mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
-         crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
-                              text, ignore.case = TRUE), 1, 0),
-         inf = ifelse(grepl("inflacao|inflaçao",
-                             text, ignore.case = TRUE), 1, 0),
-         unemploy = ifelse(grepl("desempreg",
-                             text, ignore.case = TRUE), 1, 0))
-perc2 <- pop %>%
-  count(desigual, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(desigual == 1) %>%
-  select(c(perc, desigual, year))
-perc3 <- pop %>%
-  count(crime, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(crime == 1) %>%
-  select(c(perc, crime, year))
-perc4 <- pop %>%
-  count(inf, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(inf == 1) %>%
-  select(c(perc, inf, year))
-perc5 <- pop %>%
-  count(unemploy, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(unemploy == 1) %>%
-  select(c(perc, unemploy, year))
-colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
-            "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
-            "Unemployment Speech" = "purple")
-Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
-  geom_line(aes(color = "Amazon Speech")) +
-  geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
-  geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
-  geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
-  geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
-  scale_y_continuous(labels = percent_format()) +
-  scale_color_manual(values = colors) +
-  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
-       subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
-       caption = "",
-       color = "Legend\n") +
-  theme(panel.background = element_rect("white", "black", .5, "solid"),
-        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-        axis.text = element_text(color = "black", size = 10),
-        title = element_text(color = "black", size = 10, face = "bold"),
-        legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom")
-Amazon_vs_other
-Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
-                                                           "Criminality", "Inflation",
-                                                           "Unemployment"),
-                                       "Mean share in time" = c(mean(perc1$perc),
-                                                                mean(perc2$perc),
-                                                                mean(perc3$perc),
-                                                                mean(perc4$perc),
-                                                                mean(perc5$perc)))
-Amazon_vs_other_mean
-#comparison with inequality, crime and inflation in speeches
-pop <- pop %>%
-  mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
-         crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
-                              text, ignore.case = TRUE), 1, 0),
-         inf = ifelse(grepl("inflacao|inflaçao",
-                             text, ignore.case = TRUE), 1, 0),
-         unemploy = ifelse(grepl("desempreg",
-                             text, ignore.case = TRUE), 1, 0))
-perc2 <- pop %>%
-  count(desigual, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(desigual == 1) %>%
-  select(c(perc, desigual, year))
-perc3 <- pop %>%
-  count(crime, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(crime == 1) %>%
-  select(c(perc, crime, year))
-perc4 <- pop %>%
-  count(inf, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(inf == 1) %>%
-  select(c(perc, inf, year))
-perc5 <- pop %>%
-  count(unemploy, year) %>%
-  group_by(year) %>%
-  mutate(perc=n / sum(n)) %>%
-  filter(unemploy == 1) %>%
-  select(c(perc, unemploy, year))
-colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
-            "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
-            "Unemployment Speech" = "purple")
-Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
-  geom_line(aes(color = "Amazon Speech")) +
-  geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
-  geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
-  geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
-  geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
-  scale_y_continuous(labels = percent_format()) +
-  scale_color_manual(values = colors) +
-  labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
-       subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
-       caption = "",
-       color = "Legend\n") +
-  theme(panel.background = element_rect("white", "black", .5, "solid"),
-        panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
-        axis.text = element_text(color = "black", size = 10),
-        title = element_text(color = "black", size = 10, face = "bold"),
-        legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
-        legend.position = "bottom")
-Amazon_vs_other
-Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
-                                                           "Criminality", "Inflation",
-                                                           "Unemployment"),
-                                       "Mean share in time" = c(mean(perc1$perc),
-                                                                mean(perc2$perc),
-                                                                mean(perc3$perc),
-                                                                mean(perc4$perc),
-                                                                mean(perc5$perc)))
-Amazon_vs_other_mean
+# # comparison with inequality, crime and inflation in speeches
+# pop <- pop %>%
+#   mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
+#          crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
+#                               text, ignore.case = TRUE), 1, 0),
+#          inf = ifelse(grepl("inflacao|inflaçao",
+#                              text, ignore.case = TRUE), 1, 0),
+#          unemploy = ifelse(grepl("desempreg",
+#                              text, ignore.case = TRUE), 1, 0))
+# perc2 <- pop %>%
+#   count(desigual, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(desigual == 1) %>%
+#   select(c(perc, desigual, year))
+# perc3 <- pop %>%
+#   count(crime, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(crime == 1) %>%
+#   select(c(perc, crime, year))
+# perc4 <- pop %>%
+#   count(inf, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(inf == 1) %>%
+#   select(c(perc, inf, year))
+# perc5 <- pop %>%
+#   count(unemploy, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(unemploy == 1) %>%
+#   select(c(perc, unemploy, year))
+# colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
+#             "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
+#             "Unemployment Speech" = "purple")
+# Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(aes(color = "Amazon Speech")) +
+#   geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
+#   geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
+#   geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
+#   geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
+#   scale_y_continuous(labels = percent_format()) +
+#   scale_color_manual(values = colors) +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
+#        caption = "",
+#        color = "Legend\n") +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# Amazon_vs_other
+# Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
+#                                                            "Criminality", "Inflation",
+#                                                            "Unemployment"),
+#                                        "Mean share in time" = c(mean(perc1$perc),
+#                                                                 mean(perc2$perc),
+#                                                                 mean(perc3$perc),
+#                                                                 mean(perc4$perc),
+#                                                                 mean(perc5$perc)))
+# Amazon_vs_other_mean
+# #comparison with inequality, crime and inflation in speeches
+# pop <- pop %>%
+#   mutate(desigual = ifelse(grepl("desigual", text, ignore.case = TRUE), 1, 0),
+#          crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
+#                               text, ignore.case = TRUE), 1, 0),
+#          inf = ifelse(grepl("inflacao|inflaçao",
+#                              text, ignore.case = TRUE), 1, 0),
+#          unemploy = ifelse(grepl("desempreg",
+#                              text, ignore.case = TRUE), 1, 0))
+# perc2 <- pop %>%
+#   count(desigual, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(desigual == 1) %>%
+#   select(c(perc, desigual, year))
+# perc3 <- pop %>%
+#   count(crime, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(crime == 1) %>%
+#   select(c(perc, crime, year))
+# perc4 <- pop %>%
+#   count(inf, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(inf == 1) %>%
+#   select(c(perc, inf, year))
+# perc5 <- pop %>%
+#   count(unemploy, year) %>%
+#   group_by(year) %>%
+#   mutate(perc=n / sum(n)) %>%
+#   filter(unemploy == 1) %>%
+#   select(c(perc, unemploy, year))
+# colors <- c("Amazon Speech" = "green", "Inequality Speech" = "red",
+#             "Criminality Speech" = "yellow", "Inflation Speech" = "blue",
+#             "Unemployment Speech" = "purple")
+# Amazon_vs_other <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+#   geom_line(aes(color = "Amazon Speech")) +
+#   geom_line(data = perc2, aes(x = year, y = perc, color = "Inequality Speech")) +
+#   geom_line(data = perc3, aes(x = year, y = perc, color = "Criminality Speech")) +
+#   geom_line(data = perc4, aes(x = year, y = perc, color = "Inflation Speech")) +
+#   geom_line(data = perc5, aes(x = year, y = perc, color = "Unemployment Speech")) +
+#   scale_y_continuous(labels = percent_format()) +
+#   scale_color_manual(values = colors) +
+#   labs(x = "", y = "", title ="Share of speeches mentioning the Amazon in by year",
+#        subtitle = "Sample composed by 6130 presidential speeches since 1985 and compared with mentions of other salient policy objects across the same speeches",
+#        caption = "",
+#        color = "Legend\n") +
+#   theme(panel.background = element_rect("white", "black", .5, "solid"),
+#         panel.grid.major = element_line(color = "grey", size = 0.3, linetype = "solid"),
+#         axis.text = element_text(color = "black", size = 10),
+#         title = element_text(color = "black", size = 10, face = "bold"),
+#         legend.title = element_blank(),
+#         plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+#         legend.position = "bottom")
+# Amazon_vs_other
+# Amazon_vs_other_mean <- tibble::tibble("Policy Object" = c("Amazon", "Inequality",
+#                                                            "Criminality", "Inflation",
+#                                                            "Unemployment"),
+#                                        "Mean share in time" = c(mean(perc1$perc),
+#                                                                 mean(perc2$perc),
+#                                                                 mean(perc3$perc),
+#                                                                 mean(perc4$perc),
+#                                                                 mean(perc5$perc)))
+# Amazon_vs_other_mean
 
 ```
 
