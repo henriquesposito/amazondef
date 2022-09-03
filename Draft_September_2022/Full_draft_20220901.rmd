@@ -1,5 +1,5 @@
 ---
-title: How has the Brazilian Amazon been constructed as a problem? Presidential speeches and transnational politics since 1985 in Brazil
+title: How has the Brazilian Amazon been constructed as a problem? Presidential speeches and transnational politics since 1985
 author:
 - Livio Silva-Muller
 - Henrique Sposito^[Both co-authors contributed equally to the article. Names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
@@ -31,7 +31,7 @@ abstract: Presidential speeches influence the ways we think about, and act towar
 ---
 
 ```{=latex}
-\keywords{ discourse analysis, transnational governance, environmental policy, Brazilian Amazon, supervised learning, and deforestation}
+\keywords{ discourse analysis, transnational governance, environmental policy, Brazilian Amazon, supervised learning, deforestation}
 ```
 
 ```{=latex}
@@ -267,7 +267,7 @@ This approach comes with limitations. Our codebook is developed using specific A
 
 ## 4.1 The rises and falls of the Amazon as a topic in presidential speeches
 
-When, where, and how often do presidents speak about the Amazon? Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. On average, presidents mention the Amazon in 15% ^[For comparison purposes the averages for other policy objects in the same corpus of speeches are: Inequality (14.7%), Criminality (17.3%), Inflation (20.9%), and Unemployment (13.8%).] of their speeches . Mentions of the Amazon outside of Brazil are slightly more frequent than mentions inside Brazil (Figure 3). The frequency in which the Amazon appears across presidential speeches inside, outside, and overall, though, varies similarly across time.
+When, where, and how often do presidents speak about the Amazon? Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. On average, presidents mention the Amazon in 15% ^[For comparison purposes the averages for other policy objects in the same corpus of speeches are: Inequality (14.7%), Criminality (17.3%), Inflation (20.9%), and Unemployment (13.8%).] of their speeches. The frequency in which the Amazon appears across presidential speeches inside, outside, and overall varies similarly across time (see Figure 7 in appendix).
 
 ```{r Figure 2, fig.cap="Amazonian speeches in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc1 <- pop %>%
@@ -296,63 +296,22 @@ Amazon_year
 
 We observe five local maxima both inside and outside Brazil: 1989, 1992, 2009, 2015, and 2019. These points coincide with internal and external events that help us explain the rises and falls of the Amazon in presidential discourse. From 1985 to 1988, the mentions of the Amazon in official speeches increased from 4% to 14%. During this period the latest Brazilian Constitution, which gave indigenous and traditional populations space to advocate for constitutional environmental rights and the protection of their territories [@hecht1990], was written. In 1989, however, the Amazon appeared in 32% of all speeches. This spike correlates with the brutal murder of Chico Mendes in the last days of 1988. The incident caught unprecedented international attention and Sarney responded to this with a set of policies to address deforestation [@capobianco2021], including accepting to host the 1992 Earth Summit [@keck1998].
 
-1990-91 the Amazon appeared in 12% to 14% of all speeches but, by 1992, this average increased to 25%. The 1992 Earth Summit in Brazil brought international attention to environmental topics related to the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Program, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the rest of the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon as a topic did not diverge much from the average until 2009, when we see another spike in mentions of the Amazon. This coincides with the 2009 Copenhagen Summit and the steepest decrease in deforestation rates since data is available as Figure 5, below, illustrates. Lula led the delegation to Copenhagen with a self-image of “we do not promise, we deliver” when the stakes about climate change were high [@franchini2019].
+1990-91 the Amazon appeared in 12% to 14% of all speeches but, by 1992, this average increased to 25%. The 1992 Earth Summit in Brazil brought international attention to environmental topics related to the Amazon. One of the big announcements, for example, was the consolidation of the first transnational partnership for the Amazon, the G7 Pilot Program, which brought a high number of financial resources to the region for public policy implementation [@capobianco2021]. Throughout the rest of the 1990s and 2000s, during the Cardoso and Lula administrations, the Amazon as a topic did not diverge much from the average until 2009, when we see another spike in mentions of the Amazon. This coincides with the 2009 Copenhagen Summit and the steepest decrease in deforestation rates since data is available as Figure 3, below, illustrates. Lula led the delegation to Copenhagen with a self-image of “we do not promise, we deliver” when the stakes about climate change were high [@franchini2019].
 
-```{r Figure 3, fig.cap="Amazonian speeches in time and space", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
-perc_in <- pop %>%
-   mutate(location_cat = ifelse(grepl("International|Non Identified",
-                                      location_cat),
-                                "Outside of Brazil", "In Brazil")) %>%
-  filter(location_cat == "In Brazil") %>% 
-  count(amazon_speech, year, location_cat) %>%
-  group_by(year) %>%
-  mutate(perc = n / sum(n)) %>%
-  filter(amazon_speech == 1) %>%
-  select(c(perc, amazon_speech, year, location_cat))
-perc_out <- pop %>%
-   mutate(location_cat = ifelse(grepl("International|Non Identified",
-                                      location_cat),
-                                "Outside of Brazil", "In Brazil")) %>%
-  filter(location_cat == "Outside of Brazil") %>% 
-  count(amazon_speech, year, location_cat) %>%
-  group_by(year) %>%
-  mutate(perc = n / sum(n)) %>%
-  filter(amazon_speech == 1) %>%
-  select(c(perc, amazon_speech, year, location_cat)) 
-# location plots
-Amazon_year_in <- perc_in %>%
-  ggplot(., aes(x = year, y = perc))+
-  geom_line(color="darkgreen")+
-  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
-  annotate("text", x = 1985, y = 0.17, label = "16.17%", size = 3.5)+
-  annotate("text", x = 1988.7, y = 0.35, label = "Chico Mendes", size = 3)+
-  annotate("text", x = 1992, y = 0.35, label = "Earth Summit", size = 3)+
-  annotate("text", x = 2009, y = 0.23, label = "Copenhagen Summit", size = 3)+
-  annotate("text", x = 2015, y = 0.20, label = "Paris Summit", size = 3)+
-  annotate("text", x = 2019, y = 0.25, label = "August Fires", size=3) +
-  scale_y_continuous(labels = percent_format())+
-  labs(x = "", y = "",
-       title = "Share of speeches inside Brazil",
-       subtitle= " 4344 speeches out of 6130",
-       color='Y series') +
+```{r Figure 3, fig.cap="Deforestation rates since 1988", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+def_rates <- ggplot(amazon_def_year, aes(x = year)) +
+  geom_line(aes(y = area), color= "darkolivegreen", linetype="dotted", size= 1.5)+
+  geom_smooth(se=FALSE, color="black", aes(y=area), linetype="solid", size= 0.75)+
+  annotate("text", x = 2004, y = 29000,
+           label = "2004 Plan to Combatand Control Deforestation", size = 3) +
+  annotate("text", x = 2012.5, y = 3500, label = "2012 Forest Code ", size = 3) +
+  labs(x = "", y = "Deforestation in squared kilometers",
+       title = "Deforestation rates since 1988",
+       subtitle= "Data from INPE, Brazilian Ministry of Science and Technology.",
+       color = "",
+       caption= "Black curve smoothed using loess.")+
   theme_am()
-Amazon_year_out <- perc_out %>% 
-  ggplot(., aes(x = year, y = perc))+
-  geom_line(color="darkgreen")+
-  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
-  annotate("text", x = 1985, y = 0.165, label = "15.49%", size = 3.5)+  
-  annotate("text", x = 1988.7, y = 0.33, label = "Chico Mendes", size = 3)+
-  annotate("text", x = 1992, y = 0.33, label = "Earth Summit", size = 3)+
-  annotate("text", x = 2009, y = 0.25, label = "Copenhagen Summit", size = 3)+
-  annotate("text", x = 2015, y = 0.19, label = "Paris Summit", size = 3)+
-  annotate("text", x = 2019, y = 0.24, label = "August Fires", size=3) +
-  scale_y_continuous(labels = percent_format())+
-  labs(x = "", y = "",
- title = "Share of speeches outside Brazil",
-       subtitle= " 1786 speeches out of 6130",
-       color='Y series') +
-  theme_am()
-grid.arrange(Amazon_year_in, Amazon_year_out, nrow=2)
+def_rates
 ```
 
 From 2010 to 2018, except for 2015, we see a general decrease in mentions of the Amazon in all official presidential speeches. From 2010 to 2014, mentions of the Amazon went down from 18% to 8%. Disagreements related to the priority of environmental preservation over economic development, most notably in the case of approval of the New Forest Code in 2012, which regularized land ownership of many illegally deforested areas, were frequent. The period was also marked by of political and economic instability which culminated in the impeachment of Rousseff. In 2015, the Amazon appeared in 19% of all speeches. This spike coincides with the Paris summit which became a key turn in climate politics after the failures of Copenhagen. Brazil went to the Paris Summit with deforestation numbers slightly higher than Copenhagen and a perception that there was a turn towards less conservation inside the country. By 2016 mentions of Amazon in official speeches went down to 6%, the lowest share since 1985.
@@ -393,29 +352,13 @@ pure_types_time <- ama_mx %>%
 pure_types_time
 ```
 
-The trends identified in Figure 4 are especially interesting considering policies related to deforestation in the Amazon and deforestation rates portrayed in Figure 5, below. First, deforestation rates have a strong negative correlation with environmental conservation. When deforestation rates increased from 1988 to 2004, and from 2012 until 2021, environmental conservation constructions decreased. As deforestation rates decreased from 2004 to 2012, environmental conservation constructions in presidential speeches increased. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and police presence in the Amazon region which, in turn, engendered a perception of a higher risk of being caught and fined for deforestation. The shift from constructing the Amazon as an issue of economic integration to an issue of environmental conservation generates a perception that illegal deforestation will be increasingly monitored and sanctioned. Second and relatedly, deforestation rates have a positive and strong correlation with economic integration. When deforestation increased from 1988 to 2004 and from 2012 to 2021, so did economic integration. When deforestation decreased from 2004 to 2012, economic integration decreased as well. This suggests that presidents might boast policy outcomes related to economic integration as justifications for deforestation.
-
-```{r Figure 5, fig.cap="Deforestation rates since 1988", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-def_rates <- ggplot(amazon_def_year, aes(x = year)) +
-  geom_line(aes(y = area), color= "darkolivegreen", linetype="dotted", size= 1.5)+
-  geom_smooth(se=FALSE, color="black", aes(y=area), linetype="solid", size= 0.75)+
-  annotate("text", x = 2004, y = 29000,
-           label = "2004 Plan to Combatand Control Deforestation", size = 3) +
-  annotate("text", x = 2012.5, y = 3500, label = "2012 Forest Code ", size = 3) +
-  labs(x = "", y = "Deforestation in squared kilometers",
-       title = "Deforestation rates since 1988",
-       subtitle= "Data from INPE, Brazilian Ministry of Science and Technology.",
-       color = "",
-       caption= "Black curve smoothed using loess.")+
-  theme_am()
-def_rates
-```
+The trends identified are especially interesting considering Amazonian policies and deforestation rates portrayed in Figure 3, above. First, deforestation rates have a strong negative correlation with environmental conservation. When deforestation rates increased from 1988 to 2004, and from 2012 until 2021, environmental conservation constructions decreased. As deforestation rates decreased from 2004 to 2012, environmental conservation constructions in presidential speeches increased. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and police presence in the Amazon region which, in turn, engendered a perception of a higher risk of being caught and fined for deforestation. The shift from constructing the Amazon as an issue of economic integration to an issue of environmental conservation generates a perception that illegal deforestation will be increasingly monitored and sanctioned. Second and relatedly, deforestation rates have a positive and strong correlation with economic integration. When deforestation increased from 1988 to 2004 and from 2012 to 2021, so did economic integration. When deforestation decreased from 2004 to 2012, economic integration decreased as well. This suggests that presidents might boast policy outcomes related to economic integration as justifications for deforestation.
 
 ### Mixed-type problem constructions
 
-At the level of the speech presidents might mix multiple problem constructions. Although presidents prefer pure problem-constructions, they also construct the Amazon as a multifaceted issue. Mixed-type problem constructions in discourse offer more intricate understandings of the Amazon as a problem. Constructing the Amazon as multiple issues averages at 18% of all constructions in time. Some mixed-types rarely appear so we focus our discussion on those mixed-types with higher incidence. Figure 6, below, displays the averages of mixed-types constructions by presidents.
+At the level of the speech presidents might mix multiple problem constructions. Although presidents prefer pure problem-constructions, they also construct the Amazon as a multifaceted issue. Mixed-type problem constructions in discourse offer more intricate understandings of the Amazon as a problem. Constructing the Amazon as multiple issues averages at 18% of all constructions in time. Some mixed-types rarely appear so we focus our discussion on those mixed-types with higher incidence. Figure 5, below, displays the averages of mixed-types constructions by presidents.
 
-```{r Figure 6, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+```{r Figure 5, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 mixed_types_presid <- ama_mx %>%
   count(president, mx_cat, mx_cat2) %>%
   group_by(president) %>%
@@ -437,15 +380,15 @@ mixed_types_presid <- ama_mx %>%
 mixed_types_presid
 ```
 
-The most frequent mixed-type problem construction of the Amazon is economic conservation. This mixed-type construction, composed of Amazonian statements that construct the Amazon as a problem of both economic integration and environmental conservation, generally increased in time. Its increase over time suggests that later presidents, along with being more diverse in how they constructed the amazon as an issue (see Figure 3), increasingly find ways to reconcile the dictum between the economy and the environment that prevailed in the previous years. The second most common mixed-type mixes social development and economic integration and appears, on average, in 5.4% of all statements. This is not surprising, as developing countries like Brazil repeatedly claim a “right to develop” when it comes to negotiating strong climate commitments and policies with a focus on both social development and economic integration. Nonetheless, there is a general increase of mixed-types in time, which is expected given the rise of global agendas understanding interconnections of social, environmental, and economic domains such as the Millennium Development Goals and the Sustainable Development Goals.
+The most frequent mixed-type problem construction of the Amazon is economic conservation. This mixed-type construction, composed of Amazonian statements that construct the Amazon as a problem of both economic integration and environmental conservation, generally increased in time. Its increase over time suggests that later presidents, along with being more diverse in how they constructed the amazon as an issue (see Figure 4), increasingly find ways to reconcile the dictum between the economy and the environment that prevailed in the previous years. The second most common mixed-type mixes social development and economic integration and appears, on average, in 5.4% of all statements. This is not surprising, as developing countries like Brazil repeatedly claim a “right to develop” when it comes to negotiating strong climate commitments and policies with a focus on both social development and economic integration. Nonetheless, there is a general increase of mixed-types in time, which is expected given the rise of global agendas understanding interconnections of social, environmental, and economic domains such as the Millennium Development Goals and the Sustainable Development Goals.
 
 Both Lula and Bolsonaro construct the Amazon as a multifaceted issue more frequently than other presidents. Lula usually mixes economic integration with environmental conservation and social development when constructing the Amazon as an issue, while Bolsonaro constructs the Amazon as an issue of national sovereignty and economic integration much more than any other president, mimicking the military dictatorship discourses and policies toward the region [@hecht1990].
 
 ## 4.3 The Amazonian multi-level game: boasting policy outside and talking to people inside
 
-The Amazon region, forests, and peoples have historically been the topic of local, national, and international debates. This implies that audiences’ priorities in each setting change and which policies are appropriate to solve the “Amazon issue” differ as well. As presidents move away from the Amazon, audiences might have different stakes and interests in it. While speeches inside the Amazon might focus on social development, for example, speeches in the United Nations in New York might highlight environmental conservation. To investigate the relationship between where presidents speak and how they construct the Amazon as an issue, we run four logistic regressions, one for each pure-type construction as a dependent variable. We focus on pure-type constructions as these represent most constructions and avoid ambiguity. The independent variable for all models is the distance between the state country capital to Manaus. Figure 7, below, depicts the predicted probabilities from the models (see Table 1) as functions of distance.
+The Amazon region, forests, and peoples have historically been the topic of local, national, and international debates. This implies that audiences’ priorities in each setting change and which policies are appropriate to solve the “Amazon issue” differ as well. As presidents move away from the Amazon, audiences might have different stakes and interests in it. While speeches inside the Amazon might focus on social development, for example, speeches in the United Nations in New York might highlight environmental conservation. To investigate the relationship between where presidents speak and how they construct the Amazon as an issue, we run four logistic regressions, one for each pure-type construction as a dependent variable. We focus on pure-type constructions as these represent most constructions and avoid ambiguity. The independent variable for all models is the distance between the state country capital to Manaus. Figure 6, below, depicts the predicted probabilities from the models (see Table 1) as functions of distance.
 
-```{r Figure 7, fig.cap="Percent of problem constructions across locations", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+```{r Figure 6, fig.cap="Percent of problem constructions across locations", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 ama_model <- filter(ama_model, location_cat != "Non Identified",
@@ -473,13 +416,13 @@ plot_loc$p_c <-factor(plot_loc$p_c, levels = c("Economic Integration",
                                                "Environmental Conservation",
                                                "Social Development"))
 all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
-  geom_jitter(alpha=1, size=1)+
+  geom_jitter(alpha=1, size=1) +
   geom_smooth(size = .5, se=FALSE) +
   geom_vline(xintercept = c(1933.78, 2771.49, 5075.48, 8306.76), linetype = "dotted") +
   ggplot2::annotate(geom = "text", x = c(1933.78,2771.49 , 5075.48, 8306.76),
-                    y = c(0.5,0.55,0.5,0.55),
-                    label = c("Brasilia","Sao Paulo", "New York", "Paris"), alpha = 0.4) +
-  scale_y_continuous(labels = percent_format()) + 
+                    y = c(0.45,0.5,0.47,0.5),
+                    label = c("Brasilia", "Sao Paulo", "New York", "Paris"), alpha = 0.4) +
+  scale_y_continuous(labels = percent_format()) +
   labs(x = "Distance from the Amazon (km)",
        y = "",
        title = "Predicted share of each problem-construction as a function of distance from the Amazon",
@@ -493,6 +436,7 @@ all_loc
 Table 1, below, shows a statistically significant relationship between constructing the Amazon as an issue of environmental conservation and distance from the Amazon. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. The opposite is true for both economic integration and social development, with statistically significant negative relationships. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally.
 
 \begin{landscape}
+
 ```{r Table 1, fig.cap="Logistic Regressions Output", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 # summary statistics
 md <-stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
@@ -540,3 +484,60 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 
 \end{landscape}
 ````
+
+```{r Figure 7, fig.cap="Amazonian speeches in time and space", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
+perc_in <- pop %>%
+   mutate(location_cat = ifelse(grepl("International|Non Identified",
+                                      location_cat),
+                                "Outside of Brazil", "In Brazil")) %>%
+  filter(location_cat == "In Brazil") %>% 
+  count(amazon_speech, year, location_cat) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(amazon_speech == 1) %>%
+  select(c(perc, amazon_speech, year, location_cat))
+perc_out <- pop %>%
+   mutate(location_cat = ifelse(grepl("International|Non Identified",
+                                      location_cat),
+                                "Outside of Brazil", "In Brazil")) %>%
+  filter(location_cat == "Outside of Brazil") %>% 
+  count(amazon_speech, year, location_cat) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(amazon_speech == 1) %>%
+  select(c(perc, amazon_speech, year, location_cat)) 
+# location plots
+Amazon_year_in <- perc_in %>%
+  ggplot(., aes(x = year, y = perc))+
+  geom_line(color="darkgreen")+
+  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
+  annotate("text", x = 1985, y = 0.17, label = "16.17%", size = 3.5)+
+  annotate("text", x = 1988.7, y = 0.39, label = "Chico Mendes", size = 3)+
+  annotate("text", x = 1992, y = 0.36, label = "Earth Summit", size = 3)+
+  annotate("text", x = 2009, y = 0.28, label = "Copenhagen Summit", size = 3)+
+  annotate("text", x = 2015, y = 0.24, label = "Paris Summit", size = 3)+
+  annotate("text", x = 2019, y = 0.28, label = "August Fires", size=3) +
+  scale_y_continuous(labels = percent_format())+
+  labs(x = "", y = "",
+       title = "Share of speeches inside Brazil",
+       subtitle= " 4344 speeches out of 6130",
+       color='Y series') +
+  theme_am()
+Amazon_year_out <- perc_out %>% 
+  ggplot(., aes(x = year, y = perc))+
+  geom_line(color="darkgreen")+
+  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
+  annotate("text", x = 1985, y = 0.165, label = "15.49%", size = 3.5)+  
+  annotate("text", x = 1988.7, y = 0.39, label = "Chico Mendes", size = 3)+
+  annotate("text", x = 1992, y = 0.36, label = "Earth Summit", size = 3)+
+  annotate("text", x = 2009, y = 0.28, label = "Copenhagen Summit", size = 3)+
+  annotate("text", x = 2015, y = 0.24, label = "Paris Summit", size = 3)+
+  annotate("text", x = 2019, y = 0.28, label = "August Fires", size=3)+
+  scale_y_continuous(labels = percent_format())+
+  labs(x = "", y = "",
+ title = "Share of speeches outside Brazil",
+       subtitle= " 1786 speeches out of 6130",
+       color='Y series') +
+  theme_am()
+grid.arrange(Amazon_year_in, Amazon_year_out, nrow=2)
+```
