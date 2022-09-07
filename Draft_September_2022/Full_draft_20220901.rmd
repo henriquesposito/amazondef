@@ -3,7 +3,7 @@ title: How has the Brazilian Amazon been constructed as a problem? Presidential 
 author:
 - Livio Silva-Muller
 - Henrique Sposito^[Both co-authors contributed equally to the article. Names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
-date: "1 September 2022"
+date: "7 September 2022"
 output:
   pdf_document: default
   latex_engine: xelatex
@@ -75,7 +75,7 @@ hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
                            "Rousseff", "Temer", "Bolsonaro"))
 amazon_def_year$area <- amazon_def_year$def_year*1000
-# Prepare data for problem constructions
+# Prepare data for problem-constructions
 sov <- ama %>% 
   filter(sov==1) %>% 
   count(sov, year) %>%
@@ -183,13 +183,13 @@ We need to protect the Amazon from foreign interests. We need to exploit the Ama
 
 Different governments throughout Brazilian history have been described as proponents of a specific view of the Amazon [@drummond2006; @padua2012; @franchini2019; @capobianco2019; @pereira2021]. We conceptualize the Amazon region, forest, and people to be a policy object, this is a specific issue that deserves dedicated policy attention. While the military dictatorship is associated with understanding the Amazona as issues of national sovereignty and economic integration, Sarney’s and Lula’s presidencies are often tied to environmental conservation views. These monolithic representations advance that specific governments understand and act towards the Amazon as one problem, hiding within government diversity of both policies and perspectives. Albeit the current calls to understand the environment as a social-cultural construction and to identify the effect of culture on environmental outcomes [@lepolaindewaroux2021], we lack empirical accounts of how the Brazilian Amazon has been constructed as a problem in discourses over time, by geographical location, and between, or within, governments. Building on @hirschman1963 conceptualization of chosen problems and @bacchi2009 theory of problem-representation in policy, we propose a framework for identifying problem-constructions in discourse and investigate how the Brazilian Amazon has been constructed as a problem in transnational political discourses. We understand transnationalism^[ We use the noun transnationalism, the adverb transnationally, and the adjective transnational interchangeably] as relationships that transcend nation-states, from the local level to the supranational level encompassing non-state actors [@keck1998]
 
-Although problem-construction takes place in a series of instances, we analyze the case of speeches by Brazilian presidents since 1985. Scholarly research about environmental policy in Brazil has focused on the role of the environmental bureaucracy [@silva-muller2022], non-governmental organizations [@keck1998], legislation [@soares-filho2014], and international markets [@assuncao2015], and many others. Nevertheless, the role of the president remains understudied. We opt for presidential speeches for two reasons. First, presidential discourses have the power to introduce and justify the public policy, as well as shape its perception to broad audiences [@zarefsky2004; @gillion2016]. It legitimizes ways of thinking about the Amazon. In turn, policy perception is key for policy adoption and implementation [@alesina2009; @lopez2020]. This is especially pertinent to deforestation in Brazil as expectations of local actors, generated from material and discursive governmental practices [@assuncao2015; @capobianco2019; @capobianco2021], are a crucial factor in decisions to deforest on the ground [@campbell2015]. Second, we argue that presidents can deploy problem-constructions that build policy objects as different problems depending on whom they are speaking to. Presidential discourses take place in different sites, from launching a new bridge in a small municipality in the middle of the Amazon to a speech at the UN general assembly in New York. Working with presidential discourses allows us to identify this variation in meaningful ways and better understand how the Amazon is discursively constructed in transnational politics.
+Although problem-construction takes place in a series of instances, we analyze the case of speeches by Brazilian presidents since 1985. Scholarly research about environmental policy in Brazil has focused on the role of the environmental bureaucracy [@silva-muller2022a], non-governmental organizations [@keck1998], legislation [@soares-filho2014], and international markets [@assuncao2015], and many others. Nevertheless, the role of the president remains understudied. We opt for presidential speeches for two reasons. First, presidential discourses have the power to introduce and justify the public policy, as well as shape its perception to broad audiences [@zarefsky2004; @gillion2016]. It legitimizes ways of thinking about the Amazon. In turn, policy perception is key for policy adoption and implementation [@alesina2009; @lopez2020]. This is especially pertinent to deforestation in Brazil as expectations of local actors, generated from material and discursive governmental practices [@assuncao2015; @capobianco2019; @capobianco2021], are a crucial factor in decisions to deforest on the ground [@campbell2015]. Second, we argue that presidents can deploy problem-constructions that build policy objects as different problems depending on whom they are speaking to. Presidential discourses take place in different sites, from launching a new bridge in a small municipality in the middle of the Amazon to a speech at the UN general assembly in New York. Working with presidential discourses allows us to identify this variation in meaningful ways and better understand how the Amazon is discursively constructed in transnational politics.
 
 To investigate how the Brazilian Amazon has been constructed as a problem in presidential speeches, we create a dataset containing 6130 official presidential speeches by all Brazilian presidents since 1985. We subset the dataset by identifying Amazonian-related statements within these speeches. We find that 2014 sections in these discourses refer to the Amazon at least once. We then develop a codebook grounded on Amazonian historiography to code how each of these statements constructs Amazon as a particular problem. We use this codebook to manually code a randomly selected training set of Amazonian-related statements. We train a supervised machine-learning model to automatically label the remaining set of Amazonian statements. We then conduct a descriptive and inferential analysis of this data, tying patterns in the data to Amazonian policies and deforestation outcomes over time.
 
-Our empirical findings are threefold. First, we find that the frequency of the Amazon as a topic in speeches inside and outside Brazil is equally driven by domestic events (e.g. the assassination of Chico Mendes) as well as international events (UNFCCC Summits). Second, the same government adopts a diverse range of problem-constructions over time. While economic integration dominated discourse from 1985 to the mid-2000s, environmental conservation and social development constructions steadily grew in the 2000s, briefly surpassing economic integration as more common problem constructions from 2011 to 2016. Constructing the Amazon as an issue of sovereignty has increasingly become more pertinent after 2010. Finally, using logit models, we find that presidents are more likely to construct the Amazon as a problem of environmental conservation as presidents move away from the Amazon region. That is, presidents, talk to the economic and social needs of the people domestically while boasting about environmental policy internationally.
+Our empirical findings are threefold. First, we find that the frequency of the Amazon as a topic in speeches inside and outside Brazil is equally driven by domestic events (e.g. the assassination of Chico Mendes) as well as international events (UNFCCC Summits). Second, the same government adopts a diverse range of problem-constructions over time. While economic integration dominated discourse from 1985 to the mid-2000s, environmental conservation and social development constructions steadily grew in the 2000s, briefly surpassing economic integration as more common problem-constructions from 2011 to 2016. Constructing the Amazon as an issue of sovereignty has increasingly become more pertinent after 2010. Finally, using logit models, we find that presidents are more likely to construct the Amazon as a problem of environmental conservation as presidents move away from the Amazon region. That is, presidents, talk to the economic and social needs of the people domestically while boasting about environmental policy internationally.
 
-This article proceeds as follows: first, we propose a conceptual framework to understand problem-construction in discourses. We then review Amazonian historiography literature to identify the main phases and their underlying problem construction. In the methodology section, we explain how the framework is operationalized and present the codebook. We proceed to describe, visualize, and interpret our findings in the analysis section. Finally, we conclude with a discussion connecting our findings to past and present environmental policies.
+This article proceeds as follows: first, we propose a conceptual framework to understand problem-construction in discourses. We then review Amazonian historiography literature to identify the main phases and their underlying problem-construction. In the methodology section, we explain how the framework is operationalized and present the codebook. We proceed to describe, visualize, and interpret our findings in the analysis section. Finally, we conclude with a discussion connecting our findings to past and present environmental policies.
 
 # 2 Conceptual framework and contribution
 
@@ -282,13 +282,13 @@ Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
   scale_y_continuous(labels = percent_format()) + 
   annotate("text", x = 1985, y = 0.18, label = "15.4%", size = 3.5)+
   annotate("text", x = 1988.7, y = 0.34, label = "Chico Mendes", size = 3)+
-  annotate("text", x = 1992, y = 0.27, label = "Earth Summit", size = 3)+
+  annotate("text", x = 1992.5, y = 0.27, label = "Earth Summit", size = 3)+
   annotate("text", x = 2009, y = 0.24, label = "Copenhagen Summit", size = 3)+
   annotate("text", x = 2015, y = 0.21, label = "Paris Summit", size = 3)+
-  annotate("text", x = 2019, y = 0.26, label = "August Fires", size=3) +
+  annotate("text", x = 2019, y = 0.26, label = "2019 Record August Fires", size=3) +
   labs(x = "", y = "",
-       title = "Share of speeches that mention the Amazon per year (n=6130)",
-       subtitle = "We annotate five local maxima with highest frequencies.",
+       title = "Share of speeches that mention the Amazon per year",
+       subtitle = "Sample composed by all 6130 speeches since 1985",
        color='Y series') +
   theme_am()
 Amazon_year
@@ -300,10 +300,10 @@ We observe five local maxima both inside and outside Brazil: 1989, 1992, 2009, 2
 
 ```{r Figure 3, fig.cap="Deforestation rates since 1988", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 def_rates <- ggplot(amazon_def_year, aes(x = year)) +
-  geom_line(aes(y = area), color= "darkolivegreen", linetype="dotted", size= 1.5)+
-  geom_smooth(se=FALSE, color="black", aes(y=area), linetype="solid", size= 0.75)+
-  annotate("text", x = 2004, y = 29000,
-           label = "2004 Plan to Combatand Control Deforestation", size = 3) +
+  geom_line(aes(y = area), color= "darkolivegreen", linetype="twodash", size= 0.5)+
+  geom_smooth(se=FALSE, color="black", aes(y=area), linetype="solid", size= 0.5)+
+  annotate("text", x = 2005, y = 29000,
+           label = "2004 Plan to Combat and Control Deforestation", size = 3) +
   annotate("text", x = 2012.5, y = 3500, label = "2012 Forest Code ", size = 3) +
   labs(x = "", y = "Deforestation in squared kilometers",
        title = "Deforestation rates since 1988",
@@ -324,9 +324,9 @@ The frequency in which the Amazon appears in domestic and international speeches
 
 Our subsequent analysis of pure-types and mixed-types suggests that governments do not defend a view of the Amazon. The same governments construct the Amazon as various pure and mixed type problems, which unravels a less cohesive story than that told by the literature scrutinizing policy cycles.
 
-### Pure-type problem constructions
+### Pure-type problem-constructions
 
-We conceptualize four problem constructions: sovereignty, economic integration, social development, and conservation. Figure 4, below, illustrates the share of each pure-type in time. Pure problem constructions dominate, with an average of 56% of all Amazonian statements across time.We identify a discursive shift in problem constructions from developing the Amazon economically, to conserving it and providing services to its citizens. Pure economic integration constructions dominated constructions from 1985 to the late 2000s. This is especially pertinent during the Cardoso administration. Brazilian presidents after Cardoso moved from employing one problem-constructions consistently to a more diverse strategy. During Lula’s terms in office, constructing the Amazon purely as an issue of economic integration decreased, while constructing the Amazon as issues of environmental conservation and social development increased. Conservation and social development constructions surpassed economic integration around 2010 and continued to dominate as Amazonian constructions during the Rousseff administration. Still, environmental conservation and social development problem-constructions were not as dominant in terms of frequency or time in discourses as economic integration was until the early 2000s. Finally, we observe a steady increase in sovereignty constructions in the late 2000s, reaching its highest frequencies with the presidencies of Bolsonaro.
+We conceptualize four problem-constructions: sovereignty, economic integration, social development, and conservation. Figure 4, below, illustrates the share of each pure-type in time. Pure problem-constructions dominate, with an average of 56% of all Amazonian statements across time.We identify a discursive shift in problem-constructions from developing the Amazon economically, to conserving it and providing services to its citizens. Pure economic integration constructions dominated constructions from 1985 to the late 2000s. This is especially pertinent during the Cardoso administration. Brazilian presidents after Cardoso moved from employing one problem-constructions consistently to a more diverse strategy. During Lula’s terms in office, constructing the Amazon purely as an issue of economic integration decreased, while constructing the Amazon as issues of environmental conservation and social development increased. Conservation and social development constructions surpassed economic integration around 2010 and continued to dominate as Amazonian constructions during the Rousseff administration. Still, environmental conservation and social development problem-constructions were not as dominant in terms of frequency or time in discourses as economic integration was until the early 2000s. Finally, we observe a steady increase in sovereignty constructions in the late 2000s, reaching its highest frequencies with the presidencies of Bolsonaro.
 
 ```{r Figure 4, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 mmt1 <- ama_mx %>%
@@ -342,7 +342,7 @@ pure_types_time <- ama_mx %>%
   mutate(perc = n / sum(n)) %>% 
   filter(mx_cat2 == "Pure-types") %>%
   ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
-  geom_smooth(aes(fill = mx_cat), se = FALSE, size =1, linetype="solid") +
+  geom_smooth(aes(fill = mx_cat), se = FALSE, size =0.75, linetype="solid") +
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of each pure-type problem-construction by year",
        subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
@@ -354,9 +354,9 @@ pure_types_time
 
 The trends identified are especially interesting considering Amazonian policies and deforestation rates portrayed in Figure 3, above. First, deforestation rates have a strong negative correlation with environmental conservation. When deforestation rates increased from 1988 to 2004, and from 2012 until 2021, environmental conservation constructions decreased. As deforestation rates decreased from 2004 to 2012, environmental conservation constructions in presidential speeches increased. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and police presence in the Amazon region which, in turn, engendered a perception of a higher risk of being caught and fined for deforestation. The shift from constructing the Amazon as an issue of economic integration to an issue of environmental conservation generates a perception that illegal deforestation will be increasingly monitored and sanctioned. Second and relatedly, deforestation rates have a positive and strong correlation with economic integration. When deforestation increased from 1988 to 2004 and from 2012 to 2021, so did economic integration. When deforestation decreased from 2004 to 2012, economic integration decreased as well. This suggests that presidents might boast policy outcomes related to economic integration as justifications for deforestation.
 
-### Mixed-type problem constructions
+### Mixed-type problem-constructions
 
-At the level of the speech presidents might mix multiple problem constructions. Although presidents prefer pure problem-constructions, they also construct the Amazon as a multifaceted issue. Mixed-type problem constructions in discourse offer more intricate understandings of the Amazon as a problem. Constructing the Amazon as multiple issues averages at 18% of all constructions in time. Some mixed-types rarely appear so we focus our discussion on those mixed-types with higher incidence. Figure 5, below, displays the averages of mixed-types constructions by presidents.
+At the level of the speech presidents might mix multiple problem-constructions. Although presidents prefer pure problem-constructions, they also construct the Amazon as a multifaceted issue. Mixed-type problem-constructions in discourse offer more intricate understandings of the Amazon as a problem. Constructing the Amazon as multiple issues averages at 18% of all constructions in time. Some mixed-types rarely appear so we focus our discussion on those mixed-types with higher incidence. Figure 5, below, displays the averages of mixed-types constructions by presidents.
 
 ```{r Figure 5, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 mixed_types_presid <- ama_mx %>%
@@ -380,7 +380,7 @@ mixed_types_presid <- ama_mx %>%
 mixed_types_presid
 ```
 
-The most frequent mixed-type problem construction of the Amazon is economic conservation. This mixed-type construction, composed of Amazonian statements that construct the Amazon as a problem of both economic integration and environmental conservation, generally increased in time. Its increase over time suggests that later presidents, along with being more diverse in how they constructed the amazon as an issue (see Figure 4), increasingly find ways to reconcile the dictum between the economy and the environment that prevailed in the previous years. The second most common mixed-type mixes social development and economic integration and appears, on average, in 5.4% of all statements. This is not surprising, as developing countries like Brazil repeatedly claim a “right to develop” when it comes to negotiating strong climate commitments and policies with a focus on both social development and economic integration. Nonetheless, there is a general increase of mixed-types in time, which is expected given the rise of global agendas understanding interconnections of social, environmental, and economic domains such as the Millennium Development Goals and the Sustainable Development Goals.
+The most frequent mixed-type problem-construction of the Amazon is economic conservation. This mixed-type construction, composed of Amazonian statements that construct the Amazon as a problem of both economic integration and environmental conservation, generally increased in time. Its increase over time suggests that later presidents, along with being more diverse in how they constructed the amazon as an issue (see Figure 4), increasingly find ways to reconcile the dictum between the economy and the environment that prevailed in the previous years. The second most common mixed-type mixes social development and economic integration and appears, on average, in 5.4% of all statements. This is not surprising, as developing countries like Brazil repeatedly claim a “right to develop” when it comes to negotiating strong climate commitments and policies with a focus on both social development and economic integration. Nonetheless, there is a general increase of mixed-types in time, which is expected given the rise of global agendas understanding interconnections of social, environmental, and economic domains such as the Millennium Development Goals and the Sustainable Development Goals.
 
 Both Lula and Bolsonaro construct the Amazon as a multifaceted issue more frequently than other presidents. Lula usually mixes economic integration with environmental conservation and social development when constructing the Amazon as an issue, while Bolsonaro constructs the Amazon as an issue of national sovereignty and economic integration much more than any other president, mimicking the military dictatorship discourses and policies toward the region [@hecht1990].
 
@@ -388,7 +388,7 @@ Both Lula and Bolsonaro construct the Amazon as a multifaceted issue more freque
 
 The Amazon region, forests, and peoples have historically been the topic of local, national, and international debates. This implies that audiences’ priorities in each setting change and which policies are appropriate to solve the “Amazon issue” differ as well. As presidents move away from the Amazon, audiences might have different stakes and interests in it. While speeches inside the Amazon might focus on social development, for example, speeches in the United Nations in New York might highlight environmental conservation. To investigate the relationship between where presidents speak and how they construct the Amazon as an issue, we run four logistic regressions, one for each pure-type construction as a dependent variable. We focus on pure-type constructions as these represent most constructions and avoid ambiguity. The independent variable for all models is the distance between the state country capital to Manaus. Figure 6, below, depicts the predicted probabilities from the models (see Table 1) as functions of distance.
 
-```{r Figure 6, fig.cap="Percent of problem constructions across locations", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+```{r Figure 6, fig.cap="Logistic Regression predicted values", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 ama_model <- filter(ama_model, location_cat != "Non Identified",
@@ -418,18 +418,16 @@ plot_loc$p_c <-factor(plot_loc$p_c, levels = c("Economic Integration",
 all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
   geom_jitter(alpha=1, size=1) +
   geom_smooth(size = .5, se=FALSE) +
-  geom_vline(xintercept = c(1933.78, 2771.49, 5075.48, 8306.76), linetype = "dotted") +
-  ggplot2::annotate(geom = "text", x = c(1933.78,2771.49 , 5075.48, 8306.76),
-                    y = c(0.45,0.5,0.47,0.5),
-                    label = c("Brasilia", "Sao Paulo", "New York", "Paris"), alpha = 0.4) +
   scale_y_continuous(labels = percent_format()) +
   labs(x = "Distance from the Amazon (km)",
        y = "",
-       title = "Predicted share of each problem-construction as a function of distance from the Amazon",
+       title = "Predicted share of each problem-construction as a function of\ndistance from the Amazon",
        subtitle="Sovereignty was removed because of statistical insignificance (table 1).", 
-       caption = "Curve in the plot is estimated using loess method.") +
+       caption = "Curves in the plots are estimated using loess method.") +
     theme_am() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  facet_wrap(~p_c, ncol=3)
+
 all_loc
 ```
 
@@ -445,7 +443,8 @@ md <-stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
                                              "Social Development", "Sovereignty"),
                           covariate.labels = c("Distance from the Amazon (km)",
                                                "Election year", "Yearly Deforestation",
-                                               "Yearly   Inflation"), no.space = TRUE)
+                                               "Yearly   Inflation"), no.space = TRUE,
+                          title = "Logistic Regressions Output")
 ```
 
 \end{landscape}
@@ -454,7 +453,7 @@ Our models also suggest that deforestation plays an important role. Presidents a
 
 # 5 Discussion and Conclusion
 
-This paper investigates how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985. Our findings are threefold: we find that the frequency of the Amazon as a topic in speeches inside and outside Brazil is equally driven by domestic events (e.g. the assassination of Chico Mendes) as well as international events (UNFCCC Summits). Second, the same government adopts a diverse range of problem-construction. While economic integration dominated discourse from 1985 to the mid-2000s, environmental conservation and social development constructions steadily grew in the 2000s, temporarily surpassing economic integration as a more common problem construction from 2010 to 2015. This implies an overall movement from only exploiting the Amazon for economic purposes to exploiting it and protecting it.  Constructing the Amazon as an issue of sovereignty became more pertinent after 2010. Finally, we find that presidents are more likely to construct the Amazon as an environmental conservation problem than economic integration or social development, as presidents move away from the Amazon region. Conceptually, this contributes to understanding the social construction of the Amazon in discourses and how these relate to policies and environmental outcomes. Empirically, we provide the first comprehensive overview of when, where, and how the Amazon is constructed as an issue in presidential discourse.
+This paper investigates how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985. Our findings are threefold: we find that the frequency of the Amazon as a topic in speeches inside and outside Brazil is equally driven by domestic events (e.g. the assassination of Chico Mendes) as well as international events (UNFCCC Summits). Second, the same government adopts a diverse range of problem-construction. While economic integration dominated discourse from 1985 to the mid-2000s, environmental conservation and social development constructions steadily grew in the 2000s, temporarily surpassing economic integration as a more common problem-construction from 2010 to 2015. This implies an overall movement from only exploiting the Amazon for economic purposes to exploiting it and protecting it.  Constructing the Amazon as an issue of sovereignty became more pertinent after 2010. Finally, we find that presidents are more likely to construct the Amazon as an environmental conservation problem than economic integration or social development, as presidents move away from the Amazon region. Conceptually, this contributes to understanding the social construction of the Amazon in discourses and how these relate to policies and environmental outcomes. Empirically, we provide the first comprehensive overview of when, where, and how the Amazon is constructed as an issue in presidential discourse.
 
 Discursive problem-construction within democracies legitimizes ways of thinking and acting towards the environment. If presidents promote an agenda of economic and social development within Brazil that diverges from the one promoted outside of Brazil, to what extent does the implemented agenda respond to domestic versus international demands? The Brazilian government successfully funded domestic public policy with transnational support on several occasions: the 1992 Pilot Programme of the G7 for the Protection of Rainforest; the 2001 Amazon Regional Protected Areas Program by the World Bank and others; and the 2008 Amazon Fund which provided over USD 1 billion [@silva-muller2022]. Concurrently, the national agenda of economic integration or social development was pursued. For instance, rural credit offered to local agricultural producers in Amazonian states, went up from 500 million reais a year in 1999 to over 4 billion a year by 2012 [@capobianco2021]. Multiple contradictory policies negotiated simultaneously, imply that presidents construct policy objects as issues important to local electorates within the Amazon while, at the same time, highlighting aspects important for international actors elsewhere.
 
@@ -462,28 +461,20 @@ The decrease in deforestation that took place in Brazil from 2004 to 2012, was a
 
 The steady increase of sovereignty starting in 2010 brings an eerie twist. As we conceptualize and operationalize sovereignty as containing internal and external perceived threats to the Amazon, we interpret this increase as not only attacks on international interference in the Amazon but also on indigenous and traditional populations. The embryo of Bolsonaro’s Amazonian discourse was breeding half a decade before he took office. Bolsonaro is a product of political re-organization of national and international actors - to which Rousseff and Temer were already responding in discourse - rather than the cause of change. The political forces in Brazilian democracy that drove these policy and discursive changes in problem-construction were long in the making, Bolsonaro’s problem-constructions and policies are the strongest forms of this shift.
 
-\newpage
+# Acknowledgements
+
+The authors are extremely grateful to Graziella Moraes Silva and James Hollway for their support. The authors would also like to thank Matias, Federico, Rodrigo, and Anna for valuable comments on earlier drafts of this paper.
+
+# Disclosure Statement
+
+The authors report there are no competing interests to declare.
+
 # References
 
 <div id="refs"></div>
+\newpage
 
 # Appendix
-
-````{=tex}
-\begin{landscape}
-
-```{r codebook, fig.cap="Codebook", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
-codebook <- tibble::tibble("Problem Construction" = c("National Sovereignty", "Economic Integration","Social Development", "Environmental Conservation"),
-                           Description = c("This code constructs the Amazon region and/or forest as an issue of national sovereignty. We understand claims of sovereignty as a particular problem-construction that touches on imaginaries of external threats to territory. Relatedly, we also understand sovereignty as raising concerns about wrong perspectives and criticism from foreign and non-state actors about governments’ actions related to the Brazilian Amazon. In all, it advances the view that the Amazon is Brazilian, foreign, and non-state presence in the region needs to be monitored closely.","This code constructs the Amazon region and/or forest as an issue of economic integration. It advances the view that the Amazon needs to be developed and connected to the national economy. This includes expanding the agricultural frontier through incentives, creating a diverse set of infrastructure (roads, dams, internet, radio, energy), fostering differing industries (tourism, mining, cattle, agriculture and so on) through tax-free zones, as well as facilitating the exploitation of natural resources for developmental purposes.", "This code constructs the Amazon region and/or forest as an issue of social development. It advances the view that Amazon is full of citizens who should have their rights guaranteed. This refers to the construction of schools and universities (right to education), of hospitals (right to health), and of housing (right to house). This also includes guarantees of a dignified life with decent employment, access to water and sanitation, as well as access to electricity, internet, radio, and light. Finally, this includes referrals to culture and the right to vote.", "This code constructs the Amazon region and/or forest as an issue of conservation. This problem-construction focuses on the value of a standing forest and of the preserved ecosystem in the region. The conservationist narrative advances the view that Amazon should be preserved, deforestation should be halted, and the practices of indigenous and traditional populations should be maintained and fostered. It advances the view that the emission of greenhouse gasses should be halted, that renewable energy should be supported, and that protected areas should be created."), Example = c("Congressman, the fundamental link for Brazil to really head in the direction to prosperity. I would like first, Hu Chunhua,  to thank you for the words of your ambassador to Brazil recognizing our sovereignty over the Amazonian region during that recent episode in the G7 meeting. I would like to thank the Chinese government. For us, this type of public acknowledgement is priceless in your words about this region that is so important to the world and to Brazil. (Bolsonaro 25/10/2019)",
-                                       "If you allow me, in the Amazon - which for a long time stayed asleep due to the lack of coordinated actions - have already taken a few structuring actions. We, in the Amazon, are connecting Manuas, Boa Vista, Caracarai, until up there, the red line [in a map] that goes all the way up in the direction of Venezuela, that is the so-called  BR-174 highway. This highway will allow production in the Tax Free Zone in Manaus to be competitive, not within, but outside, that is the vocation of the the Tax Free Zone to export; and we can even do it through the Caribbean (Cardoso 02/07/1997)",
-                                       "The state does not work for profits, the state needs to guarantee dignity, we find that a citizen who lives in the riverside of the Amazon river, 600 kilometers from Manaus, has the right to have the electricity in their house, to owe a fridge, to owe a television where to watch the soap operas. We have invested over 14 billion reais in this program, in three and a half years. Do you know how many electrical lines we have already built? One million kilometers of lines. (Lula 20/11/2009)",
-                                       "I have put in place emergency measures, I have suspended the exports of wood logs, I have suspended the fiscal incentives and credits to projects that could damage the environment in the amazon and I have made a license mandatory to gold mining that prohibits utilizing mercury in the process. This began the restructuring of the governmental system of control and preservation of the environment, I have created the Brazilian Institute for the Environment and Natural Resources [IBAMA], which will be headed by Dr. Mesquita (Sarney 20/07/1989)"))
-
-kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook") %>% kable_styling(latex_options = c("striped", "repeat_header", "scale_down"),position= "center", font_size = 9, full_width = TRUE) %>% column_spec(1, width="3cm", bold=TRUE) %>% column_spec(2, width="9cm") %>% column_spec(3, width = "9cm")
-```
-
-\end{landscape}
-````
 
 ```{r Figure 7, fig.cap="Amazonian speeches in time and space", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc_in <- pop %>%
@@ -541,3 +532,19 @@ Amazon_year_out <- perc_out %>%
   theme_am()
 grid.arrange(Amazon_year_in, Amazon_year_out, nrow=2)
 ```
+
+````{=tex}
+\begin{landscape}
+
+```{r codebook, fig.cap="Codebook", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
+codebook <- tibble::tibble("problem-construction" = c("National Sovereignty", "Economic Integration","Social Development", "Environmental Conservation"),
+                           Description = c("This code constructs the Amazon region and/or forest as an issue of national sovereignty. We understand claims of sovereignty as a particular problem-construction that touches on imaginaries of external threats to territory. Relatedly, we also understand sovereignty as raising concerns about wrong perspectives and criticism from foreign and non-state actors about governments’ actions related to the Brazilian Amazon. In all, it advances the view that the Amazon is Brazilian, foreign, and non-state presence in the region needs to be monitored closely.","This code constructs the Amazon region and/or forest as an issue of economic integration. It advances the view that the Amazon needs to be developed and connected to the national economy. This includes expanding the agricultural frontier through incentives, creating a diverse set of infrastructure (roads, dams, internet, radio, energy), fostering differing industries (tourism, mining, cattle, agriculture and so on) through tax-free zones, as well as facilitating the exploitation of natural resources for developmental purposes.", "This code constructs the Amazon region and/or forest as an issue of social development. It advances the view that Amazon is full of citizens who should have their rights guaranteed. This refers to the construction of schools and universities (right to education), of hospitals (right to health), and of housing (right to house). This also includes guarantees of a dignified life with decent employment, access to water and sanitation, as well as access to electricity, internet, radio, and light. Finally, this includes referrals to culture and the right to vote.", "This code constructs the Amazon region and/or forest as an issue of conservation. This problem-construction focuses on the value of a standing forest and of the preserved ecosystem in the region. The conservationist narrative advances the view that Amazon should be preserved, deforestation should be halted, and the practices of indigenous and traditional populations should be maintained and fostered. It advances the view that the emission of greenhouse gasses should be halted, that renewable energy should be supported, and that protected areas should be created."), Example = c("Congressman, the fundamental link for Brazil to really head in the direction to prosperity. I would like first, Hu Chunhua,  to thank you for the words of your ambassador to Brazil recognizing our sovereignty over the Amazonian region during that recent episode in the G7 meeting. I would like to thank the Chinese government. For us, this type of public acknowledgement is priceless in your words about this region that is so important to the world and to Brazil. (Bolsonaro 25/10/2019)",
+                                       "If you allow me, in the Amazon - which for a long time stayed asleep due to the lack of coordinated actions - have already taken a few structuring actions. We, in the Amazon, are connecting Manuas, Boa Vista, Caracarai, until up there, the red line [in a map] that goes all the way up in the direction of Venezuela, that is the so-called  BR-174 highway. This highway will allow production in the Tax Free Zone in Manaus to be competitive, not within, but outside, that is the vocation of the the Tax Free Zone to export; and we can even do it through the Caribbean (Cardoso 02/07/1997)",
+                                       "The state does not work for profits, the state needs to guarantee dignity, we find that a citizen who lives in the riverside of the Amazon river, 600 kilometers from Manaus, has the right to have the electricity in their house, to owe a fridge, to owe a television where to watch the soap operas. We have invested over 14 billion reais in this program, in three and a half years. Do you know how many electrical lines we have already built? One million kilometers of lines. (Lula 20/11/2009)",
+                                       "I have put in place emergency measures, I have suspended the exports of wood logs, I have suspended the fiscal incentives and credits to projects that could damage the environment in the amazon and I have made a license mandatory to gold mining that prohibits utilizing mercury in the process. This began the restructuring of the governmental system of control and preservation of the environment, I have created the Brazilian Institute for the Environment and Natural Resources [IBAMA], which will be headed by Dr. Mesquita (Sarney 20/07/1989)"))
+
+kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook") %>% kable_styling(latex_options = c("striped", "repeat_header", "scale_down"),position= "center", font_size = 9, full_width = TRUE) %>% column_spec(1, width="3cm", bold=TRUE) %>% column_spec(2, width="9cm") %>% column_spec(3, width = "9cm")
+```
+
+\end{landscape}
+````
