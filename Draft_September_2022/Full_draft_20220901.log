@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.25)  9 SEP 2022 10:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.9)  10 SEP 2022 15:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **Full_draft_20220901.tex
 (./Full_draft_20220901.tex
 LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-08-23> (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
+L3 programming layer <2022-08-30> (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
 (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
@@ -494,7 +494,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 )
 \Hy@SectionHShift=\skip84
 ) (/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-08-23 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count316
 \l__pdf_internal_box=\box73
 ) (./Full_draft_20220901.aux)
@@ -611,13 +611,13 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 188.
+(Font)              <12> on input line 189.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 188.
+(Font)              <8> on input line 189.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 188.
+(Font)              <6> on input line 189.
 [2] [3] [4] [5]
-Underfull \hbox (badness 1845) in paragraph at lines 414--425
+Underfull \hbox (badness 1845) in paragraph at lines 415--426
 \T1/lmr/m/n/12 We rely on the Ama-zo-nian his-to-ri-og-ra-phy lit-er-a-ture to iden-tify pos-si-ble problem-
  []
 
@@ -625,7 +625,7 @@ Underfull \hbox (badness 1845) in paragraph at lines 414--425
 <figure1pic.png, id=152, 978.054pt x 551.442pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 586.
+Package pdftex.def Info: figure1pic.png  used on input line 587.
 (pdftex.def)             Requested size: 650.45744pt x 366.73798pt.
 [10
 
@@ -635,31 +635,31 @@ Package pdftex.def Info: figure1pic.png  used on input line 586.
 <Full_draft_20220901_files/figure-latex/Figure 2-1.pdf, id=165, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 2-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 2-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 2-1.pdf  used on input line 688.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 2-1.pdf  used on input line 689.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [12] [13 <./Full_draft_20220901_files/figure-latex/Figure 2-1.pdf>]
 <Full_draft_20220901_files/figure-latex/Figure 3-1.pdf, id=186, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 3-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 3-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 3-1.pdf  used on input line 725.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 3-1.pdf  used on input line 726.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [14 <./Full_draft_20220901_files/figure-latex/Figure 3-1.pdf>]
 <Full_draft_20220901_files/figure-latex/Figure 4-1.pdf, id=199, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 4-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 4-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 4-1.pdf  used on input line 803.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 4-1.pdf  used on input line 808.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [15] [16 <./Full_draft_20220901_files/figure-latex/Figure 4-1.pdf>]
 <Full_draft_20220901_files/figure-latex/Figure 5-1.pdf, id=218, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 5-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 5-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 5-1.pdf  used on input line 846.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 5-1.pdf  used on input line 851.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [17 <./Full_draft_20220901_files/figure-latex/Figure 5-1.pdf>]
 <Full_draft_20220901_files/figure-latex/Figure 6-1.pdf, id=231, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 6-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 6-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 6-1.pdf  used on input line 901.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 6-1.pdf  used on input line 906.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [18] [19 <./Full_draft_20220901_files/figure-latex/Figure 6-1.pdf>] [20
 
@@ -669,28 +669,28 @@ Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 6-1.pdf  
 <Full_draft_20220901_files/figure-latex/Figure 7-1.pdf, id=373, 469.755pt x 325.215pt>
 File: Full_draft_20220901_files/figure-latex/Figure 7-1.pdf Graphic file (type pdf)
 <use Full_draft_20220901_files/figure-latex/Figure 7-1.pdf>
-Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 7-1.pdf  used on input line 1283.
+Package pdftex.def Info: Full_draft_20220901_files/figure-latex/Figure 7-1.pdf  used on input line 1285.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [26 <./Full_draft_20220901_files/figure-latex/Figure 7-1.pdf>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 1304.
+(Font)              <9> on input line 1306.
 
-LaTeX Warning: Float too large for page by 13.66255pt on input line 1305.
+LaTeX Warning: Float too large for page by 13.66255pt on input line 1307.
 
 [27] (./Full_draft_20220901.aux)
 Package rerunfilecheck Info: File `Full_draft_20220901.out' has not changed.
 (rerunfilecheck)             Checksum: 53DC3FF99CEE7230B4702CB7B1660D88;5118.
  ) 
 Here is how much of TeX's memory you used:
- 13917 strings out of 479489
- 227953 string characters out of 5873161
- 531684 words of memory out of 5000000
- 32226 multiletter control sequences out of 15000+600000
+ 13918 strings out of 477035
+ 227983 string characters out of 5826563
+ 570966 words of memory out of 5000000
+ 34678 multiletter control sequences out of 15000+600000
  549331 words of font info for 89 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,16n,77p,1181b,641s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on Full_draft_20220901.pdf (27 pages, 1485013 bytes).
+Output written on Full_draft_20220901.pdf (27 pages, 1483584 bytes).
 PDF statistics:
  489 PDF objects out of 1000 (max. 8388607)
  413 compressed objects within 5 object streams
