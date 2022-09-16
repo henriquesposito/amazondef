@@ -398,7 +398,9 @@ ama_model <- filter(ama_model, location_cat != "Non Identified",
          EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
          SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
          sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0))
+
 # model
+
 model_logit_con <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_ei <- glm(EI_vs_all ~ km_to_manaus + election_year + def_year + AAI,
@@ -407,6 +409,8 @@ model_logit_sd <- glm(SD_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_sov <- glm(sov_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
+
+
 # Plot model
 ama_model$"Environmental Conservation" = predict(model_logit_con, ama_model, type = "response")
 ama_model$"Economic Integration" = predict(model_logit_ei, ama_model, type = "response")
@@ -432,6 +436,25 @@ all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
 all_loc
 ```
 
+
+```{r Models for Table, include=FALSE}
+
+#models for table
+
+ama_model$thousand_km<- ama_model$km_to_manaus/1000
+
+model_logit_con2 <- glm(con_vs_all ~ thousand_km + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_ei2 <- glm(EI_vs_all ~ thousand_km + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_sd2 <- glm(SD_vs_all ~ thousand_km + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AAI,
+                   family=binomial(link = "logit"), data = ama_model)
+
+```
+
+
 Table 1, below, shows a statistically significant relationship between constructing the Amazon as an issue of environmental conservation and distance from the Amazon. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration and social development, with statistically significant negative relationships. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally.
 
 ````{=tex}
@@ -439,11 +462,11 @@ Table 1, below, shows a statistically significant relationship between construct
 
 ```{r Table 1, fig.cap="Logistic Regressions Output", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
-md <-stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
-                          model_logit_sov, digits = 10, 
+md <-stargazer::stargazer(model_logit_con2, model_logit_ei2, model_logit_sd2,
+                          model_logit_sov2, digits = 10, 
                           dep.var.labels = c("Conservation", "Economic Integration",
                                              "Social Development", "Sovereignty"),
-                          covariate.labels = c("Distance from the Amazon (km)",
+                          covariate.labels = c("Distance from the Amazon in 1000s of km",
                                                "Election year", "Yearly Deforestation",
                                                "Yearly   Inflation"), no.space = TRUE,
                           title = "Logistic Regressions Output")
