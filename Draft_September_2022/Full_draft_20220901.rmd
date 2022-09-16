@@ -1,5 +1,5 @@
 ---
-title: How has the Brazilian Amazon been constructed as a problem? Presidential speeches and transnational politics since 1985
+title: How has the Brazilian Amazon been constructed as a problem:Presidential speeches and transnational politics since 1985
 author:
 - Livio Silva-Muller
 - Henrique Sposito^[Both co-authors contributed equally to the article. Names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
@@ -237,7 +237,7 @@ Governments can emphasize the lack of hospitals, sanitation, and schools concern
 
 To analyze how presidents construct the Amazon as a problem, we build upon the dataset provided by [@cezar2020] which contains all official speeches by Brazilian Presidents from 1985 to 2019 scrapped from the archives of the Brazilian Presidential Library. We update the dataset by scraping and adding all official speeches from 2020 and 2021. The final dataset encompasses 6130 speeches for all the presidents of Brazil. Then, we proceed to identify all speeches that refer to the Amazon as a region, people, or forest. We do so by detecting all speeches in which the stem "amazon" appears. In Portuguese, the stem captures terms such as "Amazonia", "Amazonica", "Amazonidas", "Amazonense(s)", "Amazonas", among others. We find that 946 speeches are, at least partially, about the Amazon out of the 6130.
 
-Using the poldis R package [@sposito2021], we proceed to extract two sentences before and two sentences after the sentence in which the stem "amazon" appears. We opt for picking two sentences around, rather than words because sentences usually contain a cohesive idea. By doing so we create our unit of analysis: an Amazon statement. We use Amazon statements as our unit of analysis for two main reasons. First, working at the level of statements allows us to identify only passages that are meaningful for our specific purpose. Second, it increases the number of observations and their variety meaningfully, allowing for more specificity in the analysis. This process yields 2014 unique Amazonian statements across the 946 speeches about the Amazon identified. When an Amazonian statement contains two or more matches of the stem "amazon", we get two sentences before the first match and two sentences after the last match. On average, an Amazonian statement contains 123 words.
+Using the poldis R package [@sposito2021], we proceed to extract two sentences before and two sentences after the sentence in which the stem "amazon" appears. We opt for picking two sentences around, rather than words because sentences usually contain a cohesive idea. By doing so we create our unit of analysis: an Amazon statement. We use Amazon statements as our unit of analysis because it allows us to identify only passages that are meaningful for our specific purpose.This process yields 2014 unique Amazonian statements across the 946 speeches about the Amazon identified. When an Amazonian statement contains two or more matches of the stem "amazon", we get two sentences before the first match and two sentences after the last match. On average, an Amazonian statement contains 123 words.
 
 Our approach to text coding has three steps. First, we develop a codebook to code Amazonian statements in one or more problem-constructions (see codebook in appendix). In their conceptualization, each problem-construction is mutually exclusive, meaning that they cover different forms of constructing the Amazon as a problem. Nevertheless, each Amazonian statement might be assigned to one or more codes. A statement can, for example, construct the Amazon as a problem of sovereignty and a problem of economic integration, or a problem of social development and conservation. Amazonian statements, thus, can be either coded as pure-types or mixed-types. Mixed-types are relevant as constructions and policies are often multifaceted while portraying the Amazon as a combination of these problem-constructions. Figure 1, below, portrays this operationalization strategy.
 
@@ -266,9 +266,7 @@ This approach comes with limitations. Our codebook is developed using specific A
 
 ## 4.1 The rises and falls of the Amazon as a topic in presidential speeches
 
-When, where, and how often do presidents speak about the Amazon? Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. On average, presidents mention the Amazon in 15.4% [^2] of their speeches. The frequency at which the Amazon appears across presidential speeches inside, outside, and overall varies similarly across time (see Figure 7 in appendix).
-
-[^2]: For comparison purposes the averages for other policy objects in the same corpus of speeches are: Inequality (14.7%), Criminality (17.3%), Inflation (20.9%), and Unemployment (13.8%).
+When, where, and how often do presidents speak about the Amazon? Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. On average, presidents mention the Amazon in 15.4% of their speeches. For comparison purposes the averages for other policy objects in the same corpus of speeches are: Inequality (14.7%), Criminality (17.3%), Inflation (20.9%), and Unemployment (13.8%). The frequency at which the Amazon appears across presidential speeches inside, outside, and overall varies similarly across time (see Figure 7 in appendix).
 
 ```{r Figure 2, fig.cap="Amazonian speeches in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc1 <- pop %>%
@@ -355,7 +353,7 @@ pure_types_time <- ama_mx %>%
 pure_types_time
 ```
 
-The trends identified are especially interesting considering Amazonian policies and deforestation rates portrayed in Figure 3, above. First, deforestation rates have a strong negative correlation with environmental conservation. When deforestation rates increased from 1988 to 2004, and from 2012 until 2021, environmental conservation constructions decreased. As deforestation rates decreased from 2004 to 2012, environmental conservation constructions in presidential speeches increased. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and police presence in the Amazon region which, in turn, engendered a perception of a higher risk of being caught and fined for deforestation. The shift from constructing the Amazon as an issue of economic integration to an issue of environmental conservation generates a perception that illegal deforestation will be increasingly monitored and sanctioned. Second and relatedly, deforestation rates have a positive and strong correlation with economic integration. When deforestation increased from 1988 to 2004 and from 2012 to 2021, so did economic integration. When deforestation decreased from 2004 to 2012, economic integration decreased as well. This suggests that presidents might boast policy outcomes related to economic integration as justifications for deforestation.
+The trends identified are especially interesting considering Amazonian policies and deforestation rates portrayed in Figure 3, above. First, deforestation rates have a strong negative correlation with environmental conservation. When deforestation rates increased from 1988 to 2004, and from 2012 until 2021, environmental conservation constructions decreased. As deforestation rates decreased from 2004 to 2012, environmental conservation constructions in presidential speeches increased. @capobianco2021 argues that the unprecedented decrease in deforestation we observed from 2004 to 2012 was a product of an increase in the perception of stronger federal policies and police presence in the Amazon region which, in turn, engendered a perception of a higher risk of being caught and fined for deforestation. The shift from constructing the Amazon as an issue of economic integration to an issue of environmental conservation generates a perception that illegal deforestation will be increasingly monitored and sanctioned. Second and relatedly, deforestation rates have a positive and strong correlation with economic integration. When deforestation increased from 1988 to 2004 and from 2012 to 2021, so did mentions to economic integration. When deforestation decreased from 2004 to 2012, economic integration decreased as well. This suggests that presidents might boast policy outcomes related to economic integration as justifications for deforestation.
 
 ### Mixed-type problem-constructions
 
@@ -424,7 +422,7 @@ all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
   scale_y_continuous(labels = percent_format()) +
   labs(x = "Distance from the Amazon (km)",
        y = "",
-       title = "Predicted share of each problem-construction as a function of\ndistance from the Amazon",
+       title = "Predicted probability of each problem-construction as a function of\ndistance from the Amazon",
        subtitle="Sovereignty was removed because of statistical insignificance (table 1).", 
        caption = "Curves in the plots are estimated using loess method.") +
     theme_am() +
@@ -440,7 +438,7 @@ Table 1, below, shows a statistically significant relationship between construct
 \begin{landscape}
 
 ```{r Table 1, fig.cap="Logistic Regressions Output", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
-# summary statistics
+
 md <-stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
                           model_logit_sov, digits = 10, 
                           dep.var.labels = c("Conservation", "Economic Integration",
