@@ -47,6 +47,7 @@ library(readxl)
 library(ggplot2)
 library(gridExtra)
 library(sjPlot)
+library(parameters)
 
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
@@ -253,13 +254,13 @@ knitr::include_graphics("figure1pic.png")
 \end{landscape}
 ````
 
-Second, with the codebook in hand, each one of the authors, separately, hand-coded the same set of 1007 randomly selected Amazonian statements. This amount refers to 50% of all the Amazon Statements identified. We chose to hand code half of the observations because there are several nuances in discourse in how presidents talk about the Amazon over time and as a problem.As the size of the training set should increase with the number of categories [@grimmer2022], we deemed four categories and 50% of the statements as reliable. This allows a robust validation set to verify the models. Also, automating the coding of half of the observations saved the authors over one month of work in comparison to manual coding. The intercoder agreement for hand-coded categories was 85%, on average. For each non-matching coded observation, the co-authors discussed and sorted their disagreements.
+Second, with the codebook in hand, each one of the authors, separately, hand-coded the same set of 1007 randomly selected Amazonian statements. This amount refers to 50% of all the Amazon Statements identified. We chose to hand code half of the observations because there are several nuances in discourse in how presidents talk about the Amazon over time and as a problem.As the size of the training set should increase with the number of categories [@grimmer2022], we deemed four categories and 50% of the statements as reliable. This allows a robust validation set to verify the models. Also, automating the coding of half of the observations saved the authors over one month of work in comparison to manual coding. The intercoder agreement for hand-coded categories was 85%, on average. For each non-matching coded observation, the co-authors discussed and sorted their disagreements. Most disagreements related to different interpretations of the codebook, which were subsequently clarified.
 
 Third, the hand-coded data is then randomly divided into a training set, containing 80% of the hand-coded observations (806 observations), and a validation set, containing the remaining 20% of the hand-coded data (201 observations). We chose to employ a support-vector machine (SVM) algorithm, a non-probabilistic linear classifier that classifies documents by assigning points in mapped space to maximize the gap between binary categories, to label texts [@meyer2021; @noble2006]. The SVM model is trained using the hand-coded training set and then employed to classify observations in the validation set. The trained SVM model was, on average 82%, accurate in classifying observations in the validation set before being tuned. After the SVM model is tuned, we use the model to automatically code the remaining 1007 Amazonian statements. The final dataset for analysis, excluding false positive matches, contains 1895 coded Amazonian statements.
 
 ## 3.2 Analysis and Limitations
 
-To analyze our data, we first present a series of different plots on the proportions of Amazonian statements and problem-constructions over time and by presidents. To test whether problem-constructions depend on where presidents speak, we run four separate logistic regressions. Each model takes the share of a specific problem-construction versus all other problem-constructions as their dependent variable. This means we try to predict the probability of a president constructing the Amazon as an issue of (1) environmental conservation, (2) economic integration, (3) social development, and (4) national sovereignty, separately, and in relation to the remaining three problem-constructions. Our main independent variable is the distance (in kilometers) from the state or country capital where the speech took place to Manaus (the capital of the Amazonas State and centrally located in the region). We interpret the plots and model considering multiple Amazon-related events and policies over the last 30 years, with the support of existing literature, and their correlations with different presidents and locations.
+To analyze our data, we first present a series of different plots on the proportions of Amazonian statements and problem-constructions over time and by presidents. To test whether problem-constructions depend on where presidents speak, we run four separate logistic regressions. Each model takes the share of a specific problem-construction versus all other problem-constructions as their dependent variable. This means we try to predict the probability of a president constructing the Amazon as an issue of (1) environmental conservation, (2) economic integration, (3) social development, and (4) national sovereignty, separately, and in relation to the remaining three problem-constructions. Our main independent variable is the distance (in kilometers) from the state or country capital where the speech took place to Manaus (the capital of the Amazonas State and centrally located in the region). The logic behind this relates to presidents playing multi-level games. We expect presidents to change how they construct the Amazon based on their believes of audiences' expectations.We interpret the plots and model considering multiple Amazon-related events and policies over the last 30 years, with the support of existing literature, and their correlations with different presidents and locations.
 
 This approach comes with limitations. Our codebook is developed using specific Amazon-related vocabulary. For example, a statement will be coded as economic integration if it is meaningful support for the tax-free zone of Manaus or a dam in the Amazon. However, the economy is generally a topic that presidents speak about frequently. Hence, the high incidence of economic integration in Amazonian statements can also be related to the higher importance of this problem-construction in Brazil overall Moreover, we classify statements as Amazonian based on a dictionary composed of a single lexicon stem: "amazon". We chose to do so knowing that a few speeches about the Amazon might not contain the lexicon "Amazon", for example, when the president says, "the forest" or "deforestation". Hence, we might be missing statements about Amazon that do not refer to it. However, we consider this safer as we cannot be sure that mentions of the forest or deforestation do not correspond to other biomes such as the Cerrado or the Atlantic Forest. Finally, our dataset covers only what is considered an official speech. Presidents, though, give interviews, appear in debates, talk at campaign rallies, and, more recently, post on social media. Problem-construction within presidential discourse, thus, also happens in different sites for which we do not account in this paper.
 
@@ -459,7 +460,7 @@ model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AA
 
 We convert log odds from Table 1, below, into probabilities [^2]. It shows that for each 1000Km increase, we find an increase of 52.8% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration (and social development): for an increase of 1000Km, we find a decrease of 48.5% (47.4%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally. Finally, national sovereignty problem constructions do not appear to change with distance.
 
-[^2 See table 3 in appendix for all odds ratios and confidence intervals.]
+[^2]: See table 3 in appendix for all odds ratios and confidence intervals.
 
 ````{=tex}
 \begin{landscape}
@@ -514,7 +515,7 @@ The steady increase of sovereignty problem-constructions starting in 2010 brings
 
 # Acknowledgements
 
-The authors are extremely grateful to Graziella Moraes Silva and James Hollway for their support. The authors would also like to thank Matias, Mario, Federico, Rodrigo, and Anna for valuable comments on earlier drafts of this paper.
+The authors are extremely grateful to Matias López, Graziella Moraes Silva, and James Hollway for their support. The authors would also like to thank Mario, Federico, Rodrigo, and Anna for valuable comments on earlier drafts of this paper.
 
 # Disclosure Statement
 
@@ -602,9 +603,14 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 \end{landscape}
 ````
 
-```{r Table 3, fig.cap="Table 3: Odds Ratios and Confidence Intervals", echo=FALSE, message=TRUE, warning=TRUE, paged.print=TRUE, include= TRUE}
+````{=tex}
+\begin{landscape}
+
+```{r Table 3, fig.cap="Odds Ratio and Confidence Intervals", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
 tab_model(model_logit_con2,model_logit_ei2,model_logit_sd2,model_logit_sov2)
 
 ```
 
+\end{landscape}
+````
