@@ -453,7 +453,7 @@ model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AA
 
 ```
 
-Table 1, below, shows a statistically significant relationship between constructing the Amazon as an issue of environmental conservation and distance from the Amazon. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration and social development, with statistically significant negative relationships. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally.
+Table 1, below, shows that for each 1000Km increase, we find an increase of 52.8% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration (and social development): for an increase of 1000Km, we find a decrease of 48.5% (47.4%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally.
 
 ````{=tex}
 \begin{landscape}
@@ -472,6 +472,27 @@ md <-stargazer::stargazer(model_logit_con2, model_logit_ei2, model_logit_sd2,
 
 \end{landscape}
 ````
+
+```{r model probs, include=FALSE}
+
+# Increasing thousand_km by 1, will result in a 0.11555 in logit(probability) or log(p/1-p)
+# p/(1-p)=exp.0.1155
+# p/(1-p)=1.122435
+# p= 1.12243/2.1224
+# p=52.8%
+
+logit2prob <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
+}
+
+logit2prob(coef(model_logit_con2))
+logit2prob(coef(model_logit_ei2))
+logit2prob(coef(model_logit_sd2))
+
+
+```
 
 Our models also suggest that deforestation plays an important role. Presidents are, for example, more likely to construct the Amazon as an issue of environmental conservation as deforestation decreases. Alternatively, as deforestation increases, presidents are more likely to construct the amazon as an issue of economic integration. This indicates that Brazil created a self-image of a strong climate leadership because of the good results achieved from 2004 to 2012 [@franchini2019]. In the same fashion, economic integration problem-constructions are likely deployed as a justification for increasing deforestation rates.
 
