@@ -3,7 +3,7 @@ title: How has the Brazilian Amazon been constructed as a problem:Presidential s
 author:
 - Livio Silva-Muller
 - Henrique Sposito^[Both co-authors contributed equally to the article. Names are ordered alphabetically. Livio is a PhD Candidate in Anthropology and Sociology at the Geneva Graduate Institute and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences at the Geneva Graduate Institute and affiliated to the Centre for International Environmental Studies.]
-date: 20 September 2022"
+date: 20 September 2022
 output:
   pdf_document: default
   latex_engine: xelatex
@@ -46,6 +46,8 @@ library(tibble)
 library(readxl)
 library(ggplot2)
 library(gridExtra)
+library(sjPlot)
+
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
@@ -324,7 +326,7 @@ Our subsequent analysis of pure-types and mixed-types suggests that governments 
 
 ### Pure-type problem-constructions
 
-We conceptualize four problem-constructions: sovereignty, economic integration, social development, and conservation. Figure 4, below, illustrates the share of each pure-type in time. Pure problem-constructions dominate, with an average of 56% of all Amazonian statements across time.We identify a discursive shift in problem-constructions from developing the Amazon economically, to conserving it and providing services to its citizens. Pure economic integration constructions dominated constructions from 1985 to the late 2000s. This is especially pertinent during the Cardoso administration. Brazilian presidents after Cardoso moved from employing one problem-constructions consistently to a more diverse strategy. During Lula's terms in office, constructing the Amazon purely as an issue of economic integration decreased, while constructing the Amazon issues of environmental conservation and social development increased. Conservation and social development constructions surpassed economic integration around 2010 and continued to dominate as Amazonian constructions during Rousseff's administration. Still, environmental conservation and social development problem-constructions were not as dominant in terms of frequency or periods in time in discourses as economic integration was until the early 2000s. Finally, we observe a steady increase in sovereignty constructions in the late 2000s, reaching the highest frequencies with the presidencies of Bolsonaro.As we conceptualize and operationalize sovereignty as containing internal and external perceived threats to the Amazon, we interpret this increase as not only attacks on international interference in the Amazon but also on indigenous and traditional populations.
+We conceptualize four problem-constructions: sovereignty, economic integration, social development, and conservation. Figure 4, below, illustrates the share of each pure-type in time. Pure problem-constructions dominate, with an average of 56% of all Amazonian statements across time.We identify a discursive shift in problem-constructions from developing the Amazon economically, to conserving it and providing services to its citizens. Pure economic integration constructions dominated constructions from 1985 to the late 2000s. This is especially pertinent during the Cardoso administration. Brazilian presidents after Cardoso moved from employing one problem-constructions consistently to a more diverse strategy. During Lula's terms in office, constructing the Amazon purely as an issue of economic integration decreased, while constructing the Amazon issues of environmental conservation and social development increased. Conservation and social development constructions surpassed economic integration around 2010 and continued to dominate as Amazonian constructions during Rousseff's administration. Still, environmental conservation and social development problem-constructions were not as dominant in terms of frequency or periods in time in discourses as economic integration was until the early 2000s. Finally, we observe a steady increase in sovereignty constructions in the late 2000s, reaching the highest frequencies with the presidencies of Bolsonaro. As we conceptualize and operationalize sovereignty as containing internal and external perceived threats to the Amazon, we interpret this increase as not only attacks on international interference in the Amazon but also on indigenous and traditional populations.
 
 ```{r Figure 4, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 mmt1 <- ama_mx %>%
@@ -389,6 +391,7 @@ Both Lula and Bolsonaro construct the Amazon as a multifaceted issue more freque
 The Amazon region, forests, and peoples have historically been the topic of local, national, and international debates. This implies that audiences' priorities in each setting change and consequently which policies are appropriate to solve the "Amazon issue" differ as well. As presidents physically move farther away from the Amazon, audiences might have different stakes and interests in it. While speeches inside the Amazon might focus on social development, for example, speeches in the United Nations in New York might highlight environmental conservation. To investigate the relationship between where presidents speak and how they construct the Amazon as an issue, we run four logistic regressions, one for each pure-type construction as a dependent variable. We focus on pure-type constructions as these represent most constructions and avoid ambiguity. The independent variable for all models is the distance between the state country capital to Manaus. Figure 6, below, depicts the predicted probabilities from the models (see Table 1) as functions of distance.
 
 ```{r Figure 6, fig.cap="Logistic Regression predicted values", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+
 ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
 ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
 ama_model <- filter(ama_model, location_cat != "Non Identified",
@@ -415,10 +418,12 @@ ama_model$"Environmental Conservation" = predict(model_logit_con, ama_model, typ
 ama_model$"Economic Integration" = predict(model_logit_ei, ama_model, type = "response")
 ama_model$"Social Development" = predict(model_logit_sd, ama_model, type = "response")
 ama_model$"National Sovereignty" = predict(model_logit_sov, ama_model, type = "response")
-plot_loc <- ama_model %>% gather(key=p_c, value = pred, 22:24)
+plot_loc <- ama_model %>% gather(key=p_c, value = pred, 22:25)
+
 plot_loc$p_c <-factor(plot_loc$p_c, levels = c("Economic Integration",
                                                "Environmental Conservation",
-                                               "Social Development"))
+                                               "Social Development",
+                                               "National Sovereignty"))
 all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
   geom_jitter(alpha=1, size=1) +
   geom_smooth(size = .5, se=FALSE) +
@@ -426,11 +431,10 @@ all_loc <- ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
   labs(x = "Distance from the Amazon (km)",
        y = "",
        title = "Predicted probability of each problem-construction as a function of\ndistance from the Amazon",
-       subtitle="Sovereignty was removed because of statistical insignificance (table 1).", 
        caption = "Curves in the plots are estimated using loess method.") +
     theme_am() +
   theme(legend.position = "none")+
-  facet_wrap(~p_c, ncol=3)
+  facet_wrap(~p_c, ncol=2)
 
 all_loc
 
@@ -453,7 +457,9 @@ model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AA
 
 ```
 
-Table 1, below, shows that for each 1000Km increase, we find an increase of 52.8% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration (and social development): for an increase of 1000Km, we find a decrease of 48.5% (47.4%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally.
+We convert log odds from Table 1, below, into probabilities [^2]. It shows that for each 1000Km increase, we find an increase of 52.8% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration (and social development): for an increase of 1000Km, we find a decrease of 48.5% (47.4%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally. Finally, national sovereignty problem constructions do not appear to change with distance.
+
+[^2 See table 3 in appendix for all odds ratios and confidence intervals.]
 
 ````{=tex}
 \begin{landscape}
@@ -490,7 +496,7 @@ logit2prob <- function(logit){
 logit2prob(coef(model_logit_con2))
 logit2prob(coef(model_logit_ei2))
 logit2prob(coef(model_logit_sd2))
-
+logit2prob(coef(model_logit_sov2))
 
 ```
 
@@ -595,3 +601,10 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 
 \end{landscape}
 ````
+
+```{r Table 3, fig.cap="Table 3: Odds Ratios and Confidence Intervals", echo=FALSE, message=TRUE, warning=TRUE, paged.print=TRUE, include= TRUE}
+
+tab_model(model_logit_con2,model_logit_ei2,model_logit_sd2,model_logit_sov2)
+
+```
+
