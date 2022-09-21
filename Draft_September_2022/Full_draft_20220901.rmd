@@ -31,9 +31,11 @@ abstract: Presidential speeches influence the ways we think about and act toward
 ```{=latex}
 \keywords{ discourse analysis, transnational governance, environmental policy, Brazilian Amazon, supervised learning, deforestation}
 ```
+
 ```{=latex}
 \wordcount{ 8470 (including abstract, text, references, and and footnotes)}
 ```
+
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
@@ -189,7 +191,6 @@ Although problem-construction takes place in a series of instances, we analyze t
 To investigate how the Brazilian Amazon has been constructed as a problem in presidential speeches, we create a dataset containing 6130 official presidential speeches by all Brazilian presidents since 1985. We subset the dataset by identifying Amazon-related statements within these speeches. We find that 2014 sections in these discourses refer to the Amazon at least once. We then develop a codebook grounded on Amazonian historiography to code how each of these statements constructs Amazon as a particular problem. We use this codebook to manually code a randomly selected training set of Amazon-related statements. We train a supervised machine-learning model to automatically label the remaining set of Amazonian statements. We then conduct a descriptive and inferential analysis of this data, tying patterns in the data to Amazonian policies and deforestation outcomes over time.
 
 Our empirical findings are threefold. First, we find that the frequency of the Amazon as a topic in speeches inside and outside Brazil is equally driven by domestic events (e.g. the assassination of Chico Mendes) as well as international events (e.g.Climate Summits). Second, the same government adopts a diverse range of problem-constructions over time. While economic integration dominated discourse from 1985 to the mid-2000s, environmental conservation and social development constructions steadily grew in the 2000s, briefly surpassing economic integration as more common problem-constructions from 2011 to 2016. Constructing the Amazon as an issue of sovereignty has increasingly become more pertinent after 2010. Finally, using logit models, we find that presidents are more likely to construct the Amazon as a problem of environmental conservation as presidents move farther away from the Amazon region. That is, presidents talk to the economic and social needs of the people domestically while boasting about environmental policy internationally.Empirically, we provide the first comprehensive overview of when, where, and how the Amazon is constructed as problems in presidential speeches. Conceptually, this contributes to understanding the social construction of the Amazon in discourses as a multi-level game and how these relates to policies. 
-
 
 This article proceeds as follows: first, we propose a conceptual framework to understand problem-construction in discourses. We then review Amazonian historiography literature to identify the main phases and their underlying problem-construction. In the methodology section, we explain how the framework is operationalized and present the codebook. We proceed to describe, visualize, and interpret our findings in the analysis section. Finally, we conclude with a discussion connecting our findings to past and present environmental policies.
 
@@ -459,7 +460,7 @@ model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AA
 
 ```
 
-We convert log odds from Table 1, below, into probabilities [^2]. It shows that for each 1000Km increase, we find an increase of 52.8% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away the president is from the Amazon region, the more likely the president is to construct it as an issue of environmental conservation. Second,the opposite is true for both economic integration (and social development): for an increase of 1000Km, we find a decrease of 48.5% (47.4%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally. Finally, national sovereignty problem constructions do not appear to change with distance.
+We convert log odds from Table 1, below, into probabilities and report the 95% confidence interval in the subsequent sentences [^2]. First, we find that for each 1000Km increase in distance, there is an increase between 51.92% and 53.91% in the predicted probability of constructing the Amazon as an issue of environmental preservation. That is, the farthest away presidents are from the Amazon region, the more likely they are to construct it as an issue of environmental conservation. Second,the opposite is true for economic integration (and social development): for an increase of 1000Km in distance, we find a decrease between 47.36% (45.35%) and 49.74% (49.23%), respectively. When speaking within the Amazon, presidents focus on social development and economic integration. This entails that conservation might be a desirable construction when speaking internationally about the Amazon, but not at the local level, where presidents highlight economic and social development. This multi-level game implies that presidents talk to the economic and social needs of the people domestically while boasting about environmentalism internationally. Finally, national sovereignty problem constructions do not appear to change with distance.
 
 [^2]: See table 3 in appendix for all odds ratios and confidence intervals.
 
@@ -500,6 +501,10 @@ logit2prob(coef(model_logit_ei2))
 logit2prob(coef(model_logit_sd2))
 logit2prob(coef(model_logit_sov2))
 
+odd2prob <- function(x){
+  prob <- x / (1 + x)
+  return(prob)
+}
 ```
 
 Our models also suggest that deforestation plays an important role. Presidents are, for example, more likely to construct the Amazon as an issue of environmental conservation as deforestation decreases. Alternatively, as deforestation increases, presidents are more likely to construct the amazon as an issue of economic integration. This indicates that Brazil created a self-image of a strong climate leadership because of the good results achieved from 2004 to 2012 [@franchini2019]. In the same fashion, economic integration problem-constructions are likely deployed as a justification for increasing deforestation rates.
@@ -604,14 +609,12 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 \end{landscape}
 ````
 
-````{=tex}
-\begin{landscape}
 
-```{r Table 3, fig.cap="Odds Ratio and Confidence Intervals", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+```{r Table 3, eval=FALSE, fig.cap="Odds Ratio and Confidence Intervals", message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE, results="asis"}
 
 tab_model(model_logit_con2,model_logit_ei2,model_logit_sd2,model_logit_sov2)
 
 ```
 
-\end{landscape}
-````
+```
+
