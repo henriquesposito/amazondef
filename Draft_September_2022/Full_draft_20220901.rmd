@@ -605,7 +605,8 @@ Amazon_year_out <- perc_out %>%
 grid.arrange(Amazon_year_in, Amazon_year_out, nrow=2)
 ```
 
-\newpage
+````{=tex}
+\begin{landscape}
 
 ```{r Table 3, fig.cap="Odds Ratio and Confidence Intervals", message=FALSE, warning=FALSE, echo=FALSE, paged.print=TRUE, include=TRUE}
 
@@ -613,7 +614,15 @@ modelsummary::modelsummary(list("Conservation" = model_logit_con2,
                                 "Economic Integration" = model_logit_ei2,
                                 "Social Development" = model_logit_sd2,
                                 "Sovereignty" = model_logit_sov2),
-                           title = "Odds Ratio and Confidence Intervals",
-                           exponentiate = TRUE, statistic = "conf.int")
-
+                           exponentiate = TRUE, statistic = "conf.int",
+                           coef_rename = c("thousand_km" = "1000 km",
+                                        "def_year" = "Yearly Deforestation",
+                                        "AAI" = "Average Yearly Inflation",
+                                        "election_year" = "Election Year",
+                                        "(Intercept)" = "Constant"),
+                           stars = TRUE,
+                           title = "Odds Ratio and Confidence Intervals")
 ```
+
+\end{landscape}
+````
