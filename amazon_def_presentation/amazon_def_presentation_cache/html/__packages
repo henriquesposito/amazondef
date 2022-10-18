@@ -18,3 +18,8 @@ forcats
 scales
 RColorBrewer
 nnet
+readxl
+stargazer
+kableExtra
+gridExtra
+modelsummary

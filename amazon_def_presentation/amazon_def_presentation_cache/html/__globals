@@ -1,7 +1,14 @@
 setup	::	$	library	options
-data	::	.	%>%	==	~	c	case_when	count	data.frame	date	factor	false_positives	filter	grepl	group_by	ifelse	is.na	left_join	library	location	mixed_type	mutate	n	rbind	readRDS	rename	replace	select	text	title	ungroup	unite	year
-Figure 2	.	%>%	==	aes	amazon_speech	c	count	element_blank	element_line	element_rect	element_text	filter	geom_line	geom_text	geom_vline	ggplot	group_by	labs	mutate	n	perc	percent_format	pop	scale_y_continuous	select	sum	theme	year
-Figure 3	%>%	==	$	aes	ama_mx	annotate	as.numeric	c	count	element_blank	element_line	element_rect	element_text	filter	geom_smooth	ggplot	group_by	hp	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	scale_y_continuous	sum	theme	year
-Figure 4	::	%>%	==	aes	ama_mx	c	count	element_blank	element_line	element_rect	element_text	factor	filter	geom_bar	geom_text	ggplot	group_by	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	position_stack	president	scale_fill_brewer	scale_y_continuous	sum	theme
-Figure 5	::	%>%	$	$<-	aes	Brasilia	c	Construction	data.frame	element_blank	element_line	element_rect	element_text	exp	factor	geom_bar	geom_hline	geom_text	ggplot	labs	Location	mutate	name	Percentage	position_dodge	return	round	scale_fill_brewer	scale_y_continuous	select	seq	theme	value
-refs	::
+data	::	.	%>%	==	~	$	$<-	c	case_when	count	data.frame	date	distinct	factor	false_positives	filter	grepl	group_by	ifelse	is.na	left_join	location	location_cat	mixed_type	mutate	n	rbind	read_excel	readRDS	rename	replace	select	text	title	ungroup	unite	year
+Figure 2	%>%	==	aes	ama_mx	as.numeric	count	filter	geom_smooth	ggplot	group_by	guide_legend	guides	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	scale_y_continuous	sum	theme	theme_am	year
+Figure 3	::	%>%	==	aes	ama_mx	c	count	factor	filter	geom_bar	geom_text	ggplot	group_by	labs	mutate	mx_cat	mx_cat2	n	perc	percent_format	position_stack	president	scale_fill_brewer	scale_y_continuous	sum	theme	theme_am
+Figure 4	::	!=	%>%	==	~	$	$<-	AAI	aes	ama_mx	amazon_def_year	binomial	c	facet_wrap	factor	filter	gather	geom_jitter	geom_smooth	ggplot	glm	ifelse	km_to_manaus	labs	location_cat	mutate	mx_cat	p_c	percent_format	pred	predict	scale_y_continuous	theme	theme_am
+Figure 5	
+refs	::	myBib
+regression	
+bib	ReadBib
+refs1	::	myBib
+refs2	::	myBib
+theme	element_blank	element_line	element_rect	element_text	theme
+Figure 1	.	%>%	==	aes	amazon_speech	annotate	c	count	filter	geom_line	ggplot	group_by	labs	mean	mutate	n	perc	percent_format	pop	scale_y_continuous	select	sum	theme_am	year
+Table 1	::	~	$	$<-	binomial	c	glm
