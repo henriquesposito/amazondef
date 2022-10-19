@@ -11,4 +11,4 @@ refs1
 refs2	
 theme	theme_am
 Figure 1	Amazon_year	perc1
-Table 1	ama_model	md	model_logit_con2	model_logit_ei2	model_logit_sd2	model_logit_sov2
+Table 1	ama_model	model_logit_con2	model_logit_ei2	model_logit_sd2	model_logit_sov2

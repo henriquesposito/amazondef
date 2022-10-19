@@ -23,13 +23,15 @@ output:
         </div>`
 ---
 
-# How research get's made, a look under the hood
+#How research get's made
+
+** Let's take a look under the hood**
 
 - Collaborating in R with [GitHub](https://github.com/henriquesposito/amazondef)
 
-- This presentation
+- This [presentation](https://github.com/henriquesposito/amazondef/tree/main/amazon_def_presentation)
 
-- This article
+- This [article](https://github.com/henriquesposito/amazondef/tree/main/Draft_September_2022)
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
@@ -66,21 +68,27 @@ library(RefManageR)
 myBib <- ReadBib("assets/myBib.bib")
 ```
 
+```{css, echo = F}
+.regression table {
+  font-size: 12px;     
+}
+```
+
 ---
 
 class: split two
 
-# The Brazilian Amazon, as a policy object
+##The Brazilian Amazon, as a policy object
 
 .pull-left[
 
-**We need to protect the Amazon from foreign interests.**
+*We need to protect the Amazon from foreign interests.*
 
-**We need to exploit the Amazon's natural resources.**
+*We need to exploit the Amazon's natural resources.*
 
-**We need to provide better living standards for the people in the Amazon.**
+*We need to provide better living standards for the people in the Amazon.*
 
-**We need to preserve the Amazon as a standing ecosystem.**
+*We need to preserve the Amazon as a standing ecosystem.*
 
 ]
 
@@ -94,9 +102,7 @@ class: split two middle
 
 .pull-left[
 
-## Research Question:
-
-*How the Brazilian Amazon has been constructed as a problem in transnational presidential speeches since 1985?*
+##How the Brazilian Amazon has been constructed as a problem in transnational presidential speeches since 1985?
 
 ]
 
@@ -106,7 +112,7 @@ class: split two middle
 ]
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
-# Load data
+#Load data
 pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
 pop <-  pop %>% select(-c(title, date, location))
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
@@ -118,7 +124,7 @@ location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/locati
 ama <- left_join(ama, location_km, by = "location")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
 adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
-# Missing year data
+#Missing year data
 amazon_def_year <- rbind(adr, amazon_def_year) 
 hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
@@ -126,7 +132,7 @@ hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
                            "Rousseff", "Temer", "Bolsonaro"))
 amazon_def_year$area <- amazon_def_year$def_year*1000
-# Prepare data for problem-constructions
+#Prepare data for problem-constructions
 sov <- ama %>% 
   filter(sov==1) %>% 
   count(sov, year) %>%
@@ -166,7 +172,7 @@ temp <- ei %>%
   left_join(sd) %>% 
   left_join(sov) %>% 
   replace(is.na(.), 0)
-# Get mixed types in
+#Get mixed types in
 ama_mx <-  ama %>%
   unite(mixed_type, sov:con, sep="_") %>%
   mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ "Pure National Sovereignty",
@@ -199,29 +205,28 @@ ama_mx <-  ama %>%
          election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
                                       year), 1, 0),
                   location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
-                                     location, ignore.case = TRUE), # minor coding issues to fix
+                                     location, ignore.case = TRUE), #minor coding issues to fix
                                "Non Amazonian States", location_cat),
          location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
-                               "International", location_cat), # minor coding issues to fix
+                               "International", location_cat), #minor coding issues to fix
          location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
                                             location), "Amazonian Countries", location_cat),
                                levels = c("International", "Amazonian States",
                                           "Amazonian Countries", "Brasilia",
                                           "Non Amazonian States")))
-
 ```
 
 ```{r theme, include=FALSE, warning=FALSE, message=FALSE}
-# custom ploting theme for all plots
+#custom ploting theme for all plots
 theme_am <- function(x) {
-  theme(text = element_text(size=12,  family="Times"),
+  theme(text = element_text(size=14,  family="Times"),
         panel.background = element_rect("white", "black", .5, "solid"),
                   panel.grid.major = element_line(color = "grey", size = 0.2,
                                                   linetype = "solid"),
-        axis.text = element_text(color = "black", size = 10),
-        title = element_text(color = "black", size = 10, face = "bold"),
+        axis.text = element_text(color = "black", size = 14),
+        title = element_text(color = "black", size = 18, face = "bold"),
         legend.title = element_blank(),
-        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        plot.subtitle = element_text(color = "black", size = 14, face = "plain"),
         legend.position = "none")
 }
 ```
@@ -230,17 +235,17 @@ theme_am <- function(x) {
 
 class: split two
 
-# Presidential discourses and chosen problems
+##Presidential discourses and chosen problems
 
 --
 
 .pull-left[**Presidential Discourses**
 
-- Introduce, define, and justify the public policy `r Cite(myBib, "zarefsky2004")`
+- Introduce, define, and justify public policy `r Cite(myBib, "zarefsky2004")`
 
-- Shape perception and expectation about practices; this matters for deforestation outcomes `r Cite(myBib, c("capobianco2021", "campbell2015"))`
+- Shape perception and expectation about practices; important for deforestation `r Cite(myBib, c("capobianco2021", "campbell2015"))`
 
-- What about audiences and settings?
+- Audiences and settings?
 
 ]
 
@@ -250,15 +255,15 @@ class: split two
 
 - Chosen vs. pressing problems `r Cite(myBib, "hirschman1963")`
 
-- Policies are represented as solutions for implicit problems shaped by history and culture `r Cite(myBib, "bacchi2009")`
+- Discursive problems and solutions are shaped by history and culture `r Cite(myBib, "bacchi2009")`
 
-- *Governments can choose to emphasize (or not) one or more implicit problems that a policy solves depending on which group they are in communication with...*
+- *But policymakers can choose to emphasize problems that a policy solves depending who they are in communication with...*
 
 ]
 
 ---
 
-# Amazonian (recent) histories and policies, too cohesive?
+##Amazonian (recent) histories and policies, too cohesive?
 
 --
 
@@ -288,11 +293,13 @@ class: split two
 
 ---
 
-# Data and Methods (1/2)
+##Data and Methods (1/2)
 
 - Dataset containing all 6130 official speeches by presidents since 1985
 
 - Subset of 2014 “amazonian statements”
+
+- Location
 
 - Hand-coding and supervised machine learning
 
@@ -310,7 +317,7 @@ class: split two
 
 ---
 
-# Data and Methods (2/2)
+##Data and Methods (2/2)
 
 .center[
 ![:scale 90%](assets/Images/figure1pic.png)
@@ -318,10 +325,10 @@ class: split two
 
 ---
 
-# The rises and falls of the Amazon as a topic in presidential speeches
+##The Amazon in presidential speeches
 
 .center[
-```{r Figure 1, fig.cap="Amazonian speeches in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE, fig.height=6.5, fig.width=12}
+```{r Figure 1, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE, fig.height=7, fig.width=14}
 perc1 <- pop %>%
   count(amazon_speech, year) %>%
   group_by(year) %>%
@@ -350,17 +357,17 @@ Amazon_year
 
 ---
 
-# How has the Amazon been constructed as a problem? *Pure-type problem constructions*
+##The Amazon as a *pure* problem
 
 .center[
-```{r Figure 2, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=6.5, fig.width=12}
+```{r Figure 2, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=7, fig.width=14}
 mmt1 <- ama_mx %>%
   filter(mx_cat2 == "Mixed-types") %>%
   count(mx_cat) %>%
-  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
+  mutate(perc = n / sum(n)) #averages in relation to only mixed-types
 mmt2 <- ama_mx %>%
   count(mx_cat)%>%
-  mutate(perc = n / sum(n)) # averages in relation to full sample
+  mutate(perc = n / sum(n)) #averages in relation to full sample
 pure_types_time <- ama_mx %>%
   count(mx_cat, mx_cat2, year) %>%
   group_by(year) %>%
@@ -382,10 +389,10 @@ pure_types_time
 
 ---
 
-# How has the Amazon been constructed as a problem? *Mixed-type problem constructions*
+##The Amazon as a *mixed* problem
 
 .center[
-```{r Figure 3, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=6.5, fig.width=12}
+```{r Figure 3, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=7, fig.width=14}
 mixed_types_presid <- ama_mx %>%
   count(president, mx_cat, mx_cat2) %>%
   group_by(president) %>%
@@ -410,19 +417,19 @@ mixed_types_presid
 
 ---
 
-# The Amazonian multi-level game: boasting policy outside and talking to people inside (1/2)
+##The Amazon multi-level game: talking to people inside?
 
 .center[
-```{r Figure 4, fig.cap="Logistic Regression predicted values", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=6.5, fig.width=12}
-ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") # merge
-ama_model <- dplyr::left_join(ama_model, AAI, by = "year") # merge
+```{r Figure 4, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, fig.height=7, fig.width=14}
+ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") #merge
+ama_model <- dplyr::left_join(ama_model, AAI, by = "year") #merge
 ama_model <- filter(ama_model, location_cat != "Non Identified",
                     mx_cat != "Other Mixed-types") %>%
   mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation", 1, 0),
          EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
          SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
          sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0))
-# model
+#model
 model_logit_con <- glm(con_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_ei <- glm(EI_vs_all ~ km_to_manaus + election_year + def_year + AAI,
@@ -431,7 +438,7 @@ model_logit_sd <- glm(SD_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_sov <- glm(sov_vs_all ~ km_to_manaus + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
-# Plot model
+#Plot model
 ama_model$"Environmental Conservation" = predict(model_logit_con, ama_model, type = "response")
 ama_model$"Economic Integration" = predict(model_logit_ei, ama_model, type = "response")
 ama_model$"Social Development" = predict(model_logit_sd, ama_model, type = "response")
@@ -447,7 +454,7 @@ ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
   scale_y_continuous(labels = percent_format()) +
   labs(x = "Distance from the Amazon (km)",
        y = "",
-       title = "Predicted probability of each problem-construction as a function of\ndistance from the Amazon",
+       title = "Predicted probability of each problem-construction as a function of distance from the Amazon",
        caption = "Curves in the plots are estimated using loess method.") +
     theme_am() +
   theme(legend.position = "none")+
@@ -457,9 +464,11 @@ ggplot(plot_loc, aes(x = km_to_manaus, y=pred, color=p_c)) +
 
 ---
 
-# The Amazonian multi-level game: boasting policy outside and talking to people inside (2/2)
+class: regression
 
-```{r Table 1, fig.cap="Logistic Regressions Output", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+##The Amazon multi-level game: boasting policy outside?
+
+```{r Table 1, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 ama_model$thousand_km<- ama_model$km_to_manaus/1000
 model_logit_con2 <- glm(con_vs_all ~ thousand_km + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
@@ -469,47 +478,44 @@ model_logit_sd2 <- glm(SD_vs_all ~ thousand_km + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
 model_logit_sov2 <- glm(sov_vs_all ~ thousand_km + election_year + def_year + AAI,
                    family=binomial(link = "logit"), data = ama_model)
-md <-stargazer::stargazer(model_logit_con2, model_logit_ei2, model_logit_sd2,
-                          model_logit_sov2, type = "text", digits = 6, 
+stargazer::stargazer(model_logit_con2, model_logit_ei2, model_logit_sd2,
+                          model_logit_sov2, type = "html", digits = 6, 
                           dep.var.labels = c("Conservation", "Economic Integration",
                                              "Social Development", "Sovereignty"),
                           covariate.labels = c("Distance from the Amazon in 1000s of km",
                                                "Election year", "Yearly Deforestation",
                                                "Yearly   Inflation"), no.space = TRUE,
-                          title = "Logistic Regressions Output")
-md
+                          title = "Logistic Regression Models")
 ```
 
 ---
 
-class: split two
-
-# The Brazilian Amazon, democracy, and the environment (1/2)
+class: split two middle
 
 .pull-left[
 
-## Contributions:
+##Conceptually
 
-*Conceptually*: framework that connects the social construction of the Amazon to environmental outcomes
+A framework that connects the social construction of the Amazon to environmental outcomes
 
-*Empirically*: the first comprehensive overview of the Amazon as a problem in presidential discourse
+##Empirically
+
+The first comprehensive overview of the Amazon as a problem in presidential discourse
 
 ]
 
 .pull-right[
 
-![:scale 120%](assets/Images/photolivio.png)
+![:scale 200%](assets/Images/photolivio.png)
 ]
 
 ---
 
-class: split two
-
-# The Brazilian Amazon, democracy, and the environment (2/2)
+class: split two middle
 
 .pull-left[
 
-***If presidents promote an agenda of economic and social development within Brazil that diverges from the environmental one promoted outside of Brazil, to what extent does the implemented agenda responds to domestic versus international demands?***
+##If presidents promote an agenda of economic and social development within Brazil that diverges from the environmental one promoted outside of Brazil, to what extent does the implemented agenda responds to domestic versus international demands?
 
 ]
 
@@ -527,7 +533,7 @@ class: split two
 
 ---
 
-# References
+#References
 
 ```{r refs1, echo=FALSE, results="asis"}
 RefManageR::PrintBibliography(myBib, start = 1, end = 4)
@@ -535,7 +541,7 @@ RefManageR::PrintBibliography(myBib, start = 1, end = 4)
 
 ---
 
-# References
+#References
 
 ```{r refs2, echo=FALSE, results="asis"}
 RefManageR::PrintBibliography(myBib, start = 5)

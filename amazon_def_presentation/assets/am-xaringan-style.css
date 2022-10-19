@@ -55,7 +55,7 @@ color: blue;
 }
 
 .green {
-color: #3B7A57;
+color: #006600;
 }
 
 .grViz {
@@ -202,7 +202,7 @@ div.remark-slide-container p {
 .remark-slide-number {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
-	color: #522D80;
+	color: #006600;
 	position: inherit;
 }
 
@@ -263,7 +263,7 @@ To specify the margin of the first title h1
   margin-bottom: 10px;
 }
 .remark-slide-content > h2:first-of-type {
-  color: #535353;
+  color: #006600;
   margin-top: 5px;
   margin-bottom: 10px;
 }
