@@ -21,7 +21,8 @@ header-includes:
    - \usepackage[utf8]{inputenc}
    - |
     \providecommand{\keywords}[1]{\textbf{Keywords:} #1}
-    \providecommand{\wordcount}[1]{\text{Word Count:}#1} 
+    \providecommand{\wordcount}[1]{\text{Word Count:}#1}
+    \providecommand{\wv}[1]{\textbf{This is a working version, please do not share or cite without the authors' permission.} #1}
 always_allow_html: TRUE
 bibliography: references.bib
 csl: chicago.csl
@@ -31,9 +32,15 @@ abstract: Presidential speeches can influence the ways people think and act towa
 ```{=latex}
 \keywords{ discourse analysis, transnational governance, environmental policy, Brazilian Amazon, supervised learning, deforestation}
 ```
+
 ```{=latex}
-\wordcount{ 8299 (including abstract, text, references, and and footnotes)}
+\wordcount{ 8299 (including abstract, text, references, and footnotes)}
 ```
+
+```{=latex}
+\wv{ }
+```
+
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
