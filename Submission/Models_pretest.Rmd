@@ -1,0 +1,281 @@
+---
+title: "Models pretest"
+author: "Henrique Sposito and Livio Silva-Muller"
+date: "2022-12-06"
+output:
+  pdf_document: default
+  html_document: default
+  fig_caption: yes
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(RColorBrewer)
+library(stargazer)
+library(kableExtra)
+library(tibble)
+library(readxl)
+library(ggplot2)
+library(gridExtra)
+library(modelsummary)
+library(plm)
+Sys.setlocale("LC_ALL", "C")
+options(stringsAsFactors = FALSE, scipen = 999)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+# Load data
+pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
+ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
+ama <- ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
+AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
+location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/location_km.xlsx") %>%
+  select(-location_cat) %>%
+  distinct()
+ama <- left_join(ama, location_km, by = "location")
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
+adr <- data.frame(year = c(1985, 1986, 1987), def_year = c(21.050, 21.050, 21.050))
+# Missing year data
+amazon_def_year <- rbind(adr, amazon_def_year) 
+hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
+                end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
+                label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
+                presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
+                           "Rousseff", "Temer", "Bolsonaro"))
+amazon_def_year$area <- amazon_def_year$def_year*1000
+# Prepare data for problem-constructions
+sov <- ama %>% 
+  filter(sov==1) %>% 
+  count(sov, year) %>%
+  group_by(year) %>%
+  select(-c(sov))%>%
+  rename (sov = n)
+ei <- ama %>% 
+  filter(ei==1) %>% 
+  count(ei, year) %>%
+  group_by(year) %>%
+  select(-c(ei))%>%
+  rename (ei = n) %>%
+  ungroup() %>%
+  tibble::add_row(year = 2017, ei = 0) %>%
+  tibble::add_row(year = 2018, ei = 0)
+sd <- ama %>% 
+  filter(sd==1) %>% 
+  count(sd, year) %>%
+  group_by(year) %>%
+  select(-c(sd))%>%
+  rename (sd = n)
+con <- ama %>% 
+  filter(con==1) %>% 
+  count(con, year) %>%
+  group_by(year) %>%
+  select(-c(con))%>%
+  rename (con = n)
+other <- ama %>% 
+  filter(other==1) %>% 
+  count(other, year) %>%
+  group_by(year) %>%
+  select(-c(other))%>%
+  rename (other = n)
+temp <- ei %>% 
+  left_join(other) %>% 
+  left_join(con) %>% 
+  left_join(sd) %>% 
+  left_join(sov) %>% 
+  replace(is.na(.), 0)
+# Get mixed types in
+ama_mx <-  ama %>%
+  unite(mixed_type, sov:con, sep="_") %>%
+  mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ "Pure National Sovereignty",
+                                   mixed_type == '0_1_0_0' ~ "Pure Economic Integration", 
+                                   mixed_type == '0_0_1_0' ~ "Pure Social Development",
+                                   mixed_type == '0_0_0_1' ~ "Pure Environmental Conservation",
+                                   mixed_type == '0_0_0_0' ~ "Other",
+                                   mixed_type == '0_1_0_1' ~ "Economic Conservation",
+                                   mixed_type == '0_1_1_0' ~ "Social Economic",
+                                   mixed_type == '1_0_0_1' ~ "Sovereign Conservation",
+                                   mixed_type == '0_1_1_1' ~ "Economic, Social,\nand Conservation",
+                                   mixed_type == '1_1_0_0' ~ "Economic Sovereignty",
+                                   mixed_type == '0_0_1_1' ~ "Social Conservation",
+                                   grepl("1_0_1_0|1_0_1_0|1_0_1_1|1_1_0_1|1_1_1_0|1_1_1_1",
+                                         mixed_type) ~ "Other Mixed-types"),
+         levels = c("Pure Economic Integration", "Pure Environmental Conservation",
+                    "Pure Social Development",
+                    "Pure National Sovereignty", "Other", "Economic Conservation", 
+                    "Social Economic", "Sovereign Conservation",
+                    "Economic, Social,\nand Conservation",
+                    "Economic Sovereignty", "Social Conservation", "Other Mixed-types")),
+         mx_cat2 = case_when(grepl("Pure Economic Integration|Pure Environmental Conservation|
+                                   |Pure Social Development|Pure National Sovereignty",
+                                   mx_cat) ~ "Pure-types",
+                             grepl("^Other$", mx_cat) ~ "Other",
+                             grepl("Economic Conservation|Social Economic|Sovereign Conservation|
+                                   |Economic, Social,\nand Conservation|Economic Sovereignty|
+                                   |Social Conservation|Other Mixed-types",
+                                   mx_cat) ~ "Mixed-types"),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0),
+                  location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+                                     location, ignore.case = TRUE), # minor coding issues to fix
+                               "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat), # minor coding issues to fix
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                            location), "Amazonian Countries",
+                                      location_cat),
+                               levels = c("Amazonian States",
+                                          "Amazonian Countries",
+                                          "International", "Brasilia",
+                                          "Non Amazonian States")))
+
+```
+
+````{=tex}
+\begin{landscape}
+
+```{r models, fig.cap="Logistic Regressions", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+ama_model <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") %>%
+dplyr::left_join(AAI, by = "year") %>%
+filter(location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>%
+  mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation", 1, 0),
+         EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
+         SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
+         sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0))
+
+ama_model2 <- dplyr::select(pop, -text) %>%
+  dplyr::left_join(amazon_def_year, by = "year") %>%
+  dplyr::left_join(AAI, by = "year") %>%
+  filter(location_cat != "Non Identified") %>%
+  mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul", location, ignore.case = TRUE), "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat),
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                            location), "Amazonian Countries",
+                                      location_cat),
+                               levels = c("Amazonian States",
+                                          "Amazonian Countries",
+                                          "International", "Brasilia",
+                                          "Non Amazonian States")),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0))
+
+# model
+model_logit_con <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, family=binomial(link = "logit"),
+                       data = ama_model)
+model_logit_ei <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + party, family=binomial(link = "logit"),
+                      data = ama_model)
+model_logit_sd <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + party,
+                      family=binomial(link = "logit"), data = ama_model)
+model_logit_sov <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party,
+                       family=binomial(link = "logit"), data = ama_model)
+model_logit_all <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party,
+                       family=binomial(link = "logit"), data = ama_model2)
+
+stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
+                     model_logit_sov, model_logit_all, digits = 6,
+                     no.space = TRUE, title = "Logistic Regressions")
+```
+
+\end{landscape}
+````
+
+````{=tex}
+\begin{landscape}
+
+```{r models fe, fig.cap="Fixed-effects Regressions", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+# model fe
+model_logit_con_fe <- plm(con_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, data = ama_model,
+                         model = "within", index = "year")
+model_logit_ei_fe <- plm(EI_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, data = ama_model,
+                         model = "within", index = "year")
+model_logit_sd_fe <- plm(SD_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, data = ama_model,
+                         model = "within", index = "year")
+model_logit_sov_fe <- plm(sov_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, data = ama_model,
+                         model = "within", index = "year")
+model_logit_all_fe <- plm(amazon_speech ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, data = ama_model2,
+                         model = "within", index = "year")
+
+stargazer::stargazer(model_logit_con_fe, model_logit_ei_fe, model_logit_sd_fe,
+                     model_logit_sov_fe, model_logit_all_fe, digits = 6,
+                     no.space = TRUE, title = "Fixed-effects Regressions")
+```
+
+\end{landscape}
+````
+
+````{=tex}
+\begin{landscape}
+
+```{r models lagged, fig.cap="Logistic Regressions Output Lagged Deforestation", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
+amazon_def_year$year <- amazon_def_year$year + 1
+adr <- data.frame(year = c(1985, 1986, 1987, 1988),
+def_year = c(21.050, 21.050, 21.050, 21.050))
+# Missing year data
+amazon_def_year <- rbind(adr, amazon_def_year) 
+
+ama_model_lag <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") %>%
+dplyr::left_join(AAI, by = "year") %>%
+filter(location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>%
+  mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation", 1, 0),
+         EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
+         SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
+         sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0))
+
+ama_model2_lag <- dplyr::select(pop, -text) %>%
+  dplyr::left_join(amazon_def_year, by = "year") %>%
+  dplyr::left_join(AAI, by = "year") %>%
+  filter(location_cat != "Non Identified") %>%
+  dplyr::mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul", location, ignore.case = TRUE), "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat),
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                            location), "Amazonian Countries",
+                                      location_cat),
+                               levels = c("Amazonian States",
+                                          "Amazonian Countries",
+                                          "International", "Brasilia",
+                                          "Non Amazonian States")),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0))
+
+# model
+model_logit_con_lag <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party, family=binomial(link = "logit"),
+                       data = ama_model_lag)
+model_logit_ei_lag <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + party, family=binomial(link = "logit"),
+                      data = ama_model_lag)
+model_logit_sd_lag <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + party,
+                      family=binomial(link = "logit"), data = ama_model_lag)
+model_logit_sov_lag <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party,
+                       family=binomial(link = "logit"), data = ama_model_lag)
+model_logit_all_lag <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + party,
+                       family=binomial(link = "logit"), data = ama_model2_lag)
+
+stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag,
+                     model_logit_sov_lag, model_logit_all_lag, digits = 6,
+                     no.space = TRUE, title = "Logistic Regressions with Lagged Year")
+```
+
+\end{landscape}
+````
