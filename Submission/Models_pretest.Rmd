@@ -279,3 +279,50 @@ stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag
 
 \end{landscape}
 ````
+
+````{=tex}
+\begin{landscape}
+
+```{r models lagged ideology, fig.cap="Logistic Regressions Output Lagged Deforestation with Ideology", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+#table(ama_model$president, ama_model$party)
+
+ideology_vdem <- readRDS("~/Documents/GitHub/amazondef/Submission/V-Dem-CPD-Party-V2.rds") %>% 
+dplyr::filter(country_name == "Brazil") %>%
+dplyr::select(v2pashname, v2xpa_antiplural, v2xpa_popul, v2pariglef) %>%
+tidyr::drop_na() %>%
+dplyr::rename(party = v2pashname) %>%
+group_by(party) %>%
+summarise(anti_pluralism = mean(v2xpa_antiplural),
+populism = mean(v2xpa_popul),
+left_right = mean(v2pariglef))
+
+ama_model_lag <- dplyr::left_join(ama_model_lag, ideology_vdem)
+
+ama_model2_lag <- dplyr::left_join(ama_model2_lag, ideology_vdem)
+
+# model
+model_logit_con_lag <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + populism + anti_pluralism + left_right, family=binomial(link = "logit"),
+                       data = ama_model_lag)
+model_logit_ei_lag <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + populism + anti_pluralism + left_right, family=binomial(link = "logit"),
+                      data = ama_model_lag)
+model_logit_sd_lag <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+                        def_year + AAI + populism + anti_pluralism + left_right,
+                      family=binomial(link = "logit"), data = ama_model_lag)
+model_logit_sov_lag <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + populism + anti_pluralism + left_right,
+                       family=binomial(link = "logit"), data = ama_model_lag)
+model_logit_all_lag <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+                         def_year + AAI + populism + anti_pluralism + left_right,
+                       family=binomial(link = "logit"), data = ama_model2_lag)
+
+stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag,
+                     model_logit_sov_lag, model_logit_all_lag, digits = 6,
+                     no.space = TRUE,
+                     title = "Logistic Regressions with Lagged Year and Party Ideology")
+```
+
+\end{landscape}
+````
