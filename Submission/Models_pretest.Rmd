@@ -3,8 +3,8 @@ title: "Models pretest"
 author: "Henrique Sposito and Livio Silva-Muller"
 date: "2022-12-06"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   fig_caption: yes
 ---
 
@@ -164,24 +164,24 @@ ama_model2 <- dplyr::select(pop, -text) %>%
                                       year), 1, 0))
 
 # model
-model_logit_con <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+a1 <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, family=binomial(link = "logit"),
                        data = ama_model)
-model_logit_ei <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+a2 <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + party, family=binomial(link = "logit"),
                       data = ama_model)
-model_logit_sd <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+a3 <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + party,
                       family=binomial(link = "logit"), data = ama_model)
-model_logit_sov <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+a4 <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party,
                        family=binomial(link = "logit"), data = ama_model)
-model_logit_all <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+a5 <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party,
                        family=binomial(link = "logit"), data = ama_model2)
 
-stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
-                     model_logit_sov, model_logit_all, digits = 6,
+stargazer::stargazer(a1, a2, a3,
+                     a4, a5, digits = 6,
                      no.space = TRUE, title = "Logistic Regressions")
 ```
 
@@ -194,24 +194,24 @@ stargazer::stargazer(model_logit_con, model_logit_ei, model_logit_sd,
 ```{r models fe, fig.cap="Fixed-effects Regressions", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
 # model fe
-model_logit_con_fe <- plm(con_vs_all ~ as.factor(location_cat) + election_year +
+b1 <- plm(con_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, data = ama_model,
                          model = "within", index = "year")
-model_logit_ei_fe <- plm(EI_vs_all ~ as.factor(location_cat) + election_year +
+b2 <- plm(EI_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, data = ama_model,
                          model = "within", index = "year")
-model_logit_sd_fe <- plm(SD_vs_all ~ as.factor(location_cat) + election_year +
+b3 <- plm(SD_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, data = ama_model,
                          model = "within", index = "year")
-model_logit_sov_fe <- plm(sov_vs_all ~ as.factor(location_cat) + election_year +
+b4 <- plm(sov_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, data = ama_model,
                          model = "within", index = "year")
-model_logit_all_fe <- plm(amazon_speech ~ as.factor(location_cat) + election_year +
+b5 <- plm(amazon_speech ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, data = ama_model2,
                          model = "within", index = "year")
 
-stargazer::stargazer(model_logit_con_fe, model_logit_ei_fe, model_logit_sd_fe,
-                     model_logit_sov_fe, model_logit_all_fe, digits = 6,
+stargazer::stargazer(b1, b2, b3,
+                     b4, b5, digits = 6,
                      no.space = TRUE, title = "Fixed-effects Regressions")
 ```
 
@@ -256,24 +256,24 @@ ama_model2_lag <- dplyr::select(pop, -text) %>%
                                       year), 1, 0))
 
 # model
-model_logit_con_lag <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+c1 <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party, family=binomial(link = "logit"),
                        data = ama_model_lag)
-model_logit_ei_lag <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+c2 <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + party, family=binomial(link = "logit"),
                       data = ama_model_lag)
-model_logit_sd_lag <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+c3 <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + party,
                       family=binomial(link = "logit"), data = ama_model_lag)
-model_logit_sov_lag <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+c4 <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party,
                        family=binomial(link = "logit"), data = ama_model_lag)
-model_logit_all_lag <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+c5 <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
                          def_year + AAI + party,
                        family=binomial(link = "logit"), data = ama_model2_lag)
 
-stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag,
-                     model_logit_sov_lag, model_logit_all_lag, digits = 6,
+stargazer::stargazer(c1, c2, c3,
+                     c4, c5, digits = 6,
                      no.space = TRUE, title = "Logistic Regressions with Lagged Year")
 ```
 
@@ -302,24 +302,24 @@ ama_model_lag <- dplyr::left_join(ama_model_lag, ideology_vdem)
 ama_model2_lag <- dplyr::left_join(ama_model2_lag, ideology_vdem)
 
 # model
-model_logit_con_lag <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
+c1 <- glm(con_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + populism + anti_pluralism + left_right, family=binomial(link = "logit"),
                        data = ama_model_lag)
-model_logit_ei_lag <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
+c2 <- glm(EI_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + populism + anti_pluralism + left_right, family=binomial(link = "logit"),
                       data = ama_model_lag)
-model_logit_sd_lag <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
+c3 <- glm(SD_vs_all ~ as.factor(location_cat) + election_year +
                         def_year + AAI + populism + anti_pluralism + left_right,
                       family=binomial(link = "logit"), data = ama_model_lag)
-model_logit_sov_lag <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
+c4 <- glm(sov_vs_all ~ as.factor(location_cat) + election_year +
                          def_year + AAI + populism + anti_pluralism + left_right,
                        family=binomial(link = "logit"), data = ama_model_lag)
-model_logit_all_lag <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
+c5 <- glm(amazon_speech ~ as.factor(location_cat) + election_year +
                          def_year + AAI + populism + anti_pluralism + left_right,
                        family=binomial(link = "logit"), data = ama_model2_lag)
 
-stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag,
-                     model_logit_sov_lag, model_logit_all_lag, digits = 6,
+stargazer::stargazer(c1, c2, c3,
+                     c4, c5, digits = 6,
                      no.space = TRUE,
                      title = "Logistic Regressions with Lagged Year and Party Ideology")
 ```
@@ -332,24 +332,24 @@ stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag
 
 ```{r models president fixed effect, fig.cap="Logistic Regressions Output with President fixed effecr", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
-model_logit_con_pfe <- plm(con_vs_all ~ as.factor(location_cat) + 
+d1 <- plm(con_vs_all ~ as.factor(location_cat) + 
                          def_year + AAI + election_year, data = ama_model_lag,
                          model = "within", index = "president")
-model_logit_ei_pfe <- plm(EI_vs_all ~ as.factor(location_cat) +
+d2 <- plm(EI_vs_all ~ as.factor(location_cat) +
                          def_year + AAI + election_year, data = ama_model_lag,
                          model = "within", index = "president")
-model_logit_sd_pfe <- plm(SD_vs_all ~ as.factor(location_cat) +
+d3 <- plm(SD_vs_all ~ as.factor(location_cat) +
                          def_year + AAI + election_year, data = ama_model_lag,
                          model = "within", index = "president")
-model_logit_sov_pfe <- plm(sov_vs_all ~ as.factor(location_cat) +
+d4 <- plm(sov_vs_all ~ as.factor(location_cat) +
                          def_year + AAI + election_year, data = ama_model_lag,
                          model = "within", index = "president")
-model_logit_all_pfe <- plm(amazon_speech ~ as.factor(location_cat) +
+d5 <- plm(amazon_speech ~ as.factor(location_cat) +
                          def_year + AAI + election_year, data = ama_model2_lag,
                          model = "within", index = "president")
                          
-stargazer::stargazer(model_logit_con_pfe, model_logit_ei_pfe, model_logit_sd_pfe,
-                     model_logit_sov_pfe, model_logit_all_pfe, digits = 6,
+stargazer::stargazer(d1, d2, d3,
+                     d4, d5, digits = 6,
                      no.space = TRUE,
                      title = "Logistic Regressions with president fixed-effects")
                          
