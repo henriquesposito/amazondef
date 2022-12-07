@@ -3,8 +3,8 @@ title: "Models pretest"
 author: "Henrique Sposito and Livio Silva-Muller"
 date: "2022-12-06"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   fig_caption: yes
 ---
 
@@ -326,3 +326,36 @@ stargazer::stargazer(model_logit_con_lag, model_logit_ei_lag, model_logit_sd_lag
 
 \end{landscape}
 ````
+
+````{=tex}
+\begin{landscape}
+
+```{r models president fixed effect, fig.cap="Logistic Regressions Output with President fixed effecr", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+model_logit_con_pfe <- plm(con_vs_all ~ as.factor(location_cat) + 
+                         def_year + AAI + election_year, data = ama_model_lag,
+                         model = "within", index = "president")
+model_logit_ei_pfe <- plm(EI_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year, data = ama_model_lag,
+                         model = "within", index = "president")
+model_logit_sd_pfe <- plm(SD_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year, data = ama_model_lag,
+                         model = "within", index = "president")
+model_logit_sov_pfe <- plm(sov_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year, data = ama_model_lag,
+                         model = "within", index = "president")
+model_logit_all_pfe <- plm(amazon_speech ~ as.factor(location_cat) +
+                         def_year + AAI + election_year, data = ama_model2_lag,
+                         model = "within", index = "president")
+                         
+stargazer::stargazer(model_logit_con_pfe, model_logit_ei_pfe, model_logit_sd_pfe,
+                     model_logit_sov_pfe, model_logit_all_pfe, digits = 6,
+                     no.space = TRUE,
+                     title = "Logistic Regressions with president fixed-effects")
+                         
+```
+
+\end{landscape}
+````
+
+
