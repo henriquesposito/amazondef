@@ -349,10 +349,11 @@ d5 <- plm(amazon_speech ~ as.factor(location_cat) +
                          model = "within", index = "president")
                          
 stargazer::stargazer(d1, d2, d3,
-                     d4, d5, digits = 6,
+                     d4, d5, digits = 3,
                      no.space = TRUE,
-                     title = "Logistic Regressions with president fixed-effects")
-                         
+                     title = "Logistic Regressions with president fixed-effects",
+                      column.sep.width = ".001pt",
+                      font.size="small")
 ```
 
 \end{landscape}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  7 DEC 2022 14:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  7 DEC 2022 14:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -572,7 +572,10 @@ Overfull \hbox (212.98848pt too wide) in paragraph at lines 147--176
 
 
 ]
-Overfull \hbox (226.68294pt too wide) in paragraph at lines 290--321
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 291.
+
+Overfull \hbox (74.13838pt too wide) in paragraph at lines 291--322
  [][] 
  []
 
@@ -587,18 +590,18 @@ Package rerunfilecheck Info: File `Models_pretest.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 12179 strings out of 477035
- 194087 string characters out of 5826562
+ 12192 strings out of 477035
+ 194221 string characters out of 5826562
  549365 words of memory out of 5000000
- 33087 multiletter control sequences out of 15000+600000
- 506923 words of font info for 64 fonts, out of 8000000 for 9000
+ 33095 multiletter control sequences out of 15000+600000
+ 518197 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,11n,77p,319b,463s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on Models_pretest.pdf (6 pages, 134244 bytes).
+{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy9.pfb>
+Output written on Models_pretest.pdf (6 pages, 205068 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
- 59 compressed objects within 1 object stream
+ 114 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
  12 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
