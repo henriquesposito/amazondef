@@ -117,19 +117,23 @@ ama_mx <-  ama %>%
                                    |Economic, Social,\nand Conservation|Economic Sovereignty|
                                    |Social Conservation|Other Mixed-types",
                                    mx_cat) ~ "Mixed-types"),
-         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+        election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
                                       year), 1, 0),
-         peak_year = ifelse(grepl("1989|1992|2009|2015|2019", year), 1, 0),
-                  location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+        peak_year = ifelse(grepl("1989|1992|2009|2015|2019", year), 1, 0),
+        py_1989=ifelse(grepl("1989", year), 1, 0),
+        py_1992=ifelse(grepl("1992", year), 1, 0),
+        py_2009=ifelse(grepl("2009", year), 1, 0),
+        py_2015=ifelse(grepl("2015", year), 1, 0),
+        py_2019=ifelse(grepl("2019", year), 1, 0),
+        location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
                                      location, ignore.case = TRUE), # minor coding issues to fix
                                "Non Amazonian States", location_cat),
          location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
                                "International", location_cat), # minor coding issues to fix
          location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
-                                            location), "Amazonian Countries",
+                                            location), "Amazonian States",
                                       location_cat),
                                levels = c("Amazonian States",
-                                          "Amazonian Countries",
                                           "International", "Brasilia",
                                           "Non Amazonian States")))
 
@@ -254,6 +258,41 @@ c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
                          
 stargazer::stargazer(c1, c2, c3, c4, digits = 3, no.space = TRUE,
                      title = "Fixed-effects logistic regressions by president with controls",
+                      column.sep.width = ".001pt",
+                      font.size="small",
+                      dep.var.labels = c("Environmental Conservation", "Economic Integration",
+                                             "Social Development", "National Sovereignty"),
+                          covariate.labels = c("Speech outside Brazil", "Speech in Brasilia", "Speech in Non-amazonian Brazilian States", "Yearly Deforestation", "Yearly Inflation", "Election Year", "Peak Year"))
+```
+
+\end{landscape}
+````
+
+````{=tex}
+\begin{landscape}
+
+```{r models president fixed effect w/ py, fig.cap="Fixed-effects logistic regressions by presidents with controls", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+# model 3
+c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
+                         def_year + AAI + election_year + py_1989+ py_1992+ py_2009+ py_2015+ py_2019,
+                         data = ama_model_lag,
+                         model = "within", index = "president")
+c2 <- plm(EI_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year + py_1989+py_1992+py_2009+py_2015+py_2019,
+                         data = ama_model_lag,
+                         model = "within", index = "president")
+c3 <- plm(SD_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year + py_1989+py_1992+py_2009+py_2015+py_2019,
+                         data = ama_model_lag,
+                         model = "within", index = "president")
+c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
+                         def_year + AAI + election_year + py_1989+py_1992+py_2009+py_2015+py_2019,
+                         data = ama_model_lag,
+                         model = "within", index = "president")
+                         
+stargazer::stargazer(c1, c2, c3, c4, digits = 3, no.space = TRUE,
+                     title = "Fixed-effects logistic regressions by president with controls and separate peak years",
                       column.sep.width = ".001pt",
                       font.size="small")
 ```
