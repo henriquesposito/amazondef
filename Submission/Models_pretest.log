@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  8 DEC 2022 10:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  8 DEC 2022 11:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -559,7 +559,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 176.
+(Font)              <9> on input line 180.
 [4
 
 
@@ -576,13 +576,13 @@ Package rerunfilecheck Info: File `Models_pretest.out' has not changed.
 Here is how much of TeX's memory you used:
  12190 strings out of 477035
  194208 string characters out of 5826562
- 545401 words of memory out of 5000000
+ 546401 words of memory out of 5000000
  33095 multiletter control sequences out of 15000+600000
  518197 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,11n,77p,319b,463s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy9.pfb>
-Output written on Models_pretest.pdf (5 pages, 186577 bytes).
+Output written on Models_pretest.pdf (5 pages, 186572 bytes).
 PDF statistics:
  104 PDF objects out of 1000 (max. 8388607)
  70 compressed objects within 1 object stream

@@ -131,11 +131,13 @@ ama_mx <-  ama %>%
          location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
                                "International", location_cat), # minor coding issues to fix
          location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
-                                            location), "Amazonian States",
+                                            location), "Amazonian Countries",
                                       location_cat),
                                levels = c("Amazonian States",
-                                          "International", "Brasilia",
-                                          "Non Amazonian States")))
+                                          "Non Amazonian States",
+                                          "Brasilia",
+                                          "Amazonian Countries",
+                                          "International")))
 
 ama_model_lag <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") %>%
 dplyr::left_join(AAI, by = "year") %>%
@@ -262,7 +264,7 @@ stargazer::stargazer(c1, c2, c3, c4, digits = 3, no.space = TRUE,
                       font.size="small",
                       dep.var.labels = c("Environmental Conservation", "Economic Integration",
                                              "Social Development", "National Sovereignty"),
-                          covariate.labels = c("Speech outside Brazil", "Speech in Brasilia", "Speech in Non-amazonian Brazilian States", "Yearly Deforestation", "Yearly Inflation", "Election Year", "Peak Year"))
+                          covariate.labels = c("Non Amazonian States", " Brasilia", "Amazonian Countries", "International", "Yearly Deforestation", "Yearly Inflation", "Election Year", "Peak Year"))
 ```
 
 \end{landscape}
