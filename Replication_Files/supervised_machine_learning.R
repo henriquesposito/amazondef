@@ -1,11 +1,22 @@
-# Supervised Machine Learning Model - SVM
+# Supervised Machine Learning Model using SVM (support vector machine) algorithm
+
+# Load packages
+library(dplyr)
+library(stringr)
+library(glmnet)
+library(tm)
+library(yardstick)
+library(lsa)
+library(e1071)
+library(RTextTools)
+library(SnowballC)
 
 # Load final hand coded data
 final_hand_coded_data <- readRDS("~/Documents/GitHub/amazondef/Replication Files/final_hand_coded_data.Rds")
 # Load final labeling data
 final_unlabeled_data <- readRDS("~/Documents/GitHub/amazondef/Replication Files/final_unlabeled_data.Rds")
 
-# Split Data into Training and Testing in R 
+# Split Data into training and validations sets
 sample_size = floor(0.8*nrow(final_hand_coded_data))
 set.seed(1201)
 picked <- sample(seq_len(nrow(final_hand_coded_data)), size = sample_size)
@@ -14,10 +25,15 @@ vvalid = final_hand_coded_data[-picked,]
 
 # Create matrixes
 train_matrix <- create_matrix(ttrain["AM2"], weighting = weightTfIdf)
-valid_matrix <- create_matrix(vvalid["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
-score_matrix <- create_matrix(final_unlabeled_data["AM2"], originalMatrix = train_matrix, weighting = weightTfIdf)
+valid_matrix <- create_matrix(vvalid["AM2"], originalMatrix = train_matrix,
+                              weighting = weightTfIdf)
+train_matrix_total <- create_matrix(final_hand_coded_data["AM2"],
+                                    weighting = weightTfIdf)
+score_matrix <- create_matrix(final_unlabeled_data["AM2"],
+                              originalMatrix = train_matrix_total,
+                              weighting = weightTfIdf)
 
-# Model fp
+# Model false positives
 tune_fp <- tune(svm, train_matrix, as.numeric(ttrain$false_positives),
                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
@@ -28,24 +44,29 @@ tune_fp <- tune(svm, train_matrix, as.numeric(ttrain$false_positives),
                                     100000, 500000, 1000000)))
 tune_fp$best.model
 # match best parameters and validate
-model_fp <- svm(x = train_matrix, y = as.numeric(ttrain$false_positives),
+model_fp <- svm(x = train_matrix,
+                y = as.numeric(ttrain$false_positives),
                 type = "eps-regression", kernel = "radial",
                 cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
 # predict validation labels
 pred_fp_v <- predict(model_fp, valid_matrix)
-pred_fp_v <- ifelse(pred_fp_v > 0.4, 1, 0)
+pred_fp_v <- ifelse(pred_fp_v > 0.45, 1, 0)
 # get metrics
 table(pred = pred_fp_v, true = vvalid$false_positives)
 yardstick::accuracy(table(true = vvalid$false_positives, pred = pred_fp_v))
-roc_svm_fp <- data.frame(cbind(tpred = as.numeric(pred_fp_v), label = as.numeric(vvalid$false_positives)))
-WVPlots::ROCPlot(roc_svm_fp, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for fp")
+#roc_svm_fp <- data.frame(cbind(tpred = as.numeric(pred_fp_v), label = as.numeric(vvalid$false_positives)))
+#WVPlots::ROCPlot(roc_svm_fp, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for fp")
 # predict labels
-pred_fp <- predict(model_fp, score_matrix)
+model_fp_total <- svm(x = train_matrix_total,
+                      y = as.numeric(final_hand_coded_data$false_positives),
+                      type = "eps-regression", kernel = "radial",
+                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+pred_fp <- predict(model_fp_total, score_matrix)
 # add to dataset
-final_unlabeled_data$false_positives <- pred_fp # left as a probability so we can set the threshold later
+final_unlabeled_data$false_positives <- pred_fp
+# left as a probability so we can set the threshold later
 
-# Model sov
-# tune
+# Model sovereignty
 tune_sov <- tune(svm, train_matrix, as.numeric(ttrain$sov),
                  ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
                                      0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
@@ -61,18 +82,23 @@ model_sov <- svm(x = train_matrix, y = as.numeric(ttrain$sov),
                  cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
 # predict validation labels
 pred_sov_v <- predict(model_sov, valid_matrix)
-pred_sov_v <- ifelse(pred_sov_v > 0.4, 1, 0)
+pred_sov_v <- ifelse(pred_sov_v > 0.45, 1, 0)
 # get metrics
 table(pred = pred_sov_v, true = vvalid$sov)
 yardstick::accuracy(table(true = vvalid$sov, pred = pred_sov_v))
-roc_svm_sov <- data.frame(cbind(tpred = as.numeric(pred_sov_v), label = as.numeric(vvalid$sov)))
-WVPlots::ROCPlot(roc_svm_sov, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for sov")
+# roc_svm_sov <- data.frame(cbind(tpred = as.numeric(pred_sov_v), label = as.numeric(vvalid$sov)))
+# WVPlots::ROCPlot(roc_svm_sov, 'tpred', 'label', 1,
+#                  title = "ROC Validation Predictions SVM model for sov")
 # predict labels
-pred_sov <- predict(model_sov, score_matrix)
+model_sov_total <- svm(x = train_matrix_total,
+                      y = as.numeric(final_hand_coded_data$sov),
+                      type = "eps-regression", kernel = "radial",
+                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+pred_sov <- predict(model_sov_total, score_matrix)
 # add to dataset
 final_unlabeled_data$sov <- pred_sov
 
-# Model EI
+# Model economic integration
 tune_EI <- tune(svm, train_matrix, as.numeric(ttrain$EI),
                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
@@ -88,18 +114,23 @@ model_EI <- svm(x = train_matrix, y = as.numeric(ttrain$EI),
                 cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
 # predict validation labels
 pred_EI_v <- predict(model_EI, valid_matrix)
-pred_EI_v <- ifelse(pred_EI_v > 0.4, 1, 0)
+pred_EI_v <- ifelse(pred_EI_v > 0.45, 1, 0)
 # get metrics
 table(pred = pred_EI_v, true = vvalid$EI)
 yardstick::accuracy(table(true = vvalid$EI, pred = pred_EI_v))
-roc_svm_EI <- data.frame(cbind(tpred = as.numeric(pred_EI_v), label = as.numeric(vvalid$EI)))
-WVPlots::ROCPlot(roc_svm_EI, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for EI")
+# roc_svm_EI <- data.frame(cbind(tpred = as.numeric(pred_EI_v), label = as.numeric(vvalid$EI)))
+# WVPlots::ROCPlot(roc_svm_EI, 'tpred', 'label', 1,
+#                  title = "ROC Validation Predictions SVM model for EI")
 # predict labels
-pred_EI <- predict(model_EI, score_matrix)
+model_EI_total <- svm(x = train_matrix_total,
+                      y = as.numeric(final_hand_coded_data$EI),
+                      type = "eps-regression", kernel = "radial",
+                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+pred_EI <- predict(model_EI_total, score_matrix)
 # add to dataset
 final_unlabeled_data$EI <- pred_EI
 
-# Model SD
+# Model social development
 tune_SD <- tune(svm, train_matrix, as.numeric(ttrain$SD),
                 ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
                                     0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
@@ -115,18 +146,23 @@ model_SD <- svm(x = train_matrix, y = as.numeric(ttrain$SD),
                 cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
 # predict validation labels
 pred_SD_v <- predict(model_SD, valid_matrix)
-pred_SD_v <- ifelse(pred_SD_v > 0.4, 1, 0)
+pred_SD_v <- ifelse(pred_SD_v > 0.45, 1, 0)
 # get metrics
 table(pred = pred_SD_v, true = vvalid$SD)
 yardstick::accuracy(table(true = vvalid$SD, pred = pred_SD_v))
-roc_svm_SD <- data.frame(cbind(tpred = as.numeric(pred_SD_v), label = as.numeric(vvalid$SD)))
-WVPlots::ROCPlot(roc_svm_SD, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for SD")
+# roc_svm_SD <- data.frame(cbind(tpred = as.numeric(pred_SD_v), label = as.numeric(vvalid$SD)))
+# WVPlots::ROCPlot(roc_svm_SD, 'tpred', 'label', 1,
+#                  title = "ROC Validation Predictions SVM model for SD")
 # predict labels
-pred_SD <- predict(model_SD, score_matrix)
+model_SD_total <- svm(x = train_matrix_total,
+                      y = as.numeric(final_hand_coded_data$SD),
+                      type = "eps-regression", kernel = "radial",
+                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+pred_SD <- predict(model_SD_total, score_matrix)
 # add to dataset
 final_unlabeled_data$SD <- pred_SD
 
-# Model con
+# Model conservation
 tune_con <- tune(svm, train_matrix, as.numeric(ttrain$con),
                  ranges =list(cost=c(0.00001, 0.00005, 0.0001, 0.0005, 0.001,
                                      0.005, 0.01, 0.05, 0.1, 0.5, 1, 2,
@@ -142,22 +178,30 @@ model_con <- svm(x = train_matrix, y = as.numeric(ttrain$con),
                  cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
 # predict validation labels
 pred_con_v <- predict(model_con, valid_matrix)
-pred_con_v <- ifelse(pred_con_v > 0.4, 1, 0)
+pred_con_v <- ifelse(pred_con_v > 0.45, 1, 0)
 # get metrics
 table(pred = pred_con_v, true = vvalid$con)
 yardstick::accuracy(table(true = vvalid$con, pred = pred_con_v))
-roc_svm_con <- data.frame(cbind(tpred = as.numeric(pred_con_v), label = as.numeric(vvalid$con)))
-WVPlots::ROCPlot(roc_svm_con, 'tpred', 'label', 1, title = "ROC Validation Predictions SVM model for con")
+# roc_svm_con <- data.frame(cbind(tpred = as.numeric(pred_con_v), label = as.numeric(vvalid$con)))
+# WVPlots::ROCPlot(roc_svm_con, 'tpred', 'label', 1,
+#                  title = "ROC Validation Predictions SVM model for con")
 # predict labels
-pred_con <- predict(model_con, score_matrix)
+model_con_total <- svm(x = train_matrix_total,
+                      y = as.numeric(final_hand_coded_data$con),
+                      type = "eps-regression", kernel = "radial",
+                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+pred_con <- predict(model_con_total, score_matrix)
 # add to dataset
 final_unlabeled_data$con <- pred_con
 
-# let's add an other variable just to keep track here of all the obs not labeled
-final_unlabeled_data$other <- ifelse(final_unlabeled_data$sov < 0.4 & final_unlabeled_data$EI < 0.4 & final_unlabeled_data$SD < 0.4 & final_unlabeled_data$con < 0.4, 1, 0)
+# Add an other variable
+final_unlabeled_data$other <- ifelse(final_unlabeled_data$sov < 0.45 &
+                                       final_unlabeled_data$EI < 0.45 &
+                                       final_unlabeled_data$SD < 0.45 &
+                                       final_unlabeled_data$con < 0.45, 1, 0)
 summary(as.factor(final_unlabeled_data$other))
 
-###### Merge data and save labeled dataset final
+# Merge data and save final labeled dataset
 fdata <- final_unlabeled_data %>%
   select(am2_2, sov, EI, SD, con, false_positives) %>%
   rename(AM2 = am2_2) %>% mutate(hand_coded = 0)

@@ -1,4 +1,4 @@
-1# In this script we prepare the data with some text pre-processing,
+# In this script we prepare the data with some text pre-processing,
 # by extracting Amazonian statements, and 
 # by adding locations for all speeches.
 
@@ -6,9 +6,12 @@
 # devtools::install_github("henriquesposito/poldis")
 library(poldis)
 library(dplyr)
+library(readxl)
+
+BR_Presidential_Speeches <- read_excel("Submission/Data and replication/2022.xlsx")
 
 # Load data
-BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/data/BR_Presidential_Speeches.Rds")
+#BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/data/BR_Presidential_Speeches.Rds")
 
 # Replace on title and text
 BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text, " - | -| -", "-")
@@ -32,23 +35,19 @@ BR_Presidential_Speeches$title <- stringi::stri_trans_general(BR_Presidential_Sp
 
 # get context and update amazon specific data
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("amazon", text))
-#Amazon_speeches$context <- poldis::context("amazon", var = Amazon_speeches$text, level = "sentences")
-#Amazon_speeches$ccontext <- unlist(lapply(Amazon_speeches$context, function(x) paste(x, collapse = " | ")))
 
 # Get 2 sentences before and 2 sentences after with poldis
-Amazon_speeches$AM2 <- poldis::context("amazon", Amazon_speeches$text, "sentences", 2)
+Amazon_speeches$AM2 <- poldis::extract_context("amazon", Amazon_speeches$text, "sentences", 2)
 
 # Get and save long data coding
 amazon_speeches_long <- Amazon_speeches %>%
-  select(ID, president, year, party, title, date, text, AM2) %>% 
+  select(president, year, party, title, date, text, AM2) %>% 
   tidyr::unnest(cols = c(AM2))
 
 # save the data
-saveRDS(amazon_speeches_long, "amazon_speeches_long.Rds") # 2014 obs
+#saveRDS(amazon_speeches_long, "amazon_speeches_long.Rds") # 2014 obs
 
 # A few more things
-BR_Presidential_Speeches$text <- stringi::stri_trans_general(BR_Presidential_Speeches$text, id = "latin-ascii")
-BR_Presidential_Speeches$title <- stringi::stri_trans_general(BR_Presidential_Speeches$title, id = "latin-ascii")
 BR_Presidential_Speeches$text <- stringr::str_squish(BR_Presidential_Speeches$text)
 BR_Presidential_Speeches$title <- stringr::str_squish(BR_Presidential_Speeches$title)
 BR_Presidential_Speeches$text <- tm::removeNumbers(BR_Presidential_Speeches$text)
