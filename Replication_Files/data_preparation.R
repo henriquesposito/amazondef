@@ -8,10 +8,8 @@ library(poldis)
 library(dplyr)
 library(readxl)
 
-BR_Presidential_Speeches <- read_excel("Submission/Data and replication/2022.xlsx")
-
 # Load data
-#BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/data/BR_Presidential_Speeches.Rds")
+BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/data/BR_Presidential_Speeches.Rds")
 
 # Replace on title and text
 BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text, " - | -| -", "-")
@@ -45,7 +43,14 @@ amazon_speeches_long <- Amazon_speeches %>%
   tidyr::unnest(cols = c(AM2))
 
 # save the data
-#saveRDS(amazon_speeches_long, "amazon_speeches_long.Rds") # 2014 obs
+#saveRDS(amazon_speeches_long, "amazon_speeches_long.Rds") # 2048 obs
+
+# Get a sample for hand coding
+training_set_22 <- amazon_speeches_long %>%
+  select(AM2) %>%
+  dplyr::slice_sample(n = 1024)
+# export to Excel
+# xlsx::write.xlsx(training_set, file = "training_set.xlsx")
 
 # A few more things
 BR_Presidential_Speeches$text <- stringr::str_squish(BR_Presidential_Speeches$text)
@@ -87,10 +92,3 @@ summary(as.factor(BR_presid_speeches_final$location_cat))
 
 # save for analysis
 saveRDS(BR_presid_speeches_final, "BR_presid_speeches_final.Rds")
-
-# Get a sample for hand coding
-training_set <- amazon_speeches_long %>%
-  select(ID, AM2) %>%
-  dplyr::slice_sample(n = 1007)
-# export to Excel
-# xlsx::write.xlsx(training_set, file = "training_set.xlsx")
