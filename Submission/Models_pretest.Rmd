@@ -158,9 +158,10 @@ ama_model2_lag <- dplyr::select(pop, -text) %>%
                                             location), "Amazonian Countries",
                                       location_cat),
                                levels = c("Amazonian States",
+                                          "Non Amazonian States",
+                                          "Brasilia",
                                           "Amazonian Countries",
-                                          "International", "Brasilia",
-                                          "Non Amazonian States")),
+                                          "International")),
          election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
                                       year), 1, 0),
          peak_year = ifelse(grepl("1989|1992|2009|2015|2019", year), 1, 0))
@@ -258,13 +259,17 @@ c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
                          data = ama_model_lag,
                          model = "within", index = "president")
                          
+ c5 <- plm(amazon_speech ~ as.factor(location_cat) +
+                         def_year + AAI + election_year, data = ama_model2_lag,
+                         model = "within", index = "president")
+                         
 stargazer::stargazer(c1, c2, c3, c4, digits = 3, no.space = TRUE,
                      title = "Fixed-effects logistic regressions by president with controls",
                       column.sep.width = ".001pt",
                       font.size="small",
                       dep.var.labels = c("Environmental Conservation", "Economic Integration",
-                                             "Social Development", "National Sovereignty"),
-                          covariate.labels = c("Non Amazonian States", " Brasilia", "Amazonian Countries", "International", "Yearly Deforestation", "Yearly Inflation", "Election Year", "Peak Year"))
+                                             "Social Development", "National Sovereignty", "Amazonian   Speech"),
+                          covariate.labels = c("Non Amazonian States", " Brasilia", "Amazonian Countries", "International", "Deforestation", "Inflation", "Election Year", "High-profile Events"))
 ```
 
 \end{landscape}
