@@ -102,12 +102,13 @@ summary(as.factor(BR_Presidential_Speeches$location))
 # Get a excel file just to replace NAs
 # writexl::write_xlsx(BR_Presidential_Speeches, "BR_presid_speeches_final.xlsx")
 # Most of the NAs left are TV or Radio Announcements in case we want to mark these as such.
-BR_presid_speeches_final <- read_excel("data/BR_presid_speeches_final.xlsx")
-summary(as.factor(BR_presid_speeches_final$location))
+#BR_presid_speeches_final <- read_excel("data/BR_presid_speeches_final.xlsx")
+#summary(as.factor(BR_presid_speeches_final$location))
 
 # Last thing here, let's add a dummy variable for whether certain speech
 # mentions the stem "amazon" or not.
 # As well as let's add a different categorical variable for location.
+BR_presid_speeches_final <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/BR_presid_speeches_final.Rds")
 BR_presid_speeches_final <- BR_presid_speeches_final %>% 
   mutate(amazon_speech = ifelse(grepl("amazon", text), 1, 0),
          location_cat = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States",
@@ -115,8 +116,8 @@ BR_presid_speeches_final <- BR_presid_speeches_final %>%
                                   grepl("Distrito Federal", location) ~ "Brasilia",
                                   grepl("NA", location) ~ "Non Identified",
                                   !grepl("Amazonian States|Non Amazonian States|Brasilia|Non Identified", location) ~ "International"))
-summary(as.factor(BR_presid_speeches_final$amazon_speech))
-summary(as.factor(BR_presid_speeches_final$location_cat))
+#summary(as.factor(BR_presid_speeches_final$amazon_speech))
+#summary(as.factor(BR_presid_speeches_final$location_cat))
 
 # save for analysis
 #saveRDS(BR_presid_speeches_final, "BR_presid_speeches_final.Rds")
@@ -142,15 +143,15 @@ final_hand_coded_data <- readRDS("~/Documents/GitHub/amazondef/Replication Files
 # Load final data to label (obs not randomly selected for hand coding)
 final_unlabeled_data <- readRDS("~/Documents/GitHub/amazondef/Replication Files/final_unlabeled_data1.Rds")
 
-# clean Amazonian statement
+# Wrapper function to clean Amazonian statement
 clean_text <- function(v) {
   out <- stringi::stri_trans_general(v, 'latin-ascii')
-  out <- stringr::str_squish(v)
-  out <- tolower(v)
-  out <- tm::removeNumbers(v)
-  out <- tm::removePunctuation(v)
-  out <- trimws(v)
-  out <- tm::removeWords(v, stopwords('pt'))
+  out <- tolower(out)
+  out <- tm::removeNumbers(out)
+  out <- tm::removePunctuation(out)
+  out <- tm::removeWords(out, stopwords('pt'))
+  out <- stringr::str_squish(out)
+  out <- trimws(out)
 }
 
 final_hand_coded_data$AM2 <- clean_text(final_hand_coded_data$AM2)
@@ -219,7 +220,7 @@ tune_sov$best.model
 # match best parameters
 model_sov <- svm(x = train_matrix, y = as.numeric(ttrain$sov),
                  type = "eps-regression", kernel = "radial",
-                 cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                 cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 # predict validation labels
 pred_sov_v <- predict(model_sov, valid_matrix)
 pred_sov_v <- ifelse(pred_sov_v > 0.45, 1, 0)
@@ -233,7 +234,7 @@ yardstick::accuracy(table(true = vvalid$sov, pred = pred_sov_v))
 model_sov_total <- svm(x = train_matrix_total,
                        y = as.numeric(final_hand_coded_data$sov),
                        type = "eps-regression", kernel = "radial",
-                       cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                       cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 pred_sov <- predict(model_sov_total, score_matrix)
 # add to dataset
 final_unlabeled_data$sov <- pred_sov
@@ -251,7 +252,7 @@ tune_EI$best.model
 # match best parameters
 model_EI <- svm(x = train_matrix, y = as.numeric(ttrain$EI),
                 type = "eps-regression", kernel = "radial",
-                cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 # predict validation labels
 pred_EI_v <- predict(model_EI, valid_matrix)
 pred_EI_v <- ifelse(pred_EI_v > 0.45, 1, 0)
@@ -265,7 +266,7 @@ yardstick::accuracy(table(true = vvalid$EI, pred = pred_EI_v))
 model_EI_total <- svm(x = train_matrix_total,
                       y = as.numeric(final_hand_coded_data$EI),
                       type = "eps-regression", kernel = "radial",
-                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                      cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 pred_EI <- predict(model_EI_total, score_matrix)
 # add to dataset
 final_unlabeled_data$EI <- pred_EI
@@ -283,7 +284,7 @@ tune_SD$best.model
 # match best parameters
 model_SD <- svm(x = train_matrix, y = as.numeric(ttrain$SD),
                 type = "eps-regression", kernel = "radial",
-                cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 # predict validation labels
 pred_SD_v <- predict(model_SD, valid_matrix)
 pred_SD_v <- ifelse(pred_SD_v > 0.45, 1, 0)
@@ -297,7 +298,7 @@ yardstick::accuracy(table(true = vvalid$SD, pred = pred_SD_v))
 model_SD_total <- svm(x = train_matrix_total,
                       y = as.numeric(final_hand_coded_data$SD),
                       type = "eps-regression", kernel = "radial",
-                      cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                      cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 pred_SD <- predict(model_SD_total, score_matrix)
 # add to dataset
 final_unlabeled_data$SD <- pred_SD
@@ -315,7 +316,7 @@ tune_con$best.model
 # match best parameters
 model_con <- svm(x = train_matrix, y = as.numeric(ttrain$con),
                  type = "eps-regression", kernel = "radial",
-                 cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                 cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 # predict validation labels
 pred_con_v <- predict(model_con, valid_matrix)
 pred_con_v <- ifelse(pred_con_v > 0.45, 1, 0)
@@ -329,7 +330,7 @@ yardstick::accuracy(table(true = vvalid$con, pred = pred_con_v))
 model_con_total <- svm(x = train_matrix_total,
                        y = as.numeric(final_hand_coded_data$con),
                        type = "eps-regression", kernel = "radial",
-                       cost = 5000, gamma = 9.541985e-05, episilon = 0.1)
+                       cost = 5000, gamma = 9.67118e-05, episilon = 0.1)
 pred_con <- predict(model_con_total, score_matrix)
 # add to dataset
 final_unlabeled_data$con <- pred_con
@@ -345,8 +346,7 @@ summary(as.factor(final_unlabeled_data$other))
 fdata <- final_unlabeled_data %>%
   select(AM2, sov, EI, SD, con, false_positives) %>%
   mutate(hand_coded = 0)
-ttdata <- select(final_hand_coded_data) %>%
-  mutate(hand_coded = 1)
+ttdata <- mutate(final_hand_coded_data, hand_coded = 1)
 final_data <- rbind(fdata, ttdata)
 
 #### Prepare final data
@@ -359,30 +359,33 @@ final_labeled_data <- dplyr::full_join(amazon_speeches_long, final_data, "AM2")
 #saveRDS(final_labeled_data, "final_labeled_data.Rds")
 
 # Now let's just get this data into the proper format to facilitate for analysis
-final_labeled_data$false_positives <- as.factor(ifelse(final_labeled_data$false_positives > 0.5, 1, 0))
+final_labeled_data$false_positives <- as.factor(ifelse(
+  final_labeled_data$false_positives > 0.5, 1, 0))
 final_labeled_data$sov <- as.factor(ifelse(as.numeric(final_labeled_data$sov) > 0.45, 1, 0))
 final_labeled_data$EI <- as.factor(ifelse(as.numeric(final_labeled_data$EI) > 0.45, 1, 0))
 final_labeled_data$SD <- as.factor(ifelse(as.numeric(final_labeled_data$SD) > 0.45, 1, 0))
 final_labeled_data$con <- as.factor(ifelse(as.numeric(final_labeled_data$con) > 0.45, 1, 0))
-summary(final_labeled_data)
-fp <- dplyr::filter(final_labeled_data, false_positives == "1" & sov == "0" & EI == "0" & SD == "0" & con == "0")
+#summary(final_labeled_data)
+fp <- dplyr::filter(final_labeled_data, false_positives == "1" & sov == "0" &
+                      EI == "0" & SD == "0" & con == "0")
 final_data <- dplyr::anti_join(final_labeled_data, fp, "AM2")
 
 # Add other variable
-final_data$other <- ifelse(final_data$sov == "0" & final_data$EI == "0" & final_data$SD == "0" & final_data$con == "0", 1, 0)
-summary(final_data)
+final_data$other <- ifelse(final_data$sov == "0" & final_data$EI == "0"
+                           & final_data$SD == "0" & final_data$con == "0", 1, 0)
+#summary(final_data)
 
-# Add location
+# Add location categorical (just to check further)
 final_data$location <- poldis::extract_location(final_data$title)
-summary(as.factor(final_data$location))
+#summary(as.factor(final_data$location))
 # if NA for location in title, use full text
 final_data$location <- ifelse(grepl("^NA$", final_data$location),
                               poldis::extract_location(final_data$text),
                               final_data$location)
-summary(as.factor(final_data$location))
+#summary(as.factor(final_data$location))
 # a few obs were not matched still, let's see them
 final_data$location <- ifelse(nchar(final_data$location) > 40, "NA", final_data$location)
-summary(as.factor(final_data$location))
+#summary(as.factor(final_data$location))
 nm <- final_data %>% dplyr::filter(location == "NA") %>% select(AM2, text)
 View(nm) # we can hand code some of these
 nm$location_na <- c("NA", "NA", "NA", "Roraima", "Roraima", "Bahia", "Para", "Para",
@@ -391,7 +394,8 @@ nm$location_na <- c("NA", "NA", "NA", "Roraima", "Roraima", "Bahia", "Para", "Pa
                     "Para", "Para", "United States of America", "United States of America")
 nm <- dplyr::select(nm, AM2, location_na)
 fd_location <- dplyr::full_join(final_data, nm, "AM2")
-fd_location$location <- ifelse(grepl("NA", fd_location$location), fd_location$location_na, fd_location$location)
+fd_location$location <- ifelse(grepl("NA", fd_location$location),
+                               fd_location$location_na, fd_location$location)
 final_data_as <- fd_location %>% select(-location_na)
 summary(as.factor(final_data_as$location))
 # add location categorical
@@ -401,6 +405,19 @@ final_data_as <- final_data_as %>%
                                   grepl("Distrito Federal", location) ~ "Brasilia",
                                   grepl("NA", location) ~ "Non Identified",
                                   !grepl("Amazonian States|Non Amazonian States|Brasilia|Non Identified", location) ~ "International"))
+# Fix a few minor mistakes
+final_data_as <- final_data_as %>% 
+  mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+                            location, ignore.case = TRUE),
+                      "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                      "International", location_cat),
+         location_cat = factor(ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                   location), "Amazonian Countries", location_cat),
+                      levels = c("International", "Amazonian States",
+                                 "Amazonian Countries", "Brasilia",
+                                 "Non Amazonian States")))
+#summary(as.factor(final_data_as$location_cat))
 
 # Save
 #saveRDS(final_data_as, "final_data_as.Rds")
