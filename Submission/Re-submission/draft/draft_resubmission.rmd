@@ -25,7 +25,7 @@ header-includes:
 always_allow_html: TRUE
 bibliography: references.bib
 csl: chicago.csl
-abstract: Presidential speeches can influence the ways people think and act towards the environment , but they are understudied. We propose a framework to investigate how the Brazilian Amazon has been constructed as a problem across time and space. Using supervised machine learning, we classify statements about the Amazon in 6130 transnational presidential speeches since 1985. We find that national and international events drive the frequency at which the topic of the Amazon is mentioned in presidential speeches inside and outside Brazil. While constructing the Amazon as a problem of economic integration are the most common until the mid-2000s, environmental conservation and social development constructions temporarily surpass economic integration from 2010 to 2015. In turn, constructing the Amazon as an issue of sovereignty increases since 2010. Lastly, the farther away presidents are from the Amazon itself, the more likely they are to construct the Amazon as an issue of environmental conservation.
+abstract: Presidential speeches can influence the ways people think and act towards the environment , but they are understudied. We propose a framework to investigate how the Brazilian Amazon has been constructed as a problem across time and space. Using supervised machine learning, we classify statements about the Amazon in 6240 transnational presidential speeches since 1985. We find that national and international events drive the frequency at which the topic of the Amazon is mentioned in presidential speeches. While constructing the Amazon as a problem of economic integration are the most common until the mid-2000s, environmental conservation and social development constructions temporarily surpass economic integration from 2010 to 2015. In turn, constructing the Amazon as an issue of sovereignty increases since 2010. Lastly, presidents usually construct the Amazon as an issue of environmental conservation internationally. When speaking within the Amazonian region, presidents tend to construct the Amazon as an issue of social development and economic integration.
 ---
 
 ```{=latex}
@@ -59,7 +59,7 @@ options(stringsAsFactors = FALSE, scipen = 999)
 theme_am <- function(x) {
   theme(text = element_text(size=12,  family="Times"),
         panel.background = element_rect("white", "black", .5, "solid"),
-                  panel.grid.major = element_line(color = "grey", size = 0.2,
+                  panel.grid.major = element_line(color = "grey", linewidth = 0.2,
                                                   linetype = "solid"),
         axis.text = element_text(color = "black", size = 10),
         title = element_text(color = "black", size = 10, face = "bold"),
@@ -237,7 +237,7 @@ perc1 <- pop %>%
   select(c(perc, amazon_speech, year))
 perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(color = "darkgreen") +
-  geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
+  geom_line(aes(y=mean(perc)), color="black", linewidth=.5, linetype="dotted")+
   scale_y_continuous(labels = percent_format()) + 
   annotate("text", x = 1985, y = 0.18, label = "15.4%", size = 3.5)+
   annotate("text", x = 1988.7, y = 0.345, label = "Murder of\nChico Mendes", size = 3)+
@@ -306,7 +306,7 @@ ama_mx %>%
   filter(mx_cat2 == "Pure-types") %>%
   ggplot() +
   geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat, fill = mx_cat),
-              se = FALSE, size =0.75, linetype="solid") +
+              se = FALSE, linewidth =0.75, linetype="solid") +
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of each pure-type problem-construction by year",
        subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
@@ -314,7 +314,7 @@ ama_mx %>%
   theme_am() +
   facet_wrap("mx_cat") +
   geom_smooth(amazon_def_year, mapping = aes(x = year, y = def_year/100),
-            color= "darkolivegreen", linetype="twodash", se = FALSE) +
+              color= "darkolivegreen", linetype="twodash", se = FALSE) +
   annotate("text", x = 2002, y = 0.14, label = "27772 km2\ndeforested" , size = 2)+
   annotate("text", x = 2013, y = 0.03, label = "4571 km2\ndeforested", size = 2)
 ```
@@ -372,3 +372,5 @@ ama_mx %>%
   theme_am() +
   theme(legend.position = "right")
 ```
+
+In a speech, presidents might mix multiple problem-constructions within an Amazon statement. Mixed-type problem-constructions in discourse offer more intricate understandings of the Amazon as a problem. Constructing the Amazon as multiple issues averages at 18% of all constructions over time. The most frequent mixed-type problem construction of the Amazon is economic conservation. This mixed-type construction, composed of Amazonian statements that construct the Amazon as a problem of both economic integration and environmental conservation, generally increased over time. This increase suggests that later presidents, along with being more diverse in how they construct the Amazon as an issue, increasingly find ways to reconcile the dictum between the economy and the environment that had prevailed in the previous years. The second most common mixed-type mixes social development and economic integration and appears, on average, in 5.4% of all statements. This is not surprising, as developing countries like Brazil repeatedly claim a "right to develop", when it comes to negotiating strong climate commitments and policies with a focus on both social development and economic integration. Nonetheless, there is a general increase of mixed-types over time, which is expected given the rise of global agendas understanding interconnections of social, environmental, and economic domains such as the Millennium Development Goals and the Sustainable Development Goals. Furthermore, both Lula and Bolsonaro construct the Amazon as a multifaceted issue more frequently than other presidents. Lula usually mixed economic integration with environmental conservation and social development when constructing the Amazon as an issue, while Bolsonaro constructs the Amazon as an issue of national sovereignty and economic integration much more than any other president, mimicking the military dictatorship discourses and policies toward the region [@hecht1990].
