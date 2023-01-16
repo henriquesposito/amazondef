@@ -99,7 +99,7 @@ BR_Presidential_Speeches$location <- ifelse(grepl("^NA$", BR_Presidential_Speech
                                             BR_Presidential_Speeches$location)
 summary(as.factor(BR_Presidential_Speeches$location))
 
-# Get a excel file just to replace NAs
+# Get a excel file just to replace NAs and review things...
 # writexl::write_xlsx(BR_Presidential_Speeches, "BR_presid_speeches_final.xlsx")
 # Most of the NAs left are TV or Radio Announcements in case we want to mark these as such.
 #BR_presid_speeches_final <- read_excel("data/BR_presid_speeches_final.xlsx")

@@ -21,8 +21,7 @@ header-includes:
    - \usepackage[utf8]{inputenc}
    - |
     \providecommand{\keywords}[1]{\textbf{Keywords:} #1}
-    \providecommand{\wordcount}[1]{\text{Word Count:}#1}
-    \providecommand{\wv}[1]{\textbf{This is a working version, please do not share or cite without the authors' permission.} #1}
+    \providecommand{\wordcount}[1]{\textbf{Word Count:}#1}
 always_allow_html: TRUE
 bibliography: references.bib
 csl: chicago.csl
@@ -35,10 +34,6 @@ abstract: Presidential speeches can influence the ways people think and act towa
 
 ```{=latex}
 \wordcount{ 8299 (including abstract, text, references, and footnotes)}
-```
-
-```{=latex}
-\wv{ }
 ```
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
@@ -85,16 +80,20 @@ location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/locati
   distinct()
 ama <- left_join(ama, location_km, by = "location")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
-amazon_def_year$year <- amazon_def_year$year + 1
-adr <- data.frame(year = c(1985, 1986, 1987, 1988),
-def_year = c(21.050, 21.050, 21.050, 21.050))
+amazon_def_year_lag <- amazon_def_year
+# missing years are missed with first non missing value
+adr <- data.frame(year = c(1985, 1986, 1987), 
+                  def_year = c(21.050, 21.050, 21.050))
 amazon_def_year <- rbind(adr, amazon_def_year) # Missing year data 
+amazon_def_year_lag$year <- amazon_def_year_lag$year + 1
+adr <- data.frame(year = c(1985, 1986, 1987, 1988),
+                  def_year = c(21.050, 21.050, 21.050, 21.050))
+amazon_def_year_lag <- rbind(adr, amazon_def_year_lag) # Missing year data 
 hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 end = c(1990, 1993, 1994, 2002, 2010, 2016, 2018, 2022),
                 label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
                 presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
                            "Rousseff", "Temer", "Bolsonaro"))
-amazon_def_year$area <- amazon_def_year$def_year*1000
 # Prepare data for problem-constructions
 sov <- ama %>% 
   filter(sov==1) %>% 
@@ -167,12 +166,12 @@ ama_mx <-  ama %>%
                                    mx_cat) ~ "Mixed-types"),
         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
                                       year), 1, 0),
-        peak_year = ifelse(grepl("1989|1992|2009|2015|2019", year), 1, 0),
-        py_1989=ifelse(grepl("1989", year), 1, 0),
-        py_1992=ifelse(grepl("1992", year), 1, 0),
-        py_2009=ifelse(grepl("2009", year), 1, 0),
-        py_2015=ifelse(grepl("2015", year), 1, 0),
-        py_2019=ifelse(grepl("2019", year), 1, 0),
+        peak_year = ifelse(grepl("1989|1992|2009|2019|2022", year), 1, 0),
+        # py_1989=ifelse(grepl("1989", year), 1, 0),
+        # py_1992=ifelse(grepl("1992", year), 1, 0),
+        # py_2009=ifelse(grepl("2009", year), 1, 0),
+        # py_2015=ifelse(grepl("2015", year), 1, 0),
+        # py_2019=ifelse(grepl("2019", year), 1, 0),
          location_cat = factor(location_cat,
                                levels = c("Amazonian States",
                                           "Non Amazonian States",
@@ -180,28 +179,25 @@ ama_mx <-  ama %>%
                                           "Amazonian Countries",
                                           "International")))
 
-ama_model_lag <- dplyr::left_join(ama_mx, amazon_def_year, by = "year") %>%
+ama_model_lag <- dplyr::left_join(ama_mx, amazon_def_year_lag, by = "year") %>%
 dplyr::left_join(AAI, by = "year") %>%
-filter(location_cat != "Non Identified", mx_cat != "Other Mixed-types") %>%
+filter(location_cat != "Non Identified") %>%
   mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation", 1, 0),
          EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
          SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
          sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0))
 ```
 
-# 3 Methods
+\pagebreak
+# 1. Intro
+
+# 2. Theory
+
+# 3. Methods
 
 ## 3.1 Problem-construction 
 
-
-
 ## 3.2 Data and Operationalization
-
-To analyze how presidents construct the Amazon as a problem, we build upon Cezar’s 2020 dataset, which contains all official speeches by Brazilian Presidents from 1985 to 2019 scrapped from the archives of the Brazilian Presidential Library. We update the dataset by scraping and adding all official speeches from 2020 and 2021. The final dataset encompasses 6130 speeches. We, then, proceed to identify speeches that refer to the Amazon as a region, people, or forest. We do so by detecting all speeches in which the stem “amazon” appears. In Portuguese, the stem captures terms such as “Amazonia”, “Amazonica”, “Amazonidas”, “Amazonense(s)”, “Amazonas”, among others. We find that 946 speeches are, at least partially, about the Amazon.
-
-Using the poldis R package (Sposito 2021), we extract two sentences before and after the sentence in which the stem “amazon” appears. We opt for picking two sentences around, rather than words, because sentences usually contain a cohesive idea. When two or more matches of the stem “amazon” appear in successive sentences, we get two sentences before the first match and two sentences after the last match. This is how our unit of analysis, Amazonian statements, are generated. Amazonian statements represent text portions that are meaningful for our specific purpose. This process yields 2014 unique Amazonian statements about the Amazon. On average, an Amazonian statement contains 123 words.
-
-Our approach to coding Amazonian statements is threefold. First, we follow the Amazonian historiography literature to develop a codebook to identify Amazonian problem-constructions (see codebook in appendix). In their conceptualization, each problem-construction is mutually exclusive; that is, they cover different forms of constructing the Amazon as a problem. However, an Amazonian statement can be coded as referring multiple problem constructions. A statement can, for example, construct the Amazon as a problem of sovereignty and a problem of economic integration, or a problem of social development and conservation. Amazonian statements, thus, can be pure-type statements (i.e. constructs the Amazon as a single problem) or mixed-types (i.e. constructs the Amazon as multiple issues). Figure 1, below, portrays this operationalization strategy.
 
 ````{=tex}
 \begin{landscape}
@@ -213,13 +209,7 @@ knitr::include_graphics("figure1pic.png")
 \end{landscape}
 ````
 
-Second, with the codebook in hand, each one of the authors separately hand-coded 1007 randomly selected Amazonian statements. This amount refers to 50% of all the Amazonian statements identified. We chose to hand code half of the observations because there are several nuances in how presidents talk about the Amazon over time, and as a problem. As well, the size of the training set should increase with the number of categories (Grimmer, Roberts, and Stewart 2022). Hand coding 50% of the statements mean we have a robust and reliable number of observations to be used for the training, and the validation, of the automated model. The average intercoder agreement for hand-coded categories was 85%. For each non-matching coded observation, the authors discussed and sorted their disagreements, which were subsequently specified in the codebook.
-
-Third, the hand-coded data is randomly divided into a training set, containing 80% of the data (806 observations), and a validation set, containing the remaining 20% of the data (201 observations). We employ a support-vector machine (SVM) algorithm, a non-probabilistic linear classifier for binary categories, to label texts (Meyer et al. 2021; Noble 2006). To validate the model, the SVM algorithm is trained using the hand-coded training set and then employed to classify observations in the validation set. The trained SVM model was, on average, 82%, accurate in coding observations in the validation set. The SVM model is, then, tuned, re-trained using all the 1007 hand-coded observations, and used to automatically code the remaining 1007 Amazonian statements. As a final robustness check, the authors also randomly select 100 Amazonian statements automatically coded and find that the automated model is 97% accurate in coding these statements. The final dataset for analysis, excluding false positive matches, contains 1895 coded Amazonian statement ^[We also trained the model to identify false positive Amazonian statements. These are statements in which the stem “Amazon” is matched but the statements is not meaningful in relations to the policy object. For example, cases in which a president acknowledges the presence of the governor of the Amazon state, but is not really speaking about the Amazon.]. Automating the coding of half of the observations is estimated to have saved the authors over one month of work in comparison to manual coding.
-
 ## 3.3 Analysis and Limitations
-
-To analyze our data, we model the share of a specific pure problem-construction, as the dependent variable, relative to the settings in which a particular speech happens, as our independent variable. This means we predict the probability of a president constructing the Amazon as an issue of (1) environmental conservation, (2) economic integration, (3) social development, and (4) national sovereignty, separately, and in relation to the remaining problem-constructions (see table 1 below). We focus on pure problem constructions to provide unambiguous interpretation and more robust findings. We divide settings in terms of non-Amazonian Brazilian states, Amazonian states within Brazil, Brasilia, Amazonian countries, and international. The level aggregation refers to geo-political settings that make sense in light of the Amazon, as a policy object. This aggregation combines different expectations presidents might have about transnational audiences in these settings. Brasilia is separated as a setting due to its’ unique geolocation and since most presidential speeches are delivered in Brasilia. The model controls for yearly deforestation rates, inflation, election years, and peak years for Amazon in presidential speeches. The analysis also plots Amazonian statements and problem-constructions over time and by setting. We interpret the models and plots considering the literature, Amazon-related events, and policies over the last 40 years.
 
 ```{r table 1, fig.cap="Models Description", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 
@@ -234,13 +224,9 @@ kbl(models, booktabs = T, caption = "Model description") %>%
                 position = "center", font_size = 9, full_width = TRUE)
 ```
 
-The main limitations of our approach are threefold. First, related to our sub-setting and coding strategies, we classify statements as Amazonian based on a dictionary composed of a single lexicon stem: “amazon”. We chose to do so knowing that a few speeches about the Amazon might not contain the lexicon “Amazon”, for example, when the president says, “the forest” or “deforestation”. Hence, we might be missing statements about Amazon that do not refer to it. However, we consider this safer as we cannot be sure that mentions of the forest or deforestation do not correspond to other biomes such as the Cerrado or the Atlantic Forest. Moreover, our codebook is developed using specific Amazon related vocabulary. For example, a statement will be coded as economic integration if it is meaningful support for the tax-free zone of Manaus or a dam in the Amazon. However, the economy is generally a topic that presidents speak about frequently. Hence, the high incidence of economic integration in Amazonian statements could also be related to the higher importance of this problem-construction in Brazil overall.
-
-Second, our dataset covers only what is considered an official speech. Presidents, though, give interviews, appear in debates, talk at campaign rallies, and, more recently, post on social media. Problem-construction within presidential discourse, thus, happens in different public and private venues for which we do not account in this paper. We believe that setting remains an important factor in changing expectations about audiences, especially for a historical analysis. Although we recognize that this, arguably, has begun to change with the advancement of communication technologies. Furthermore, we aggregate levels to socio-political-cultural settings that make sense in light of the policy object in question. Therefore, we are aware that a category as “international”, for instance, encompasses speeches delivered by presidents in a wide variety countries and institutions to a wider variety of audiences, which are not differentiated.
-
-Third, employing lagged deforestation as a control variable has several constraints. We assume presidential discourse, policies, and outcomes are co-constitutive. We lag annual deforestation one year since data for the year usually gets publicly released later and, frequently, there is a time difference to when discourses might refer to certain deforestation rates. We do think discourses capture general problem constructions that can be used to introduce, discuss, and justify policy and outcomes. Throughout the analysis we carefully discuss how presidential discourses might relate to deforestation rates and outcomes by pointing to the patterns and correlations, without making causality claims.
-
 # 4 Analysis
+
+## 4.1. In time
 
 ```{r Figure speeches, fig.cap="Amazonian speeches in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
 perc1 <- pop %>%
@@ -249,71 +235,24 @@ perc1 <- pop %>%
   mutate(perc = n / sum(n)) %>%
   filter(amazon_speech == 1) %>% 
   select(c(perc, amazon_speech, year))
-Amazon_year <- perc1 %>% ggplot(., aes(x = year, y = perc)) +
+perc1 %>% ggplot(., aes(x = year, y = perc)) +
   geom_line(color = "darkgreen") +
   geom_line(aes(y=mean(perc)), color="black", size=.5, linetype="dotted")+
   scale_y_continuous(labels = percent_format()) + 
   annotate("text", x = 1985, y = 0.18, label = "15.4%", size = 3.5)+
-  annotate("text", x = 1988.7, y = 0.35, label = "The Murder of\nChico Mendes", size = 3)+
-  annotate("text", x = 1992.5, y = 0.27, label = "Earth Summit", size = 3)+
+  annotate("text", x = 1988.7, y = 0.345, label = "Murder of\nChico Mendes", size = 3)+
+  annotate("text", x = 1992.5, y = 0.26, label = "Earth Summit", size = 3)+
   annotate("text", x = 2009, y = 0.24, label = "Copenhagen Summit", size = 3)+
-  annotate("text", x = 2015, y = 0.21, label = "Paris Summit", size = 3)+
   annotate("text", x = 2019, y = 0.26, label = "2019 Record\nAugust Fires", size=3) +
+  annotate("text", x = 2022, y = 0.225, label = "Murder\nof Bruno\nand Dom", size = 3)+
   labs(x = "", y = "",
        title = "Share of speeches that mention the Amazon per year",
        subtitle = "Sample composed by all 6130 speeches since 1985",
        color='Y series') +
   theme_am()
-Amazon_year
 ```
 
-```{r Figure pure, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-mmt1 <- ama_mx %>%
-  filter(mx_cat2 == "Mixed-types") %>%
-  count(mx_cat) %>%
-  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
-mmt2 <- ama_mx %>%
-  count(mx_cat)%>%
-  mutate(perc = n / sum(n)) # averages in relation to full sample
-pure_types_time <- ama_mx %>%
-  count(mx_cat, mx_cat2, year) %>%
-  group_by(year) %>%
-  mutate(perc = n / sum(n)) %>% 
-  filter(mx_cat2 == "Pure-types") %>%
-  ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
-  geom_smooth(aes(fill = mx_cat), se = FALSE, size =0.75, linetype="solid") +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
-  labs(x = "", y = "", title ="Share of each pure-type problem-construction by year",
-       subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
-       caption = "Curves in the plot were smoothed using loess method.") +
-  theme_am() +
-  theme(legend.position = "bottom")+
-  guides(fill=guide_legend(nrow=2,byrow=TRUE))
-
-pure_types_time
-```
-
-```{r Figure mixed, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
-mixed_types_presid <- ama_mx %>%
-  count(president, mx_cat, mx_cat2) %>%
-  group_by(president) %>%
-  mutate(perc = n / sum(n)) %>%
-  filter(mx_cat2 == "Mixed-types") %>%
-  mutate(president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
-                                                  "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
-  ggplot(aes(x = president, y = perc, fill = mx_cat,
-             label = scales::percent(perc, accuracy=.1))) +
-  geom_bar(stat = "identity", position = "stack") +
-  geom_text(size = 2, position = position_stack(vjust = .5)) +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
-  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
-  labs(x = "", y = "", title ="Share of each mixed-type problem-constructions by president",
-       subtitle = "Sample composed by 1895 Amazonian statements in presidential speeches since 1985",
-       caption = "") +
-  theme_am() +
-  theme(legend.position = "right")
-mixed_types_presid
-```
+## 4.2. Model
 
 ````{=tex}
 \begin{landscape}
@@ -350,6 +289,38 @@ stargazer::stargazer(c1, c2, c3, c4, digits = 3, no.space = TRUE,
 \end{landscape}
 ````
 
+## 4.3. Pure type
+
+```{r Figure pure, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+mmt1 <- ama_mx %>%
+  filter(mx_cat2 == "Mixed-types") %>%
+  count(mx_cat) %>%
+  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
+mmt2 <- ama_mx %>%
+  count(mx_cat)%>%
+  mutate(perc = n / sum(n)) # averages in relation to full sample
+ama_mx %>%
+  count(mx_cat, mx_cat2, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>% 
+  filter(mx_cat2 == "Pure-types") %>%
+  ggplot() +
+  geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat, fill = mx_cat),
+              se = FALSE, size =0.75, linetype="solid") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(x = "", y = "", title ="Share of each pure-type problem-construction by year",
+       subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+       caption = "Curves in the plot were smoothed using loess method.") +
+  theme_am() +
+  facet_wrap("mx_cat") +
+  geom_smooth(amazon_def_year, mapping = aes(x = year, y = def_year/100),
+            color= "darkolivegreen", linetype="twodash", se = FALSE) +
+  annotate("text", x = 2002, y = 0.14, label = "27772 km2\ndeforested" , size = 2)+
+  annotate("text", x = 2013, y = 0.03, label = "4571 km2\ndeforested", size = 2)
+```
+
+# 5. Discussion
+
 # Acknowledgements
 
 The authors are extremely grateful to Matias López, Graziella Moraes Silva, and James Hollway for their support. The authors would also like to thank the Mario, Federico, Rodrigo, and Anna for valuable comments on earlier drafts of this paper.
@@ -380,3 +351,24 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 
 \end{landscape}
 ````
+
+```{r Figure mixed, fig.cap="Mixed-types by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+ama_mx %>%
+  count(president, mx_cat, mx_cat2) %>%
+  group_by(president) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(mx_cat2 == "Mixed-types") %>%
+  mutate(president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro"))) %>%
+  ggplot(aes(x = president, y = perc, fill = mx_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 2, position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of each mixed-type problem-constructions by president",
+       subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+       caption = "") +
+  theme_am() +
+  theme(legend.position = "right")
+```
