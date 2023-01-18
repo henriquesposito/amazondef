@@ -312,11 +312,14 @@ ama_mx %>%
        subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
        caption = "Curves in the plot were smoothed using loess method.") +
   theme_am() +
+  # theme(legend.position = "bottom")+
+  # guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
   facet_wrap("mx_cat") +
   geom_smooth(amazon_def_year, mapping = aes(x = year, y = def_year/100),
               color= "darkolivegreen", linetype="twodash", se = FALSE) +
-  annotate("text", x = 2002, y = 0.14, label = "27772 km2\ndeforested" , size = 2)+
-  annotate("text", x = 2013, y = 0.03, label = "4571 km2\ndeforested", size = 2)
+  annotate("text", x = 1989, y = 0.16, label = "Deforastation", size = 2) +
+  annotate("text", x = 2001, y = 0.18, label = "27772 km2\ndeforested" , size = 2)+
+  annotate("text", x = 2014, y = 0.03, label = "4571 km2\ndeforested", size = 2)
 ```
 
 # 5. Discussion
