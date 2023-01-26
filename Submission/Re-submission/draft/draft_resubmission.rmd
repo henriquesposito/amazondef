@@ -312,14 +312,40 @@ ama_mx %>%
        subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
        caption = "Curves in the plot were smoothed using loess method.") +
   theme_am() +
-  # theme(legend.position = "bottom")+
-  # guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+  theme(legend.position = "bottom")+
+  guides(fill=guide_legend(nrow=2,byrow=TRUE))
+```
+```{r Figure pure, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+amazon_def_year <- amazon_def_year%>%
+  mutate(extremes= ifelse(year == 2004|year == 2012, "yes","no"))
+
+mmt1 <- ama_mx %>%
+  filter(mx_cat2 == "Mixed-types") %>%
+  count(mx_cat) %>%
+  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
+mmt2 <- ama_mx %>%
+  count(mx_cat)%>%
+  mutate(perc = n / sum(n)) # averages in relation to full sample
+ama_mx %>%
+  count(mx_cat, mx_cat2, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>% 
+  filter(mx_cat2 == "Pure-types") %>%
+  filter(mx_cat=="Pure Environmental Conservation" | mx_cat=="Pure Economic Integration")%>%
+  ggplot() +
+  geom_smooth(aes(x=as.numeric(year), y = perc),
+              se = FALSE, linewidth =0.75, linetype="solid", color="black") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(x = "", y = "", title ="Relationship between problem-constructions and deforestation rates",
+       subtitle = "Bars indicated yearly deforestation level and curves indicated yearly share of problem-construction.",
+       caption = "Curves in the plot were smoothed using loess method.")+
+  theme_am()+
   facet_wrap("mx_cat") +
-  geom_smooth(amazon_def_year, mapping = aes(x = year, y = def_year/100),
-              color= "darkolivegreen", linetype="twodash", se = FALSE) +
-  annotate("text", x = 1989, y = 0.16, label = "Deforastation", size = 2) +
-  annotate("text", x = 2001, y = 0.18, label = "27772 km2\ndeforested" , size = 2)+
-  annotate("text", x = 2014, y = 0.03, label = "4571 km2\ndeforested", size = 2)
+  geom_col(amazon_def_year, mapping = aes(x = year, y = def_year/80,fill=extremes),alpha=.5)+
+  scale_fill_manual(values=c("lightgrey", "darkolivegreen"))+
+  annotate("text", x = 2008, y = 0.35, label = "27'772 km2\ndeforested" , size = 3, color="darkolivegreen", face="bold")+
+  annotate("text", x = 2016, y = 0.05, label = "4'571 km2\ndeforested", size = 3, color="darkolivegreen", face="bold")
+  
 ```
 
 # 5. Discussion
