@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  25 JAN 2023 18:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.26)  26 JAN 2023 19:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **draft_resubmission.tex
 (./draft_resubmission.tex
 LaTeX2e <2022-11-01> patch level 1
-L3 programming layer <2022-12-17> (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
+L3 programming layer <2023-01-16> (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
@@ -496,7 +496,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 )
 \Hy@SectionHShift=\skip85
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-10-26 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count316
 \l__pdf_internal_box=\box73
 ) (./draft_resubmission.aux)
@@ -611,73 +611,93 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 128.
 [1
 
-{/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-<figure1pic.png, id=85, 977.616pt x 551.004pt>
+{/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+Overfull \hbox (9.5542pt too wide) in paragraph at lines 299--299
+[][]\T1/lmr/bx/n/14.4 2.2 Transna-tional set-tings and the vari-a-tion in problem-constructions 
+ []
+
+[4] [5]
+Underfull \hbox (badness 1400) in paragraph at lines 411--411
+[][]\T1/lmr/bx/n/17.28 3. Re-search De-sign: op-er-a-tional-iz-ing Ama-zo-nian
+ []
+
+[6] [7] [8]
+<figure1pic.png, id=146, 977.616pt x 551.004pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 172.
+Package pdftex.def Info: figure1pic.png  used on input line 555.
 (pdftex.def)             Requested size: 650.44958pt x 366.60643pt.
-[3
-
- <./figure1pic.png>]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 193.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 193.
-<draft_resubmission_files/figure-latex/Figure speeches-1.pdf, id=93, 469.755pt x 325.215pt>
-File: draft_resubmission_files/figure-latex/Figure speeches-1.pdf Graphic file (type pdf)
-<use draft_resubmission_files/figure-latex/Figure speeches-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure speeches-1.pdf  used on input line 204.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[4
-
- <./draft_resubmission_files/figure-latex/Figure speeches-1.pdf>]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 220.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 220.
-[5
-
-]
-<draft_resubmission_files/figure-latex/Figure pure-1.pdf, id=122, 469.755pt x 325.215pt>
-File: draft_resubmission_files/figure-latex/Figure pure-1.pdf Graphic file (type pdf)
-<use draft_resubmission_files/figure-latex/Figure pure-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure pure-1.pdf  used on input line 262.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 291.
-[6
-
- <./draft_resubmission_files/figure-latex/Figure pure-1.pdf>] [7]
-
-LaTeX Warning: Float too large for page by 13.66255pt on input line 316.
-
-[8]
-<draft_resubmission_files/figure-latex/Figure mixed-1.pdf, id=158, 469.755pt x 325.215pt>
-File: draft_resubmission_files/figure-latex/Figure mixed-1.pdf Graphic file (type pdf)
-<use draft_resubmission_files/figure-latex/Figure mixed-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure mixed-1.pdf  used on input line 322.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [9
 
+ <./figure1pic.png>] [10
 
- <./draft_resubmission_files/figure-latex/Figure mixed-1.pdf>] [10] (./draft_resubmission.aux)
+]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 640.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 640.
+[11]
+<draft_resubmission_files/figure-latex/Figure speeches-1.pdf, id=167, 469.755pt x 325.215pt>
+File: draft_resubmission_files/figure-latex/Figure speeches-1.pdf Graphic file (type pdf)
+<use draft_resubmission_files/figure-latex/Figure speeches-1.pdf>
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure speeches-1.pdf  used on input line 684.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[12
+
+
+] [13 <./draft_resubmission_files/figure-latex/Figure speeches-1.pdf>]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 700.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 700.
+[14
+
+]
+<draft_resubmission_files/figure-latex/Figure pure-1.pdf, id=198, 469.755pt x 325.215pt>
+File: draft_resubmission_files/figure-latex/Figure pure-1.pdf Graphic file (type pdf)
+<use draft_resubmission_files/figure-latex/Figure pure-1.pdf>
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure pure-1.pdf  used on input line 742.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<draft_resubmission_files/figure-latex/Figure puretypetime-1.pdf, id=199, 469.755pt x 325.215pt>
+File: draft_resubmission_files/figure-latex/Figure puretypetime-1.pdf Graphic file (type pdf)
+<use draft_resubmission_files/figure-latex/Figure puretypetime-1.pdf>
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure puretypetime-1.pdf  used on input line 748.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[15
+
+ <./draft_resubmission_files/figure-latex/Figure pure-1.pdf>]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 780.
+[16 <./draft_resubmission_files/figure-latex/Figure puretypetime-1.pdf>] [17] [18] [19]
+
+LaTeX Warning: Float too large for page by 13.66255pt on input line 1000.
+
+[20]
+<draft_resubmission_files/figure-latex/Figure mixed-1.pdf, id=330, 469.755pt x 325.215pt>
+File: draft_resubmission_files/figure-latex/Figure mixed-1.pdf Graphic file (type pdf)
+<use draft_resubmission_files/figure-latex/Figure mixed-1.pdf>
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure mixed-1.pdf  used on input line 1006.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[21
+
+
+ <./draft_resubmission_files/figure-latex/Figure mixed-1.pdf>] [22] (./draft_resubmission.aux)
 Package rerunfilecheck Info: File `draft_resubmission.out' has not changed.
-(rerunfilecheck)             Checksum: CD524FF7E0F04F697E68986775D41C94;1901.
+(rerunfilecheck)             Checksum: AB8D22A4C82D41ED206C4F1E74066A51;4309.
  ) 
 Here is how much of TeX's memory you used:
- 13838 strings out of 478053
- 225566 string characters out of 5839309
- 1865793 words of memory out of 5000000
- 33654 multiletter control sequences out of 15000+600000
- 597268 words of font info for 97 fonts, out of 8000000 for 9000
+ 13942 strings out of 478051
+ 227781 string characters out of 5839265
+ 1866330 words of memory out of 5000000
+ 33692 multiletter control sequences out of 15000+600000
+ 606177 words of font info for 100 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,16n,77p,1180b,646s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on draft_resubmission.pdf (10 pages, 926255 bytes).
+ 75i,16n,76p,1180b,656s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
+Output written on draft_resubmission.pdf (22 pages, 1001031 bytes).
 PDF statistics:
- 256 PDF objects out of 1000 (max. 8388607)
- 204 compressed objects within 3 object streams
- 50 named destinations out of 1000 (max. 500000)
- 141 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 446 PDF objects out of 1000 (max. 8388607)
+ 376 compressed objects within 4 object streams
+ 114 named destinations out of 1000 (max. 500000)
+ 202 words of extra memory for PDF output out of 10000 (max. 10000000)
 
