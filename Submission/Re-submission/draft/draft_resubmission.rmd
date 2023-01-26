@@ -319,33 +319,25 @@ ama_mx %>%
 amazon_def_year <- amazon_def_year%>%
   mutate(extremes= ifelse(year == 2004|year == 2012, "yes","no"))
 
-mmt1 <- ama_mx %>%
-  filter(mx_cat2 == "Mixed-types") %>%
-  count(mx_cat) %>%
-  mutate(perc = n / sum(n)) # averages in relation to only mixed-types
-mmt2 <- ama_mx %>%
-  count(mx_cat)%>%
-  mutate(perc = n / sum(n)) # averages in relation to full sample
 ama_mx %>%
-  count(mx_cat, mx_cat2, year) %>%
+  count(mx_cat, mx_cat2,location_cat, year) %>%
   group_by(year) %>%
   mutate(perc = n / sum(n)) %>% 
+  filter(location_cat=="Amazonian States"|location_cat=="International")%>%
   filter(mx_cat2 == "Pure-types") %>%
-  filter(mx_cat=="Pure Environmental Conservation" | mx_cat=="Pure Economic Integration")%>%
   ggplot() +
-  geom_smooth(aes(x=as.numeric(year), y = perc),
+  geom_smooth(aes(x=as.numeric(year), y = perc, fill=),
               se = FALSE, linewidth =0.75, linetype="solid", color="black") +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1))+
+  facet_wrap(~location_cat+mx_cat, nrow=2)+
   labs(x = "", y = "", title ="Relationship between problem-constructions and deforestation rates",
        subtitle = "Bars indicated yearly deforestation level and curves indicated yearly share of problem-construction.",
        caption = "Curves in the plot were smoothed using loess method.")+
   theme_am()+
-  facet_wrap("mx_cat") +
   geom_col(amazon_def_year, mapping = aes(x = year, y = def_year/80,fill=extremes),alpha=.5)+
   scale_fill_manual(values=c("lightgrey", "darkolivegreen"))+
   annotate("text", x = 2008, y = 0.35, label = "27'772 km2\ndeforested" , size = 3, color="darkolivegreen", face="bold")+
   annotate("text", x = 2016, y = 0.05, label = "4'571 km2\ndeforested", size = 3, color="darkolivegreen", face="bold")
-  
 ```
 
 # 5. Discussion
