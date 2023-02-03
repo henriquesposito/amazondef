@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  1 FEB 2023 16:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.20)  2 FEB 2023 10:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -610,22 +610,22 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Overfull \hbox (0.20798pt too wide) in paragraph at lines 231--231
+Overfull \hbox (0.20798pt too wide) in paragraph at lines 242--242
 [][]\T1/lmr/bx/n/14.4 2.1 Pres-i-den-tial speeches, pol-i-cy-mak-ing, and problem-constructions 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 287--302
+Underfull \hbox (badness 10000) in paragraph at lines 284--299
 
  []
 
 
-Overfull \hbox (9.5542pt too wide) in paragraph at lines 315--315
+Overfull \hbox (9.5542pt too wide) in paragraph at lines 312--312
 [][]\T1/lmr/bx/n/14.4 2.2 Transna-tional set-tings and the vari-a-tion in problem-constructions 
  []
 
 [4] [5]
-Underfull \hbox (badness 1400) in paragraph at lines 430--430
+Underfull \hbox (badness 1400) in paragraph at lines 427--427
 [][]\T1/lmr/bx/n/17.28 3. Re-search De-sign: op-er-a-tional-iz-ing Ama-zo-nian
  []
 
@@ -633,39 +633,34 @@ Underfull \hbox (badness 1400) in paragraph at lines 430--430
 <figure1pic.png, id=137, 977.616pt x 551.004pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 572.
+Package pdftex.def Info: figure1pic.png  used on input line 569.
 (pdftex.def)             Requested size: 650.44958pt x 366.60643pt.
 [10
 
  <./figure1pic.png>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 603.
+(Font)              <12> on input line 600.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 603.
+(Font)              <8> on input line 600.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 603.
-
-Underfull \hbox (badness 10000) in paragraph at lines 636--643
-
- []
-
+(Font)              <6> on input line 600.
 [11
 
 ] [12]
 <draft_resubmission_files/figure-latex/Figure speeches-1.pdf, id=166, 469.755pt x 325.215pt>
 File: draft_resubmission_files/figure-latex/Figure speeches-1.pdf Graphic file (type pdf)
 <use draft_resubmission_files/figure-latex/Figure speeches-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure speeches-1.pdf  used on input line 749.
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure speeches-1.pdf  used on input line 746.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [13] [14 <./draft_resubmission_files/figure-latex/Figure speeches-1.pdf>]
 <draft_resubmission_files/figure-latex/Figure pure-1.pdf, id=188, 469.755pt x 325.215pt>
 File: draft_resubmission_files/figure-latex/Figure pure-1.pdf Graphic file (type pdf)
 <use draft_resubmission_files/figure-latex/Figure pure-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure pure-1.pdf  used on input line 813.
+Package pdftex.def Info: draft_resubmission_files/figure-latex/Figure pure-1.pdf  used on input line 810.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [15] [16 <./draft_resubmission_files/figure-latex/Figure pure-1.pdf>] [17]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 900.
+(Font)              <10.95> on input line 897.
 [18
 
 ] [19
@@ -674,31 +669,31 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 <draft_resubmission_files/figure-latex/setting vs outcome-1.pdf, id=225, 469.755pt x 325.215pt>
 File: draft_resubmission_files/figure-latex/setting vs outcome-1.pdf Graphic file (type pdf)
 <use draft_resubmission_files/figure-latex/setting vs outcome-1.pdf>
-Package pdftex.def Info: draft_resubmission_files/figure-latex/setting vs outcome-1.pdf  used on input line 1012.
+Package pdftex.def Info: draft_resubmission_files/figure-latex/setting vs outcome-1.pdf  used on input line 1009.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [20 <./draft_resubmission_files/figure-latex/setting vs outcome-1.pdf>] [21] [22] [23] [24]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 1356.
+(Font)              <9> on input line 1336.
 
-LaTeX Warning: Float too large for page by 13.66255pt on input line 1357.
+LaTeX Warning: Float too large for page by 13.66255pt on input line 1337.
 
 [25] (./draft_resubmission.aux)
 Package rerunfilecheck Info: File `draft_resubmission.out' has not changed.
 (rerunfilecheck)             Checksum: 86F1BD26B6B63EA4F98D16AAA316C0AD;4894.
  ) 
 Here is how much of TeX's memory you used:
- 13910 strings out of 477035
- 227263 string characters out of 5826562
+ 13907 strings out of 477035
+ 227219 string characters out of 5826562
  570351 words of memory out of 5000000
  34666 multiletter control sequences out of 15000+600000
  557607 words of font info for 95 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,16n,77p,1180b,642s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on draft_resubmission.pdf (25 pages, 1014457 bytes).
+Output written on draft_resubmission.pdf (25 pages, 1013007 bytes).
 PDF statistics:
- 464 PDF objects out of 1000 (max. 8388607)
- 393 compressed objects within 4 object streams
- 129 named destinations out of 1000 (max. 500000)
+ 460 PDF objects out of 1000 (max. 8388607)
+ 389 compressed objects within 4 object streams
+ 126 named destinations out of 1000 (max. 500000)
  165 words of extra memory for PDF output out of 10000 (max. 10000000)
 
