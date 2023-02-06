@@ -92,6 +92,7 @@ hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
                 presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
                            "Rousseff", "Temer", "Bolsonaro"))
+urate <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/urate.Rds")
 
 # Get PC in
 ama_mx <-  ama %>%
@@ -128,10 +129,13 @@ ama_mx <-  ama %>%
                                          "Non Amazonian States",
                                          "Non Amazonian Countries")))
 
-ama_model_lag <- dplyr::left_join(ama_mx, amazon_def_year_lag, by = "year") %>%
-dplyr::left_join(AAI, by = "year") %>%
-filter(location_cat != "Non Identified") %>%
-  mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation", 1, 0),
+ama_model_lag <- dplyr::left_join(ama_mx,
+                                  amazon_def_year_lag, by = "year") %>%
+  dplyr::left_join(AAI, by = "year") %>%
+  dplyr::left_join(urate, by = "year") %>%
+  filter(location_cat != "Non Identified") %>%
+  mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation",
+                             1, 0),
          EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
          SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
          sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0),
@@ -140,6 +144,7 @@ filter(location_cat != "Non Identified") %>%
 ama_model2_lag <- dplyr::select(pop, -text) %>%
   dplyr::left_join(amazon_def_year, by = "year") %>%
   dplyr::left_join(AAI, by = "year") %>%
+  dplyr::left_join(urate, by = "year") %>%
   filter(location_cat != "Non Identified")%>%
   dplyr::mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul", location, ignore.case = TRUE), "Non Amazonian States", location_cat),
          location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
@@ -401,23 +406,23 @@ By adapting transnational networks to discourse, we argue that presidents' expec
 ```{r models president fixed effect, fig.cap="Fixed-effects logistic regressions by presidents with controls", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
 c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
-                         def_year + AAI + election_year + peak_year,
+                         def_year + AAI + UR + election_year + peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c2 <- plm(EI_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + election_year + peak_year,
+                         def_year + AAI + UR + election_year + peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c3 <- plm(SD_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + election_year + peak_year,
+                         def_year + AAI + UR + election_year + peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + election_year + peak_year,
+                         def_year + AAI + UR + election_year + peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c5 <- plm(amazon_speech ~ as.factor(location_cat) +
-                         def_year + AAI + election_year,
+                         def_year + AAI + UR + election_year,
                          data = ama_model2_lag,
                          model = "within", index = "president")
                          
@@ -435,6 +440,7 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                                           "Non Amazonian Countries",
                                           "Deforestation",
                                           "Inflation",
+                                          "Unemployment rate",
                                           "Election Year",
                                           "High-profile Events"))
 ```
