@@ -37,6 +37,7 @@ abstract: blank
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
+library(readr)
 library(tidyr)
 library(scales)
 library(RColorBrewer)
@@ -72,13 +73,13 @@ theme_am <- function(x) {
 pop <- readRDS("~/Documents/GitHub/amazondef/Replication_files/BR_presid_speeches_final.Rds")
 ama <- readRDS("~/Documents/GitHub/amazondef/Replication_files/final_data_as.Rds")
 ama <- ama %>% select(-c(title, date, text, false_positives)) %>% rename (ei= "EI", sd= "SD")
-AAI <- readRDS("~/Documents/GitHub/amazondef/Replication_files//AAI.Rds")
 location_km <- read_excel("~/Documents/GitHub/amazondef/Replication_Files/location_km.xlsx") %>%
   select(-location_cat) %>%
   distinct()
 ama <- left_join(ama, location_km, by = "location")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
 amazon_def_year_lag <- amazon_def_year
+other_variables <- read_csv("~/Documents/GitHub/amazondef/Replication_Files/other_variables.csv")
 # missing years are missed with first non missing value
 adr <- data.frame(year = c(1985, 1986, 1987), 
                   def_year = c(21.050, 21.050, 21.050))
@@ -92,8 +93,6 @@ hp = data.frame(beg = c(1985, 1990, 1993, 1994, 2002, 2010, 2016, 2018),
                 label = c(1987, 1991, 1993, 1998, 2006, 2013, 2017, 2020),
                 presid = c("Sarney", "Collor", "Franco", "Cardoso", "Lula",
                            "Rousseff", "Temer", "Bolsonaro"))
-urate <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/urate.Rds")
-
 # Get PC in
 ama_mx <-  ama %>%
   unite(mixed_type, sov:con, sep="_") %>%
@@ -131,8 +130,7 @@ ama_mx <-  ama %>%
 
 ama_model_lag <- dplyr::left_join(ama_mx,
                                   amazon_def_year_lag, by = "year") %>%
-  dplyr::left_join(AAI, by = "year") %>%
-  dplyr::left_join(urate, by = "year") %>%
+  dplyr::left_join(other_variables, by = "year") %>%
   filter(location_cat != "Non Identified") %>%
   mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation",
                              1, 0),
@@ -143,8 +141,7 @@ ama_model_lag <- dplyr::left_join(ama_mx,
 
 ama_model2_lag <- dplyr::select(pop, -text) %>%
   dplyr::left_join(amazon_def_year, by = "year") %>%
-  dplyr::left_join(AAI, by = "year") %>%
-  dplyr::left_join(urate, by = "year") %>%
+  dplyr::left_join(other_variables, by = "year") %>%
   filter(location_cat != "Non Identified")%>%
   dplyr::mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul", location, ignore.case = TRUE), "Non Amazonian States", location_cat),
          location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
@@ -406,23 +403,23 @@ By adapting transnational networks to discourse, we argue that presidents' expec
 ```{r models president fixed effect, fig.cap="Fixed-effects logistic regressions by presidents with controls", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
 c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
-                         def_year + AAI + UR + election_year + peak_year,
+                         def_year + inflation+  election_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c2 <- plm(EI_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + UR + election_year + peak_year,
+                         def_year + inflation +  election_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c3 <- plm(SD_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + UR + election_year + peak_year,
+                         def_year + inflation+ election_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
-                         def_year + AAI + UR + election_year + peak_year,
+                         def_year + inflation +  election_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c5 <- plm(amazon_speech ~ as.factor(location_cat) +
-                         def_year + AAI + UR + election_year,
+                         def_year + inflation+  election_year,
                          data = ama_model2_lag,
                          model = "within", index = "president")
                          
@@ -440,9 +437,7 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                                           "Non Amazonian Countries",
                                           "Deforestation",
                                           "Inflation",
-                                          "Unemployment rate",
-                                          "Election Year",
-                                          "High-profile Events"))
+                                          "Election Year"))
 ```
 
 \end{landscape}
