@@ -80,6 +80,7 @@ ama <- left_join(ama, location_km, by = "location")
 amazon_def_year <- readRDS("~/Documents/GitHub/amazondef/Replication_files//amazon_def_year.Rds")
 amazon_def_year_lag <- amazon_def_year
 other_variables <- read_csv("~/Documents/GitHub/amazondef/Replication_Files/other_variables.csv")
+aai <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/AAI.Rds")
 # missing years are missed with first non missing value
 adr <- data.frame(year = c(1985, 1986, 1987), 
                   def_year = c(21.050, 21.050, 21.050))
@@ -131,6 +132,7 @@ ama_mx <-  ama %>%
 ama_model_lag <- dplyr::left_join(ama_mx,
                                   amazon_def_year_lag, by = "year") %>%
   dplyr::left_join(other_variables, by = "year") %>%
+      dplyr::left_join(aai, by = "year") %>%
   filter(location_cat != "Non Identified") %>%
   mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation",
                              1, 0),
@@ -141,6 +143,7 @@ ama_model_lag <- dplyr::left_join(ama_mx,
 
 ama_model2_lag <- dplyr::select(pop, -text) %>%
   dplyr::left_join(amazon_def_year, by = "year") %>%
+    dplyr::left_join(aai, by = "year") %>%
   dplyr::left_join(other_variables, by = "year") %>%
   filter(location_cat != "Non Identified")%>%
   dplyr::mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul", location, ignore.case = TRUE), "Non Amazonian States", location_cat),
@@ -155,6 +158,7 @@ ama_model2_lag <- dplyr::select(pop, -text) %>%
                                           "Non Amazonian States")),
          election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
                                       year), 1, 0),
+         peak_year = ifelse(grepl("1989|1992|2009|2019|2022", year), 1, 0),
         location_cat = factor(case_when(location_cat == "International" ~ 
                                           "Non Amazonian Countries",
                                         location_cat == 
@@ -403,19 +407,19 @@ By adapting transnational networks to discourse, we argue that presidents' expec
 ```{r models president fixed effect, fig.cap="Fixed-effects logistic regressions by presidents with controls", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
 c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
-                         def_year + inflation+  election_year,
+                         def_year + inflation+  election_year+ peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c2 <- plm(EI_vs_all ~ as.factor(location_cat) +
-                         def_year + inflation +  election_year,
+                         def_year + inflation +  election_year+ peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c3 <- plm(SD_vs_all ~ as.factor(location_cat) +
-                         def_year + inflation+ election_year,
+                         def_year + inflation+ election_year+ peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
-                         def_year + inflation +  election_year,
+                         def_year + inflation +  election_year+ peak_year,
                          data = ama_model_lag,
                          model = "within", index = "president")
 c5 <- plm(amazon_speech ~ as.factor(location_cat) +
@@ -437,7 +441,8 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                                           "Non Amazonian Countries",
                                           "Deforestation",
                                           "Inflation",
-                                          "Election Year"))
+                                          "Election Year",
+                                          "High-profile Events"))
 ```
 
 \end{landscape}
