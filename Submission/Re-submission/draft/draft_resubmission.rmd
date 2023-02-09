@@ -39,17 +39,13 @@ abstract: blank
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
-library(readr)
 library(tidyr)
 library(scales)
 library(RColorBrewer)
 library(stargazer)
 library(kableExtra)
 library(tibble)
-library(readxl)
 library(ggplot2)
-library(gridExtra)
-library(modelsummary)
 library(plm)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
@@ -300,7 +296,6 @@ pop %>%
   annotate("text", x = 1992.5, y = 0.26, label = "Earth Summit", size = 3)+
   annotate("text", x = 2009, y = 0.24, label = "Copenhagen Summit", size = 3)+
   annotate("text", x = 2019, y = 0.26, label = "2019 Record\nAugust Fires", size=3) +
-  annotate("text", x = 2022, y = 0.225, label = "Murder\nof Bruno\nand Dom", size = 3)+
   labs(x = "", y = "",
        title = "Share of speeches that mention the Amazon per year",
        subtitle = "Sample composed by all 6130 speeches since 1985",
