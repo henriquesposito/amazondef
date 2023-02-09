@@ -225,7 +225,7 @@ knitr::include_graphics("figure1pic.png")
 ````{=tex}
 \begin{landscape}
 
-```{r models president fixed effect, fig.cap="Fixed-effects logistic regressions by presidents with controls", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+```{r models president fixed effect, fig.cap="Log odds for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 # Run models
 c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
                          def_year + AAI + election_year + peak_year,
@@ -247,18 +247,9 @@ c5 <- plm(amazon_speech ~ as.factor(location_cat) +
                          def_year + AAI +  election_year,
                          data = ama_model2_lag,
                          model = "within", index = "president")
-# Calculate the custom CIs
-ci1 <- exp(confint(c1))
-ci2 <- exp(confint(c2))
-ci3 <- exp(confint(c3))
-ci4 <- exp(confint(c4))
-ci5 <- exp(confint(c5))
 # Regression table                       
 stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
-                     title = "Odds-ration for fixed-effects logistic regressions indexed by president",
-                     ci = T, apply.coef = exp,
-                     ci.custom = list(ci5, ci1, ci2, ci3, ci4, ci5),
-                     t.auto=F, p.auto=F,
+                     title = "Log odds for fixed-effects logistic regressions indexed by president",
                       column.sep.width = "-12pt",
                       font.size="small",
                       dep.var.labels = c("Amazon Speech",
@@ -369,6 +360,41 @@ codebook <- tibble::tibble("problem-construction" = c("National Sovereignty", "E
                                        "I have put in place emergency measures, I have suspended the exports of wood logs, I have suspended the fiscal incentives and credits to projects that could damage the environment in the amazon and I have made a license mandatory to gold mining that prohibits utilizing mercury in the process. This began the restructuring of the governmental system of control and preservation of the environment, I have created the Brazilian Institute for the Environment and Natural Resources [IBAMA], which will be headed by Dr. Mesquita (Sarney 20/07/1989)"))
 
 kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook") %>% kable_styling(latex_options = c("striped", "repeat_header", "scale_down"),position= "center", font_size = 9, full_width = TRUE) %>% column_spec(1, width="3cm", bold=TRUE) %>% column_spec(2, width="9cm") %>% column_spec(3, width = "9cm")
+```
+
+\end{landscape}
+````
+
+````{=tex}
+\begin{landscape}
+
+```{r log odds, fig.cap = "Odds-ration for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+# Calculate the custom CIs
+ci1 <- exp(confint(c1))
+ci2 <- exp(confint(c2))
+ci3 <- exp(confint(c3))
+ci4 <- exp(confint(c4))
+ci5 <- exp(confint(c5))
+# Regression table                       
+stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
+                     title = "Odds-ratio for fixed-effects logistic regressions indexed by president",
+                     ci = T, apply.coef = exp,
+                     ci.custom = list(ci5, ci1, ci2, ci3, ci4, ci5),
+                     t.auto=F, p.auto=F,
+                      column.sep.width = "-12pt",
+                      font.size="small",
+                      dep.var.labels = c("Amazon Speech",
+                                         "Environmental Conservation",
+                                         "Economic Integration",
+                                         "Social Development",
+                                         "National Sovereignty"),
+                     covariate.labels = c("Amazonian Countries",
+                                          "Non Amazonian States",
+                                          "Non Amazonian Countries",
+                                          "Deforestation",
+                                          "Inflation",
+                                          "Election Year",
+                                          "Peak years"))
 ```
 
 \end{landscape}
