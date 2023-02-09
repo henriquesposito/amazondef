@@ -289,7 +289,7 @@ pop %>%
   annotate("text", x = 2019, y = 0.26, label = "2019 Record\nAugust Fires", size=3) +
   labs(x = "", y = "",
        title = "Share of speeches that mention the Amazon per year",
-       subtitle = "Sample composed by all 6130 speeches since 1985",
+       subtitle = "Sample composed by all 6240 speeches since 1985",
        color='Y series') +
   theme_am()
 ```
@@ -314,7 +314,7 @@ pop %>%
 
 ## 4.3 Amazonian problem-constructions in time
 
-```{r Figure pure, fig.cap="Pure-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+```{r Figure pure, fig.cap="Pure-types and miyed-types in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 #summary(as.factor(ama_mx$mx_cat))
 ama_mx %>%
   count(mx_cat, year) %>%
@@ -325,7 +325,7 @@ ama_mx %>%
   geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat),
               se = FALSE, linewidth =0.75, linetype="solid") +
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
-  labs(x = "", y = "", title ="Share of each pure-type problem-construction by year",
+  labs(x = "", y = "", title ="Share of pure-types and mixed-types problem-constructions by year",
        subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
        caption = "Curves in the plot were smoothed using loess method.") +
   theme_am()+
