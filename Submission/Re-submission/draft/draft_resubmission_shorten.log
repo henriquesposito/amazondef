@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.13)  14 FEB 2023 09:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.13)  14 FEB 2023 10:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -619,24 +619,24 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 <figure1pic.png, id=120, 977.616pt x 551.004pt>
 File: figure1pic.png Graphic file (type png)
 <use figure1pic.png>
-Package pdftex.def Info: figure1pic.png  used on input line 552.
+Package pdftex.def Info: figure1pic.png  used on input line 544.
 (pdftex.def)             Requested size: 650.44958pt x 366.60643pt.
 [9
 
  <./figure1pic.png>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 573.
+(Font)              <12> on input line 565.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 573.
+(Font)              <8> on input line 565.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 573.
+(Font)              <6> on input line 565.
 [10
 
 ] [11] [12]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 708.
+(Font)              <10.95> on input line 699.
 
-Overfull \hbox (63.19754pt too wide) in paragraph at lines 708--739
+Overfull \hbox (63.19754pt too wide) in paragraph at lines 699--730
  [][] 
  []
 
@@ -648,28 +648,28 @@ Overfull \hbox (63.19754pt too wide) in paragraph at lines 708--739
 <draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf, id=165, 469.755pt x 325.215pt>
 File: draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf Graphic file (type pdf)
 <use draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf>
-Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf  used on input line 850.
+Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf  used on input line 841.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [15] [16 <./draft_resubmission_shorten_files/figure-latex/Figure speeches-1.pdf>]
 <draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf, id=184, 469.755pt x 325.215pt>
 File: draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf Graphic file (type pdf)
 <use draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf>
-Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf  used on input line 937.
+Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf  used on input line 928.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [17] [18 <./draft_resubmission_shorten_files/figure-latex/Figure pure-1.pdf>]
 <draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf, id=202, 469.755pt x 325.215pt>
 File: draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf Graphic file (type pdf)
 <use draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf>
-Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf  used on input line 994.
+Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf  used on input line 985.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [19] [20 <./draft_resubmission_shorten_files/figure-latex/Figure mixed-1.pdf>] [21] [22] [23] [24] [25]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 1355.
+(Font)              <9> on input line 1346.
 
-LaTeX Warning: Float too large for page by 13.66255pt on input line 1356.
+LaTeX Warning: Float too large for page by 13.66255pt on input line 1347.
 
 [26]
-Overfull \hbox (63.19754pt too wide) in paragraph at lines 1369--1400
+Overfull \hbox (63.19754pt too wide) in paragraph at lines 1360--1391
  [][] 
  []
 
@@ -682,18 +682,18 @@ Overfull \hbox (63.19754pt too wide) in paragraph at lines 1369--1400
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `draft_resubmission_shorten.out' has not changed.
-(rerunfilecheck)             Checksum: FE4FE98C6F18B706E84ED260794C66AD;4320.
+(rerunfilecheck)             Checksum: 366BD103BC36B32EF38251F5ACF2205E;4217.
  ) 
 Here is how much of TeX's memory you used:
  13913 strings out of 477989
- 228172 string characters out of 5837725
+ 228132 string characters out of 5837725
  1870346 words of memory out of 5000000
  33727 multiletter control sequences out of 15000+600000
  600635 words of font info for 99 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  75i,16n,76p,1188b,647s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on draft_resubmission_shorten.pdf (27 pages, 1010007 bytes).
+Output written on draft_resubmission_shorten.pdf (27 pages, 1009856 bytes).
 PDF statistics:
  443 PDF objects out of 1000 (max. 8388607)
  370 compressed objects within 4 object streams
