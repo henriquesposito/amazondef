@@ -324,7 +324,7 @@ We argue that presidents’ expectations about an audience at a certain setting 
 \begin{landscape}
 
 ```{r models president fixed effect, fig.cap="Log odds for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
-# Run models
+
 c1 <- plm(con_vs_all ~ as.factor(location_cat) + 
                          def_year + AAI + election_year,
                          data = ama_model_lag,
@@ -345,7 +345,7 @@ c5 <- plm(amazon_speech ~ as.factor(location_cat) +
                          def_year + AAI +  election_year,
                          data = ama_model2_lag,
                          model = "within", index = "president")
-# Regression table                       
+                   
 stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                      title = "Log odds for fixed-effects logistic regressions indexed by president",
                       column.sep.width = "-12pt",
@@ -360,8 +360,7 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                                           "Non Amazonian Countries",
                                           "Deforestation",
                                           "Inflation",
-                                          "Election Year",
-                                          "Peak years"))
+                                          "Election Year"))
 ```
 
 \end{landscape}
@@ -512,6 +511,46 @@ The authors report that there are no competing interests to declare.
 
 # Appendix
 
+```{r presidents and settings for Amazon speeches, eval=FALSE, include=FALSE}
+ama_model_lag %>%
+  count(location_cat, president)%>%
+  group_by(president)%>%
+  mutate(perc = n / sum(n),
+         president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro")))%>%
+  ggplot(aes(x = president, y = perc, fill = location_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 3, position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of speeches in each setting by president",
+       subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+       caption = "") +
+  theme_am() +
+  theme(legend.position = "right")
+```
+
+```{r presidents and settings for all, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+ama_model2_lag %>%
+  count(location_cat, president)%>%
+  group_by(president)%>%
+  mutate(perc = n / sum(n),
+         president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro")))%>%
+  ggplot(aes(x = president, y = perc, fill = location_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 2, position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of speeches in each setting by president",
+       subtitle = "Sample composed by all 6240 speeches since 1985",
+       caption = "") +
+  theme_am() +
+  theme(legend.position = "bottom")
+```
+
 ````{=tex}
 \begin{landscape}
 
@@ -531,14 +570,14 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 ````{=tex}
 \begin{landscape}
 
-```{r odds ratio, fig.cap = "Odds-ratio and confidence intervals for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
-# Calculate the custom CIs
+```{r odds ratio, fig.cap = "Odds-ratio and confidence intervals for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=FALSE, results="asis"}
+
 ci1 <- exp(confint(c1))
 ci2 <- exp(confint(c2))
 ci3 <- exp(confint(c3))
 ci4 <- exp(confint(c4))
 ci5 <- exp(confint(c5))
-# Regression table                       
+
 stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
                      title = "Odds-ratio for fixed-effects logistic regressions indexed by president",
                      ci = T, apply.coef = exp,
@@ -566,7 +605,7 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
 \begin{landscape}
 
 ```{r presid set, fig.cap="Random-effects logistic regressions for seeting and president indexed by year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
-# Run models
+
 ama_model_lag$president <- factor(ama_model_lag$president,
                                   levels = c("Sarney", "Collor", "Itamar", "FHC",
                                              "Lula", "Dilma", "Temer", "Bolsonaro"))
@@ -588,7 +627,7 @@ ps4 <- plm(sov_vs_all ~ as.factor(location_cat) + as.factor(president),
 ps5 <- plm(amazon_speech ~ as.factor(location_cat) + as.factor(president),
                          data = ama_model2_lag,
                          model = "random", index = "year")
-# Regression table                       
+                     
 stargazer::stargazer(ps5, ps1, ps2, ps3, ps4, digits = 3, no.space = TRUE,
                      title = "Random-effects logistic regressions for settings and president indexed by year",
                       column.sep.width = "-12pt",
