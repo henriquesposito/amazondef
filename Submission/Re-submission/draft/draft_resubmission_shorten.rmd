@@ -45,6 +45,8 @@ library(kableExtra)
 library(tibble)
 library(ggplot2)
 library(plm)
+library(timetk)
+library(lubridate)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
@@ -428,7 +430,9 @@ The longitudinal trends in Amazonian speeches reveal a dynamic that our models d
 
 ## 4.3 Amazonian problem-constructions in time
 
-While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985.Interestingly, and to begin with, peak years identified in Figure 2 do not coincide with increases of specific problem-constructions in Figure 3.
+While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985. Interestingly, peak years identified in Figure 2 (above) do not coincide with increases of specific problem-constructions in Figure 3 ^[4]. 
+
+^[4]: We also run lag analysis to uncover hidden patterns and identify seasonality in our data. Autocorrelation and partial autocorrelation plots for the proportion of problem-constructions in time are displayed in the appendix. The plots illustrate no significant autocorrelations between peak years and problem-constructions.
 
 ```{r Figure pure, fig.cap="Pure-types constructions in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 #summary(as.factor(ama_mx$mx_cat))
@@ -485,7 +489,7 @@ This paper investigated how the Amazon has been constructed as a political probl
 
 Overall, our findings suggest that we must move beyond assuming the Amazon is a single issue to identify how discourse and policy reflects its environmental, social, economic, and sovereignty-related complexity.By doing so, we can better understand the cohesive, the negotiated, and the contrasting discourses and policies forwarded by transnational actors as they perceive transnational settings as distinct policymaking instances. By capturing this variation in discourse, we can better understand why, when, and how, various overlapping policies directed at the same object are developed and implemented. Concretely, this implies that even as the environmental crisis becomes more salient, we will likely not see coherent and cohesive environmental, economic, and social discourses or policies towards the Brazilian Amazon.
 
-In terms of future research, we see at least three possibilities.First, scholars should investigate how problem-constructions change across settings and over time for other Amazonian countries or other policy objects, and in comparative ways. For example, recent literature demonstrates that reductions in deforestation in the Amazon lead to increased deforestation in the Cerrado biome[@villoria2022]. By comparing the Amazonian statements and Cerrado statements, we could identify to what extent other problems are ignored in favour of the "Amazon problem". Moreover, social media can change political communications in fundamental ways. The spread of political communications in social media could, on the one hand, contribute to diminishing the importance of physical settings and make presidents less likely to afford diverging problem-constructions. On the other hand, micro-targeting of social media algorithms could enhance how different problem-constructions are distributed to audiences. We look forward to works that investigate variation in problem-constructions in the era of social media. Finally, in a forthcoming article, Ajzenman, Cavalcanti, and Da Mata (2020) propose an identification strategy that ties Bolsonaro's speech to covid-19 infections. While we do not explicitly conceptualize how various problem-constructions might directly affect outcomes, we look forward to similar studies that identify how different problem-constructions affect (environmental) outcomes in more direct ways.
+In terms of future research, we see at least three possibilities.First, scholars should investigate how problem-constructions change across settings and over time for other Amazonian countries or other policy objects, and in comparative ways. For example, recent literature demonstrates that reductions in deforestation in the Amazon lead to increased deforestation in the Cerrado biome [@villoria2022]. By comparing the Amazonian statements and Cerrado statements, we could identify to what extent other problems are ignored in favour of the "Amazon problem". Moreover, social media can change political communications in fundamental ways. The spread of political communications in social media could, on the one hand, contribute to diminishing the importance of physical settings and make presidents less likely to afford diverging problem-constructions. On the other hand, micro-targeting of social media algorithms could enhance how different problem-constructions are distributed to audiences. We look forward to works that investigate variation in problem-constructions in the era of social media. Finally, in a forthcoming article, Ajzenman, Cavalcanti, and Da Mata (2020) propose an identification strategy that ties Bolsonaro's speech to covid-19 infections. While we do not explicitly conceptualize how various problem-constructions might directly affect outcomes, we look forward to similar studies that identify how different problem-constructions affect (environmental) outcomes in more direct ways.
 
 # Acknowledgements
 
@@ -638,3 +642,18 @@ stargazer::stargazer(ps5, ps1, ps2, ps3, ps4, digits = 3, no.space = TRUE,
 
 \end{landscape}
 ````
+
+```{r peak years test, fig.cap="Lag analysis for problem-constructions and for year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+ama_mx %>%
+  count(year, mx_cat) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n),
+         year = lubridate::as_date(year)) %>% 
+  select(-n) %>%
+  filter(mx_cat != "Other") %>%
+  group_by(mx_cat) %>% 
+  plot_acf_diagnostics(.date_var = year,
+                       .value = perc,
+                       .show_white_noise_bars = TRUE,
+                       .interactive = FALSE)
+```
