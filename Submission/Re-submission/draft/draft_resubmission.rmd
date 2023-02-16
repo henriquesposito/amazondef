@@ -103,11 +103,7 @@ ama_mx <-  ama %>%
                                      "Other",
                                    TRUE ~ "Mixed-types"),
          levels = c("Pure Economic Integration",
-                    "Pure Environmental Conservation",
-                    "Pure Social Development",
-                    "Pure National Sovereignty",
-                    "Other", "Mixed-types")),
-        election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+
                                       year), 1, 0),
         peak_year = ifelse(grepl("1989|1992|2009|2019", year), 1, 0),
         location_cat = factor(case_when(location_cat == "International" ~ 
