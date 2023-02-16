@@ -430,9 +430,9 @@ The longitudinal trends in Amazonian speeches reveal a dynamic that our models d
 
 ## 4.3 Amazonian problem-constructions in time
 
-While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985. Interestingly, peak years identified in Figure 2 (above) do not coincide with increases of specific problem-constructions in Figure 3 ^[4]. 
+While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985. Interestingly, peak years identified in Figure 2 (above) do not coincide with increases of specific problem-constructions in Figure 3 [^4].
 
-^[4]: We also run lag analysis to uncover hidden patterns and identify seasonality in our data. Autocorrelation and partial autocorrelation plots for the proportion of problem-constructions in time are displayed in the appendix. The plots illustrate no significant autocorrelations between peak years and problem-constructions.
+[^4]: We also run lag analysis to uncover hidden patterns and identify seasonality in our data. Autocorrelation and partial autocorrelation plots for the proportion of problem-constructions in time are displayed in the appendix.The plots illustrate no significant autocorrelations between peak years and problem-constructions.
 
 ```{r Figure pure, fig.cap="Pure-types constructions in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
 #summary(as.factor(ama_mx$mx_cat))
