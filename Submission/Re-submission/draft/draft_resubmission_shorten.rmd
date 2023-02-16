@@ -211,9 +211,11 @@ Important participants of transnational networks, as presidents, can use a myria
 
 Problem-constructions are choices transnational actors have of how to represent objects of policies as problems. If malleable identities across space and time are a defining feature of transnational politics, it follows that transnational actors', as presidents, choice of problem-constructions depend on their views of an audience at a certain period. Specifically, how urgent a problem is in a certain space and/or at a certain time.
 
+
 *Space*
 
 Transnational actors construct problems and attempt to inform and/or leverage audiences for symbolic or material gains according to their expectations of that audience. We conceptualize space in terms of settings. Settings are levels of aggregation for transnational audiences that make sense in light of the object of policy under study. This indicates how transnational actors construct policy objects as problems can vary, for instance, within the country --- speaking inside the Amazon region versus outside --- because presidents identify these audiences as distinct. The same holds true when speaking abroad --- in Amazonian countries, non-Amazonian countries, and at international summits --- where presidents' expectations and identities of an audience could diverge completely from that of domestic actors. In each one of these settings different problems might be more urgent and the president's expectations about what can be leveraged for material and symbolic gains might influence how a problem is implicitly or explicitly constructed.
+
 
 *Time*
 
@@ -309,6 +311,10 @@ We open our analysis with the models predicting the probability of presidents me
 
 Following our framework, we argue that presidents' expectations about an audience at a certain setting and the urgency of specific aligned issues explain variations in when the Amazon is a problem and what type of problem it is. Our models, below, confirm the expected relationships.
 
+We start by first scrutinizing the relationship between the setting and problem-construction. Model 1 addresses the question of when the Amazon is a problem to begin with. We model the probability of a speech generally mentioning the Amazon in relation to the reference category, Amazonian states within Brazil. The findings are intuitive: the likelihood of mentioning the Amazon in speeches decreases as presidents move away from the region and biome.
+
+The following models (2-5) address the question of how the Amazon is constructed as a problem in different settings. In terms of environmental conservation (model 2), we observe that when speaking in non-Amazonian countries, be it in international summits, bilateral meetings, or fora, presidents are much more likely to construct the Amazon as an issue of environmental conservation, in relation to when they speak within Amazonian states in Brazil (reference category). To a lesser extent, this also holds for when presidents speak in non-Amazonian states within Brazil, where they are more likely to construct the Amazon as an issue of environmental conservation. While the results for economic integration (model 3) and social development (model 4) problem-constructions are not as robust, they are strong enough to suggest the opposite direction: constructing the Amazon as issues of economic integration and social development are less likely to take place when presidents speak in outside of Brazil and other Amazonian countries. Lastly, when it comes to national sovereignty (model 5), the problem-constructions are more likely to take place when presidents speak at non-Amazonian states in Brazil than when they speak elsewhere.
+
 ````{=tex}
 \begin{landscape}
  
@@ -354,10 +360,6 @@ stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
  
 \end{landscape}
 ````
-
-We start by first scrutinizing the relationship between the setting and problem-construction. Model 1 addresses the question of when the Amazon is a problem to begin with. We model the probability of a speech generally mentioning the Amazon in relation to the reference category, Amazonian states within Brazil. The findings are intuitive: the likelihood of mentioning the Amazon in speeches decreases as presidents move away from the region and biome.
-
-The following models (2-5) address the question of how the Amazon is constructed as a problem in different settings. In terms of environmental conservation (model 2), we observe that when speaking in non-Amazonian countries, be it in international summits, bilateral meetings, or fora, presidents are much more likely to construct the Amazon as an issue of environmental conservation, in relation to when they speak within Amazonian states in Brazil (reference category). To a lesser extent, this also holds for when presidents speak in non-Amazonian states within Brazil, where they are more likely to construct the Amazon as an issue of environmental conservation. While the results for economic integration (model 3) and social development (model 4) problem-constructions are not as robust, they are strong enough to suggest the opposite direction: constructing the Amazon as issues of economic integration and social development are less likely to take place when presidents speak in outside of Brazil and other Amazonian countries. Lastly, when it comes to national sovereignty (model 5), the problem-constructions are more likely to take place when presidents speak at non-Amazonian states in Brazil than when they speak elsewhere.
 
 We interpret these findings to be consistent with our conceptual framework: presidents construct the Amazon as different problems based on their expectations of settings. When it comes to non-Amazonian countries, it is likely that Brazilian presidents construct the Amazon as an issue of environmental conservation to leverage financial support for policies in the Amazonian region. The Brazilian government successfully funded domestic public policy with transnational financial support on several occasions since the 1990s, most notably with the Amazon Fund which provided over USD 1 billion for the region[@silva-muller2022]. That is, presidents realize material and symbolic gains outside of Brazil and of Amazonian countries, by constructing the Amazon as an environmental problem.
 
@@ -466,12 +468,13 @@ ama_mx %>%
   ggplot() +
   geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat),
           	se = FALSE, linewidth =0.75, linetype="solid") +
-  scale_y_continuous(labels = percent_format(accuracy = 1), limits=c(0,.4)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of mixed-types problem-constructions by year",
    	subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
    	caption = "Curves in the plot were smoothed using loess method.") +
   theme_am() +
   scale_color_manual(values = "yellow3")
+
 ```
 
 We interpret the increased balance in pure-types and the general increase in mixed-types Amazonian problem-construction as evidence that presidents increasingly find ways to reconcile the binary between economic and the environmental ways of seeing the Amazon that had prevailed in the previous years decades. We interpret this as evidence of the Amazon becoming increasingly recognized as an intricate policy object in transnational politics.
@@ -486,7 +489,7 @@ In terms of future research, we see at least three possibilities.First, scholars
 
 # Acknowledgements
 
-The authors are extremely grateful to Graziella Moraes Silva, James Hollway, and Matias López for their support. The authors would also like the two anonymous reviewers for their comments and suggestions. Finally, we would like to thank Anna, Federico, Mario, and Rodrigo for their invaluable help.
+The authors are extremely grateful to Graziella Moraes Silva, James Hollway, and Matias López for their support. The authors would also like to thank the anonymous reviewers, Anna, Federico, Mario, and Rodrigo for their invaluable help.
 
 # Disclosure Statement
 
