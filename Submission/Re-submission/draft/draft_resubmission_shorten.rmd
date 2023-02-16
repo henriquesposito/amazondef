@@ -275,7 +275,7 @@ knitr::include_graphics("figure1pic.png")
 
 We randomly select a sample of 1024 Amazonian statements (50% of our data) and each author hand-codes it separately. Once manual coding was finished, the average intercoder agreement was 86%, the authors resolved disagreements through discussion and refined the codebook (see appendix). We then randomly divided the hand-coded data into a training set (80% of observations) and validation set (20% of observations) to train a machine learning algorithm. We chose to hand code half of the observations because there are several nuances in how presidents talk about the Amazon over time, and thus the training set size should be increased [see @grimmer2022].
 
-We use a support-vector machine algorithm, a non-probabilistic linear classifier appropriate for binary categories [@meyer2021; @noble2006], to train a model to label text. The model was validated by testing it on the validation set. As a robustness check, the authors randomly select 100 automatically coded statements and find that the automated model is 95% accurate in coding these statements as the authors would. The final dataset, excluding false positive matches, contains 1924 coded Amazonian statements [^1]. Automating the code saved the authors about two months.
+We use a support-vector machine algorithm, a non-probabilistic linear classifier appropriate for binary categories [@meyer2021; @noble2006], to train a model to label text. The model was validated by testing it on the validation set. As a robustness check, the authors randomly select 100 automatically coded statements and find that the automated model is 95% accurate in coding these statements as the authors would. The final dataset, excluding false positive matches, contains 1924 coded Amazonian statements[^1]. Automating the code saved the authors about two months.
 
 [^1]: We also train the model to identify false positive matches in Amazonian statements. These are statements that contain the stem "amazon" but are not meaningful as they might salute the governor of the Amazon, for example.
 
@@ -373,7 +373,7 @@ In line with our framework, the urgency of aligned problems relates to problem-c
 
 ## 4.2 Amazonian speeches over time
 
-Looking at speeches that mention the Amazon over time (model 1) reviews several interesting trends. Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. By investigating its development in time, we can identify instances when the Amazon in itself becomes more urgent as a problem, and when not. On average, presidents mention the Amazon in 15.5% of their speeches [^3]. This suggests the Amazon is a topic of relative high importance for presidents generally. However, we observe four peak years (one standard deviation from the mean) in the figure: 1989, 1992, 2009, and 2019. We find that these peak years coincide with high-profile environmental events, but not with domestic policy adoption.
+Looking at speeches that mention the Amazon over time (model 1) reviews several interesting trends. Figure 2, below, shows the proportion of speeches that mentions the Amazon in relation to all speeches in a year. By investigating its development in time, we can identify instances when the Amazon in itself becomes more urgent as a problem, and when not. On average, presidents mention the Amazon in 15.5% of their speeches[^3]. This suggests the Amazon is a topic of relative high importance for presidents generally. However, we observe four peak years (one standard deviation from the mean) in the figure: 1989, 1992, 2009, and 2019. We find that these peak years coincide with high-profile environmental events, but not with domestic policy adoption.
 
 [^3]: For comparison purposes, the averages for other policy objects in the same corpus of speeches are inequality (13.7%), criminality (17.3%), inflation (19.1%), and unemployment (13.3%).
 
@@ -430,7 +430,7 @@ The longitudinal trends in Amazonian speeches reveal a dynamic that our models d
 
 ## 4.3 Amazonian problem-constructions in time
 
-While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985. Interestingly, peak years identified in Figure 2 (above) do not coincide with increases of specific problem-constructions in Figure 3 [^4].
+While we identified the effects of setting and urgency on problem-constructions (models 2-5), the developments of problem-constructions in time also reveal unique trends. Figure 3, below, illustrates the annual share of pure-types problem-constructions since 1985. Interestingly, peak years identified in Figure 2 (above) do not coincide with increases of specific problem-constructions in Figure 3[^4].
 
 [^4]: We also run lag analysis to uncover hidden patterns and identify seasonality in our data. Autocorrelation and partial autocorrelation plots for the proportion of problem-constructions in time are displayed in the appendix.The plots illustrate no significant autocorrelations between peak years and problem-constructions.
 
