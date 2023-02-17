@@ -31,14 +31,14 @@ header-includes:
 always_allow_html: yes
 bibliography: references.bib
 csl: chicago.csl
-abstract: The Amazon is a complex object of policy that comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, governments are often portrayed as having a single understanding of the Amazon as a political problem. We investigate how the Amazon has been constructed as a problem in Brazilian presidential speeches. To do so, we develop a framework that accounts for how important actors in transnational politics, as presidents, construct policy objects as particular problems depending on where and when they participate in politics. Using supervised machine learning, we classify statements about the Amazon in 6240 presidential speeches since 1985. We find that Brazilian presidents often construct the Amazon as an environmental problem when speaking far away from the region, whereas they usually construct it as problems of economic integration or social development when in the Amazon. Furthermore, presidents increasingly construct the Amazon as multiple problems rather than a dichotomy between economic or environmental problems.
+abstract: The Amazon is a complex object of policy that comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, governments are often portrayed as having a single understanding of the region as a political problem. In this article, we investigate how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985.To do so, we develop a framework that accounts for how important transnational actors, as presidents, construct policy objects as particular problems depending on where and when they participate in politics. We find that presidents often construct the Amazon as an environmental problem when speaking far away from the region, whereas they usually construct it as problems of economic integration or social development when in the Amazon. Furthermore, presidents are increasingly more likely to mix problem-constructions and construct the Amazon as a complex and multifaceted object of policy.
 ---
 
 ```{=latex}
 \keywords{ discourse analysis, presidential speeches, transnational governance, environmental policy, Brazilian Amazon, supervised learning}
 ```
 ```{=latex}
-\wordcount{ 7900 (including text, endnotes, footnotes and references)}
+\wordcount{ 7969 (including abstract, text, endnotes, and references)}
 ```
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(include = FALSE)
@@ -309,9 +309,9 @@ This approach to operationalizing urgency also has limitations. Ideally, we woul
 
 ## 3.4 Inferential and descriptive strategies
 
-We use fixed-effect logistic regression models to predict the probability of a speech mentioning the Amazon and each of the four problem-constructions. The fixed-effects models are indexed by the president, since each president might have individual-specific characteristics that can influence outcomes. Both presidents' political ideology and setting preferences[^2] could affect problem-construction. Fixed-effects models help to control for these possible individual-specific issues and other unit-unvarying characteristics [@allison2009].
+We use fixed-effect logistic regression models to predict the probability of a speech mentioning the Amazon and each of the four problem-constructions. The fixed-effects models are indexed by the president, since each president might have individual-specific characteristics that can influence outcomes. Both presidents' political ideology and setting preferences could affect problem-construction[^2]. Fixed-effects models help to control for these possible individual-specific issues and other unit-unvarying characteristics [@allison2009].
 
-[^2]: Figure 5 (in appendix) confirms presidents have a similar share of speeches by setting, weakening the possibility of presidents picking settings according to their agendas.
+[^2]: We conducted more direct tests of these effects and added results in the appendix. While table 3 shows the limited effect of presidents' party ideology; figure 5 confirms presidents have a similar share of speeches by setting, weakening the possibility of presidents picking settings according to their agendas.
 
 The dependent variables of the model are the share of speeches that mention the Amazon (model 1) and the share of each problem-construction (models 2-5). We chose to model each construction separately, and to focus on pure-types (i.e. statements that construct the Amazon as a single problem), to provide unambiguous interpretations and more robust findings. Our main explanatory variables are settings and urgency, as described above. We add one control, election years, due to the possibility of presidents constructing the Amazon in systematically different ways during campaigns.
 
@@ -488,10 +488,6 @@ ama_mx %>%
 Our operationalization of problem-constructions also foresees the possibility of presidents mixing multiple constructions within the same Amazonian Statement. Figure 4, below, shows that constructing the Amazon as multiple issues generally increased from 18%, in 1985, to 29%, in 2022, as a share of all constructions. Mixed-type problem-constructions in discourse offer more complex and multifaceted understandings of the Amazon as a problem. The increase in mixed-type constructions suggests that later presidents see the Amazon as an important mix of environmental, economic, social, and sovereignty-related problems. Indeed, we observe an increase in policies that attempt to address environmental, economic, and social problems, such as payment for ecosystem services conditioned for low income populations residing in the Amazon [@silva-muller2022a]. Relatedly, this is in line with transnational processes such as the Millennium Development Goals and the Sustainable Development goals, that highlight the importance of forward human well-being in the economic, social, and environmental spheres.
 
 We interpret the increased balance in pure-types and the general increase in mixed-types Amazonian problem-construction as evidence that presidents increasingly find ways to reconcile the binary between economic and the environmental ways of seeing the Amazon that had prevailed in the previous years decades. We interpret this as evidence of the Amazon becoming increasingly recognized as an intricate policy object in transnational politics.
-
-# 5 Conclusion
-
-We interpret the increased balance in pure-types and the general increase in mixed-types Amazonian problem-construction as evidence that presidents increasingly find ways to reconcile the dichotomy between economic and the environmental ways of representing the Amazon as a problem. This suggests that the Amazon is becoming increasingly recognized as an intricate policy object in transnational politics.
 
 # 5 Conclusion
 
