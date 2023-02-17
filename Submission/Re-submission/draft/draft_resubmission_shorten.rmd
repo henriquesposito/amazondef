@@ -10,12 +10,12 @@ author:
   Studies.]
 date: "17 February 2023"
 output:
-  word_document: default
+  pdf_document: default
   latex_engine: xelatex
   fig_caption: yes
   html_document:
     df_print: paged
-  pdf_document: default
+  word_document: default
 fontsize: 12pt
 mainfont: Times New Roman
 header-includes:
@@ -576,66 +576,38 @@ kbl(codebook, booktabs = T, caption = "Amazonian Problem-Construction Codebook")
 ````{=tex}
 \begin{landscape}
 
-```{r odds ratio, fig.cap = "Odds-ratio and confidence intervals for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=FALSE, results="asis"}
+```{r presid set, fig.cap="Random-effects logistic regressions for setting and presidents' party ideology indexed by year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
 
-ci1 <- exp(confint(c1))
-ci2 <- exp(confint(c2))
-ci3 <- exp(confint(c3))
-ci4 <- exp(confint(c4))
-ci5 <- exp(confint(c5))
+left_right_VDEM <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/V-Dem-CPD-Party-V2.rds") %>% 
+  dplyr::filter(country_name == "Brazil", 
+                year >= 1985) %>%
+  dplyr::select(year, v2pashname, v2pariglef) %>%
+  tidyr::drop_na() %>%
+  dplyr::rename(party = v2pashname) %>%
+  group_by(party) %>%
+  summarise(left_right = mean(v2pariglef))
 
-stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
-                     title = "Odds-ratio for fixed-effects logistic regressions indexed by president",
-                     ci = T, apply.coef = exp,
-                     ci.custom = list(ci5, ci1, ci2, ci3, ci4, ci5),
-                     t.auto=F, p.auto=F,
-                      column.sep.width = "-12pt",
-                      font.size="small",
-                      dep.var.labels = c("Amazon Speech",
-                                         "Environmental Conservation",
-                                         "Economic Integration",
-                                         "Social Development",
-                                         "National Sovereignty"),
-                     covariate.labels = c("Amazonian Countries",
-                                          "Non Amazonian States",
-                                          "Non Amazonian Countries",
-                                          "Deforestation",
-                                          "Inflation",
-                                          "Election Year"))
-```
+ama_model_lag <- dplyr::left_join(ama_model_lag, left_right_VDEM, by = "party")
+ama_model2_lag <- dplyr::left_join(ama_model2_lag, left_right_VDEM, by = "party")
 
-\end{landscape}
-````
-
-````{=tex}
-\begin{landscape}
-
-```{r presid set, fig.cap="Random-effects logistic regressions for seeting and president indexed by year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
-
-ama_model_lag$president <- factor(ama_model_lag$president,
-                                  levels = c("Sarney", "Collor", "Itamar", "FHC",
-                                             "Lula", "Dilma", "Temer", "Bolsonaro"))
-ama_model2_lag$president <- factor(ama_model2_lag$president,
-                                   levels = c("Sarney", "Collor", "Itamar", "FHC",
-                                              "Lula", "Dilma", "Temer", "Bolsonaro"))
-ps1 <- plm(con_vs_all ~ as.factor(location_cat) + as.factor(president),
+ps1 <- plm(con_vs_all ~ as.factor(location_cat) + left_right,
                          data = ama_model_lag,
                          model = "random", index = "year")
-ps2 <- plm(EI_vs_all ~ as.factor(location_cat) + as.factor(president),
+ps2 <- plm(EI_vs_all ~ as.factor(location_cat) + left_right,
                          data = ama_model_lag,
                          model = "random", index = "year")
-ps3 <- plm(SD_vs_all ~ as.factor(location_cat) + as.factor(president),
+ps3 <- plm(SD_vs_all ~ as.factor(location_cat) + left_right,
                          data = ama_model_lag,
                          model = "random", index = "year")
-ps4 <- plm(sov_vs_all ~ as.factor(location_cat) + as.factor(president),
+ps4 <- plm(sov_vs_all ~ as.factor(location_cat) + left_right,
                          data = ama_model_lag,
                          model = "random", index = "year")
-ps5 <- plm(amazon_speech ~ as.factor(location_cat) + as.factor(president),
+ps5 <- plm(amazon_speech ~ as.factor(location_cat) + left_right,
                          data = ama_model2_lag,
                          model = "random", index = "year")
                      
 stargazer::stargazer(ps5, ps1, ps2, ps3, ps4, digits = 3, no.space = TRUE,
-                     title = "Random-effects logistic regressions for settings and president indexed by year",
+                     title = "Random-effects logistic regressions for setting and presidents' party ideology indexed by year",
                       column.sep.width = "-12pt",
                       font.size="small",
                       dep.var.labels = c("Amazon Speech",
@@ -646,8 +618,7 @@ stargazer::stargazer(ps5, ps1, ps2, ps3, ps4, digits = 3, no.space = TRUE,
                      covariate.labels = c("Amazonian Countries",
                                           "Non Amazonian States",
                                           "Non Amazonian Countries",
-                                          "Franco", "Collor", "Cardoso", "Lula",
-                                          "Rousseff", "Temer", "Bolsonaro"))
+                                          "President's party left-right scale (VDEM)"))
 ```
 
 \end{landscape}
