@@ -31,7 +31,7 @@ header-includes:
 always_allow_html: yes
 bibliography: references.bib
 csl: chicago.csl
-abstract: The Amazon is a complex object of policy that comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, governments are often portrayed as having a single understanding of the region as a political problem. In this article, we investigate how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985.To do so, we develop a framework that accounts for how important transnational actors, as presidents, construct policy objects as particular problems depending on where and when they participate in politics. We find that presidents often construct the Amazon as an environmental problem when speaking far away from the region, whereas they usually construct it as problems of economic integration or social development when in the Amazon. Furthermore, presidents are increasingly more likely to mix problem-constructions and construct the Amazon as a complex and multifaceted object of policy.
+abstract: The Amazon is a complex object of policy that comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, governments are often portrayed as having a single understanding of the region as a political problem. In this article, we investigate how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985.To do so, we develop a framework that accounts for how important transnational actors, as presidents, construct policy objects as particular problems depending on where and when they participate in politics. We find that presidents often construct the Amazon as an environmental problem when speaking far away from the region, whereas they usually construct it as problems of economic integration or social development when in the Amazon. Furthermore, presidents are  increasingly mixing problem-constructions and constructing the Amazon as a complex and multifaceted object of policy.
 ---
 
 ```{=latex}
@@ -179,7 +179,7 @@ ama_model2_lag <- dplyr::select(pop, -text) %>%
 
 \pagebreak
 
-# Introduction
+# 1. Introduction
 
 The Brazilian Amazon, which covers around 60% of the whole biome, is home to over 28 million people. The Rainforest spans over seven international borders. Its most inhabited city, Manaus, enjoys a distinct fiscal regime designed to create jobs in the region and connect its economy to the rest of the country. At the same time, an extensive portion of the Brazilian Amazon is protected by a combination of indigenous territories and protected areas, rendering it an important component of global climate mitigation. The Brazilian Amazon is, thus, a complex object of policy as it comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, the literature about policies in the Amazon often portray governments as having a single understanding of what the Amazon problem is and, consequently, proposing coherent policies for the region. Although this literature is helpful to compare variation across different governments, such analyses oversimplifies policies within governments misrepresenting what, in reality, is more intricate and inconsistent. In this article, we ask how has the Amazon been constructed as a political problem since 1985?
 
@@ -489,7 +489,7 @@ Our operationalization of problem-constructions also foresees the possibility of
 
 We interpret the increased balance in pure-types and the general increase in mixed-types Amazonian problem-construction as evidence that presidents increasingly find ways to reconcile the binary between economic and the environmental ways of seeing the Amazon that had prevailed in the previous years decades. We interpret this as evidence of the Amazon becoming increasingly recognized as an intricate policy object in transnational politics.
 
-# 5 Conclusion
+# 5. Conclusion
 
 This paper investigated how the Amazon has been constructed as a political problem over time and across spaces in Brazilian presidential speeches. We have four main findings. First, when presidents are far away from the Amazon region, they are more likely to construct the Amazon as an issue of environmental conservation. Within the Amazonian region, presidents usually construct the Amazon as an issue of social development and economic integration. Second, we find that presidents are more likely to construct the Amazon as an environmental conservation problem when environmental related issues are not urgent (e.g. lowering deforestation rates). When environmental related problems become more urgent (e.g. rising deforestation rates), presidents tend to side-step the issue and construct the Amazon as an issue of economic integration. Third, we find that high-profile environmental events, which receive strong international media attention, drive up the frequency at which the Amazon appears in discourses, but does not affect systematically how the Amazon is constructed as a problem. Finally, we find that presidents are increasingly more likely to mix problem-constructions and construct the Amazon as a complex and multifaceted object of policy.
 

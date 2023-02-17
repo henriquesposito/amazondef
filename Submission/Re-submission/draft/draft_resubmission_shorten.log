@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.13)  17 FEB 2023 18:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.13)  17 FEB 2023 18:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -696,7 +696,7 @@ Package pdftex.def Info: draft_resubmission_shorten_files/figure-latex/peak year
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `draft_resubmission_shorten.out' has not changed.
-(rerunfilecheck)             Checksum: 08452993286BDE48F3F136832127A8A7;3927.
+(rerunfilecheck)             Checksum: 839A9340EBC73E7BB256AF3C8C4592BC;3950.
  ) 
 Here is how much of TeX's memory you used:
  13937 strings out of 477989
@@ -707,7 +707,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  75i,16n,76p,1188b,645s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/liviosilva-muller/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on draft_resubmission_shorten.pdf (27 pages, 728708 bytes).
+Output written on draft_resubmission_shorten.pdf (27 pages, 728690 bytes).
 PDF statistics:
  478 PDF objects out of 1000 (max. 8388607)
  401 compressed objects within 5 object streams
