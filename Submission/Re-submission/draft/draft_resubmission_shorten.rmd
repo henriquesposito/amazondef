@@ -497,9 +497,6 @@ Overall, our findings suggest that we must move beyond assuming the Amazon is a 
 
 In terms of future research, we see at least three possibilities.First, scholars should investigate comparatively how problem-constructions change across settings and over time for other Amazonian countries or other policy objects. For example, recent literature demonstrates that reductions in deforestation in the Amazon lead to increased deforestation in the Cerrado biome [@villoria2022]. By comparing the Amazonian statements and Cerrado statements, we could identify to what extent other problems are ignored in favour of the "Amazon problem". Second, social media can change political communications in fundamental ways. The spread of political communications in social media could, on the one hand, contribute to diminishing the importance of physical settings and make presidents less likely to afford diverging problem-constructions. On the other hand, micro-targeting of social media algorithms could enhance how different problem-constructions are distributed to audiences. We look forward to works that investigate variation in problem-constructions given the advent of social media. Finally, in a forthcoming article, Ajzenman, Cavalcanti, and Da Mata (2020) propose an identification strategy that ties Bolsonaro's speech to covid-19 infections. While we do not explicitly conceptualize how various problem-constructions might directly affect outcomes, we look forward to similar studies that identify how different problem-constructions affect (environmental) outcomes.
 
-# Acknowledgements
-
-The authors are extremely grateful to Graziella Moraes Silva, James Hollway, and Matias López for their support. The authors would also like to thank the anonymous reviewers, Anna, Federico, Mario, and Rodrigo for their invaluable help.
 
 # Disclosure Statement
 
