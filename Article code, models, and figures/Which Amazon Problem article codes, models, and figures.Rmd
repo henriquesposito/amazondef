@@ -44,6 +44,7 @@ library(ggplot2)
 library(plm)
 library(timetk)
 library(lubridate)
+library(geomtextpath)
 Sys.setlocale("LC_ALL", "C")
 options(stringsAsFactors = FALSE, scipen = 999)
 ```
@@ -269,7 +270,7 @@ pop %>%
         	unemploy = mean(unemploy))
 ```
 
-```{r Figure pure, fig.cap="Pure-types constructions in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+```{r Figure pure, echo=FALSE, fig.cap="Pure-types constructions in time", message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
 #summary(as.factor(ama_mx$mx_cat))
 ama_mx %>%
   count(mx_cat, year) %>%
@@ -277,15 +278,20 @@ ama_mx %>%
   mutate(perc = n / sum(n)) %>%
   filter(mx_cat != "Other",
      	mx_cat != "Mixed-types") %>%
-  ggplot() +
-  geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat),
-          	se = FALSE, linewidth =0.75, linetype="solid") +
+  mutate(mx_cat=case_when(
+    mx_cat== "Pure Economic Integration" ~"Economic Integration",
+    mx_cat== "Pure National Sovereignty" ~"National Sovereignty",
+    mx_cat== "Pure Social Development"~"Social Development",
+    mx_cat== "Pure Environmental Conservation"~"Environmental Conservation"))%>%
+  ggplot(aes(x=as.numeric(year), y = perc, color = mx_cat)) +
+  geom_textsmooth(aes(label=mx_cat,hjust=mx_cat), fontface="bold", size=4)+
+  scale_hjust_manual(values=c(0.075,0.075,.5,.5))+
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(x = "", y = "", title ="Share of pure-types problem-constructions by year",
    	subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
    	caption = "Curves in the plot were smoothed using loess method.") +
   theme_am() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "none") +
   scale_color_discrete(labels = c("Economic Integration", "Environmental Conservation",
                               	"Social Development", "National Sovereignty"))+
   guides(color=guide_legend(nrow=2,byrow=TRUE))
@@ -412,7 +418,13 @@ ama_mx %>%
          year = lubridate::as_date(year)) %>% 
   select(-n) %>%
   filter(mx_cat != "Other") %>%
-  group_by(mx_cat) %>% 
+  group_by(mx_cat) %>%
+  mutate(mx_cat=case_when(
+    mx_cat== "Pure Economic Integration" ~"Economic Integration",
+    mx_cat== "Pure National Sovereignty" ~"National Sovereignty",
+    mx_cat== "Pure Social Development"~"Social Development",
+    mx_cat== "Pure Environmental Conservation"~"Environmental Conservation"))%>%
+  drop_na(mx_cat) %>%
   plot_acf_diagnostics(.date_var = year,
                        .value = perc,
                        .show_white_noise_bars = TRUE,
