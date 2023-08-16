@@ -1,0 +1,420 @@
+---
+title: "Which Amazon Problem? Problem-constructions and Transnationalism in Brazilian Presidential Discourse since 1985 - Article codes, models, and figures for replication"
+author: "Henrique Sposito"
+date: "17 February 2023"
+output:
+  pdf_document: default
+  latex_engine: xelatex
+  fig_caption: yes
+  html_document:
+    df_print: paged
+  word_document: default
+fontsize: 12pt
+mainfont: Times New Roman
+header-includes:
+- \usepackage{floatrow}
+- \floatsetup[figure]{capposition=top}
+- \usepackage{float}
+- \floatplacement{figure}{H}
+- \usepackage[T1]{fontenc}
+- \usepackage[utf8]{inputenc}
+- |
+  \providecommand{\keywords}[1]{\textbf{Keywords:} #1}
+  \providecommand{\wordcount}[1]{\textbf{Word Count:}#1}
+always_allow_html: yes
+abstract: The Amazon is a complex object of policy that comprises environmental, economic, social, and sovereignty concerns. Despite this complexity, governments are often portrayed as having a single understanding of the region as a political problem. In this article, we investigate how the Amazon has been constructed as a problem in Brazilian presidential speeches since 1985.To do so, we develop a framework that accounts for how important transnational actors, as presidents, construct policy objects as particular problems depending on where and when they participate in politics. We find that presidents often construct the Amazon as an environmental problem when speaking far away from the region, whereas they usually construct it as problems of economic integration or social development when in the Amazon. Furthermore, presidents are  increasingly mixing problem-constructions and constructing the Amazon as a complex and multifaceted object of policy.
+---
+
+# Article code, models, and figures
+
+This file makes publicly available all the codes, models, and figures used in the article titled ["Which Amazon Problem? Problem-constructions and Transnationalism in Brazilian Presidential Discourse since 1985"](https://www.tandfonline.com/doi/full/10.1080/09644016.2023.2220639) by Livio Silva-Muller and Henrique Sposito. The article has been published open source on Environmental Politics, please check it out! Both authors contributed equally to the article. Livio is a PhD Candidate in Sociology and affiliated to the Albert Hirschman Centre on Democracy. Henrique is a PhD Candidate in International Relations and Political Sciences and affiliated to the Centre for International Environmental Studies. If you are using this data, codes, or figures, please cite:
+
+Silva-Muller, Livio, and Henrique Sposito. "Which Amazon Problem? Problem-constructions and Transnationalism in Brazilian Presidential Discourse since 1985." *Environmental Politics* (2023): 1-24.
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(RColorBrewer)
+library(stargazer)
+library(kableExtra)
+library(tibble)
+library(ggplot2)
+library(plm)
+library(timetk)
+library(lubridate)
+Sys.setlocale("LC_ALL", "C")
+options(stringsAsFactors = FALSE, scipen = 999)
+```
+
+```{r theme, include=FALSE, warning=FALSE, message=FALSE}
+# custom ploting theme for all plots
+theme_am <- function(x) {
+  theme(text = element_text(size=12,  family="Times"),
+        panel.background = element_rect("white", "black", .5, "solid"),
+                  panel.grid.major = element_line(color = "grey", linewidth = 0.2,
+                                                  linetype = "solid"),
+        axis.text = element_text(color = "black", size = 10),
+        title = element_text(color = "black", size = 10, face = "bold"),
+        legend.title = element_blank(),
+        plot.subtitle = element_text(color = "black", size = 9, face = "plain"),
+        legend.position = "none")
+}
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+# Load data complete
+pop <- readRDS("~/Documents/GitHub/amazondef/Replication data/BR_presid_speeches_final.Rds")
+# Load coded data on Amazonian statements and remove extra variables
+ama <- readRDS("~/Documents/GitHub/amazondef/Replication data/final_data_as.Rds")
+ama <- ama %>%
+  select(-c(title, date, text, false_positives)) %>%
+  rename (ei= "EI", sd= "SD")
+# Load annual deforestation rates data, lag years, and fill data
+amazon_def_year_lag <- readRDS("~/Documents/GitHub/amazondef/Replication data/amazon_def_year.Rds")
+amazon_def_year_lag$year <- amazon_def_year_lag$year + 1
+# Fill missing years are missed with first non missing value.
+# This is also consistent with def. rates from literature
+adr <- data.frame(year = c(1985, 1986, 1987, 1988),
+                  def_year = c(21.050, 21.050, 21.050, 21.050))
+amazon_def_year_lag <- rbind(adr, amazon_def_year_lag) # Missing year data
+amazon_def_year_lag$def_year <- scales::rescale(amazon_def_year_lag$def_year) # scale def. rates
+# Load inflation data, annual
+aai <- readRDS("~/Documents/GitHub/amazondef/Replication data/AAI.Rds")
+aai_2022 <- data.frame("year" = 2022, "AAI" = 5.79) # Add 2022 rates
+aai <- rbind(aai_2022, aai)
+aai$AAI <- scales::rescale(aai$AAI) # scale annual inflation
+# Code PCs as categories
+ama_mx <-  ama %>%
+  unite(mixed_type, sov:con, sep="_") %>%
+  mutate(mx_cat = factor(case_when(mixed_type == '1_0_0_0' ~ 
+                                     "Pure National Sovereignty",
+                                   mixed_type == '0_1_0_0' ~ 
+                                     "Pure Economic Integration", 
+                                   mixed_type == '0_0_1_0' ~ 
+                                     "Pure Social Development",
+                                   mixed_type == '0_0_0_1' ~ 
+                                     "Pure Environmental Conservation",
+                                   mixed_type == '0_0_0_0' ~ 
+                                     "Other",
+                                   TRUE ~ "Mixed-types"),
+         levels = c("Pure Economic Integration",
+                    "Pure Environmental Conservation",
+                    "Pure Social Development",
+                    "Pure National Sovereignty",
+                    "Other", "Mixed-types")),
+        election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0),
+        peak_year = ifelse(grepl("1989|1992|2009|2019", year), 1, 0),
+        location_cat = factor(case_when(location_cat == "International" ~ 
+                                          "Non Amazonian Countries",
+                                        location_cat == 
+                                          "Amazonian States" ~ 
+                                          "Amazonian States",
+                                        location_cat == "Amazonian Countries" ~ 
+                                          "Amazonian Countries",
+                                        TRUE ~ "Non Amazonian States"),
+                              levels = c("Amazonian States",
+                                         "Amazonian Countries",
+                                         "Non Amazonian States",
+                                         "Non Amazonian Countries")))
+# Get peak years in Amazon speeches, as a control for modelling
+mean_perc <- pop %>%
+  count(amazon_speech, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>% 
+  filter(amazon_speech == 1) %>%
+  select(c(year, perc))
+mean_perc[mean_perc$perc > mean(mean_perc$perc) + sd(mean_perc$perc),] # 89, 92, 09, 19
+# Create/wrangle data for modelling PCs
+ama_model_lag <- dplyr::left_join(ama_mx,
+                                  amazon_def_year_lag, by = "year") %>%
+  dplyr::left_join(aai, by = "year") %>%
+  filter(location_cat != "Non Identified") %>%
+  mutate(con_vs_all = ifelse(mx_cat == "Pure Environmental Conservation",
+                             1, 0),
+         EI_vs_all = ifelse(mx_cat == "Pure Economic Integration", 1, 0),
+         SD_vs_all = ifelse(mx_cat == "Pure Social Development", 1, 0),
+         sov_vs_all = ifelse(mx_cat == "Pure National Sovereignty", 1, 0),
+         mixed_vs_all = ifelse(mx_cat == "Mixed-types", 1, 0))
+# Create/wrangle data for modelling Amazon speech proportions
+ama_model2_lag <- dplyr::select(pop, -text) %>%
+  dplyr::left_join(amazon_def_year_lag, by = "year") %>%
+  dplyr::left_join(aai, by = "year") %>%
+  filter(location_cat != "Non Identified")%>%
+  dplyr::mutate(location_cat = ifelse(grepl("parana|paraiba|mato grosso|mato grosso do sul",
+                                            location, ignore.case = TRUE),
+                                      "Non Amazonian States", location_cat),
+         location_cat = ifelse(grepl("paraguay", location, ignore.case = TRUE),
+                               "International", location_cat),
+         location_cat = ifelse(grepl("Bolivia|Peru|Ecuador|Colombia|Venezuela|Guyana|Suriname",
+                                     location), "Amazonian Countries",
+                               location_cat),
+         location_cat = factor(case_when(location_cat == "International" ~ 
+                                          "Non Amazonian Countries",
+                                        location_cat == 
+                                          "Amazonian States" ~ 
+                                          "Amazonian States",
+                                        location_cat == "Amazonian Countries" ~ 
+                                          "Amazonian Countries",
+                                        TRUE ~ "Non Amazonian States"),
+                               levels = c("Amazonian States",
+                                         "Amazonian Countries",
+                                         "Non Amazonian States",
+                                         "Non Amazonian Countries")),
+         election_year = ifelse(grepl("1989|1994|1998|2002|2006|2010|2014|2018",
+                                      year), 1, 0),
+         peak_year = ifelse(grepl("1989|1992|2009|2019", year), 1, 0))
+```
+
+```{r word_count, eval=FALSE, include=FALSE}
+# Total speeches
+nrow(pop) # 6240 speeches
+# Speeches about the Amazon
+sum(pop$amazon_speech) # 968 about Amazon
+# Amazonian statements
+final_labeled_data <- readRDS("~/Documents/GitHub/amazondef/Replication data/final_labeled_data.Rds")
+nrow(final_labeled_data) # 2048 Amazonian statements
+nrow(ama) # 1924 Amazon statements after removing false positives
+# Count average words in Amazonian Statements, using original text data
+amazon_speeches_long <- readRDS("~/Documents/GitHub/amazondef/Replication data/amazon_speeches_long.Rds")
+sum(stringr::str_count(amazon_speeches_long$AM2, '\\w+'))/2048 # 131 words on average
+```
+
+````{=tex}
+\begin{landscape}
+ 
+```{r models president fixed effect, fig.cap="Log odds for fixed-effects logistic regressions indexed by president", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+c1 <- plm(con_vs_all ~ as.factor(location_cat) +
+                     	def_year + AAI + election_year,
+   	                  data = ama_model_lag,
+                     	model = "within", index = "president")
+c2 <- plm(EI_vs_all ~ as.factor(location_cat) +
+                     	def_year + AAI + election_year,
+                     	data = ama_model_lag,
+                     	model = "within", index = "president")
+c3 <- plm(SD_vs_all ~ as.factor(location_cat) +
+                     	def_year + AAI + election_year,
+                     	data = ama_model_lag,
+                     	model = "within", index = "president")
+c4 <- plm(sov_vs_all ~ as.factor(location_cat) +
+                     	def_year + AAI + election_year,
+                     	data = ama_model_lag,
+                     	model = "within", index = "president")
+c5 <- plm(amazon_speech ~ as.factor(location_cat) +
+                     	def_year + AAI +  election_year,
+                 	    data = ama_model2_lag,
+                     	model = "within", index = "president")
+                     
+stargazer::stargazer(c5, c1, c2, c3, c4, digits = 3, no.space = TRUE,
+                 	title = "Log odds for fixed-effects logistic regressions indexed by president",
+                  	column.sep.width = "-12pt",
+                  	font.size="small",
+                  	dep.var.labels = c("Amazon Speech",
+                                     	"Environmental Conservation",
+                                     	"Economic Integration",
+                                     	"Social Development",
+                                     	"National Sovereignty"),
+                 	covariate.labels = c("Amazonian Countries",
+                                      	"Non Amazonian States",
+                                      	"Non Amazonian Countries",
+                                      	"Deforestation",
+                                      	"Inflation",
+                                      	"Election Year"))
+```
+ 
+\end{landscape}
+````
+
+```{r Figure speeches, fig.cap="Amazonian speeches in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE, include=TRUE}
+pop %>%
+  count(amazon_speech, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(amazon_speech == 1) %>%
+  select(c(perc, amazon_speech, year)) %>%
+  ggplot(., aes(x = year, y = perc)) +
+  geom_line(color = "darkgreen") +
+  geom_line(aes(y=mean(perc)), color="black", linewidth=.5, linetype="dotted")+
+  scale_y_continuous(labels = percent_format()) +
+  annotate("text", x = 1985, y = 0.165, label = "15.5%", size = 3.5)+
+  annotate("text", x = 1988.7, y = 0.345, label = "Murder of\nChico Mendes", size = 3)+
+  annotate("text", x = 1992.5, y = 0.26, label = "Earth Summit", size = 3)+
+  annotate("text", x = 2009, y = 0.24, label = "Copenhagen Summit", size = 3)+
+  annotate("text", x = 2019, y = 0.26, label = "2019 Record\nAugust Fires", size=3) +
+  labs(x = "", y = "",
+   	title = "Share of speeches that mention the Amazon per year",
+   	subtitle = "Sample composed by all 6240 speeches since 1985",
+   	color='Y series') +
+  theme_am()
+```
+
+```{r comparisonq, eval=FALSE, include=FALSE}
+mean(mean_perc$perc) # 15.53 mean for Amazonian speeches
+# Comparison with inflation, criminality, unemployment, and inequality
+pop %>%
+  mutate(desigual = ifelse(grepl("desigual", text,
+                             	ignore.case = TRUE), 1, 0),
+     	crime = ifelse(grepl("violencia|crime|criminalidade|seguranca publica",
+                          	text, ignore.case = TRUE), 1, 0),
+     	inf = ifelse(grepl("inflacao|inflaçao",
+                         	text, ignore.case = TRUE), 1, 0),
+     	unemploy = ifelse(grepl("desempreg",
+                         	text, ignore.case = TRUE), 1, 0)) %>%
+  summarise(desigual = mean(desigual),
+        	crime = mean(crime),
+     	   inf = mean(inf),
+        	unemploy = mean(unemploy))
+```
+
+```{r Figure pure, fig.cap="Pure-types constructions in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+#summary(as.factor(ama_mx$mx_cat))
+ama_mx %>%
+  count(mx_cat, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(mx_cat != "Other",
+     	mx_cat != "Mixed-types") %>%
+  ggplot() +
+  geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat),
+          	se = FALSE, linewidth =0.75, linetype="solid") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(x = "", y = "", title ="Share of pure-types problem-constructions by year",
+   	subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+   	caption = "Curves in the plot were smoothed using loess method.") +
+  theme_am() +
+  theme(legend.position = "bottom") +
+  scale_color_discrete(labels = c("Economic Integration", "Environmental Conservation",
+                              	"Social Development", "National Sovereignty"))+
+  guides(color=guide_legend(nrow=2,byrow=TRUE))
+```
+
+```{r Figure mixed, fig.cap="Mixed-types problem-constructions in time", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+#summary(as.factor(ama_mx$mx_cat))
+ama_mx %>%
+  count(mx_cat, year) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n)) %>%
+  filter(mx_cat == "Mixed-types") %>%
+  ggplot() +
+  geom_smooth(aes(x=as.numeric(year), y = perc, color = mx_cat),
+          	se = FALSE, linewidth =0.75, linetype="solid") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(x = "", y = "", title ="Share of mixed-types problem-constructions by year",
+   	subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+   	caption = "Curves in the plot were smoothed using loess method.") +
+  theme_am() +
+  scale_color_manual(values = "yellow3")
+
+```
+
+# Appendix code, models, and figures
+
+```{r presidents and settings for Amazon speeches, eval=FALSE, include=FALSE}
+ama_model_lag %>%
+  count(location_cat, president)%>%
+  group_by(president)%>%
+  mutate(perc = n / sum(n),
+         president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro")))%>%
+  ggplot(aes(x = president, y = perc, fill = location_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 3, position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of speeches in each setting by president",
+       subtitle = "Sample composed by 1924 Amazonian statements in presidential speeches since 1985",
+       caption = "") +
+  theme_am() +
+  theme(legend.position = "right")
+```
+
+```{r presidents and settings for all, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+ama_model2_lag %>%
+  count(location_cat, president)%>%
+  group_by(president)%>%
+  mutate(perc = n / sum(n),
+         president = factor(president, levels = c("Sarney", "Collor", "Itamar", "FHC",
+                                                  "Lula", "Dilma", "Temer", "Bolsonaro")))%>%
+  ggplot(aes(x = president, y = perc, fill = location_cat,
+             label = scales::percent(perc, accuracy=.1))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(size = 2, position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_brewer(type = "qual", palette = "Set2", direction= 1) +
+  labs(x = "", y = "", title ="Share of speeches in each setting by president",
+       subtitle = "Sample composed by all 6240 speeches since 1985",
+       caption = "") +
+  theme_am() +
+  theme(legend.position = "bottom")+
+  guides(fill=guide_legend(nrow=2,byrow=TRUE))
+```
+
+````{=tex}
+\begin{landscape}
+
+```{r presid set, fig.cap="Random-effects logistic regressions for setting and presidents' party ideology indexed by year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE, results="asis"}
+
+left_right_VDEM <- readRDS("~/Documents/GitHub/amazondef/Replication data/V-Dem-CPD-Party-V2.rds") %>% 
+  dplyr::filter(country_name == "Brazil", 
+                year >= 1985) %>%
+  dplyr::select(year, v2pashname, v2pariglef) %>%
+  tidyr::drop_na() %>%
+  dplyr::rename(party = v2pashname) %>%
+  group_by(party) %>%
+  summarise(left_right = mean(v2pariglef))
+
+ama_model_lag <- dplyr::left_join(ama_model_lag, left_right_VDEM, by = "party")
+ama_model2_lag <- dplyr::left_join(ama_model2_lag, left_right_VDEM, by = "party")
+
+ps1 <- plm(con_vs_all ~ as.factor(location_cat) + left_right,
+                         data = ama_model_lag,
+                         model = "random", index = "year")
+ps2 <- plm(EI_vs_all ~ as.factor(location_cat) + left_right,
+                         data = ama_model_lag,
+                         model = "random", index = "year")
+ps3 <- plm(SD_vs_all ~ as.factor(location_cat) + left_right,
+                         data = ama_model_lag,
+                         model = "random", index = "year")
+ps4 <- plm(sov_vs_all ~ as.factor(location_cat) + left_right,
+                         data = ama_model_lag,
+                         model = "random", index = "year")
+ps5 <- plm(amazon_speech ~ as.factor(location_cat) + left_right,
+                         data = ama_model2_lag,
+                         model = "random", index = "year")
+                     
+stargazer::stargazer(ps5, ps1, ps2, ps3, ps4, digits = 3, no.space = TRUE,
+                     title = "Random-effects logistic regressions for setting and presidents' party ideology indexed by year",
+                      column.sep.width = "-12pt",
+                      font.size="small",
+                      dep.var.labels = c("Amazon Speech",
+                                         "Environmental Conservation",
+                                         "Economic Integration",
+                                         "Social Development",
+                                         "National Sovereignty"),
+                     covariate.labels = c("Amazonian Countries",
+                                          "Non Amazonian States",
+                                          "Non Amazonian Countries",
+                                          "President's party left-right scale (VDEM)"))
+```
+
+\end{landscape}
+````
+
+```{r peak years test, fig.cap="Lag analysis for problem-constructions and for year", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, include=TRUE}
+ama_mx %>%
+  count(year, mx_cat) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n),
+         year = lubridate::as_date(year)) %>% 
+  select(-n) %>%
+  filter(mx_cat != "Other") %>%
+  group_by(mx_cat) %>% 
+  plot_acf_diagnostics(.date_var = year,
+                       .value = perc,
+                       .show_white_noise_bars = TRUE,
+                       .interactive = FALSE)
+```

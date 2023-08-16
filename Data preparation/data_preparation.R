@@ -2,7 +2,7 @@
 # by extracting Amazonian statements, and 
 # by adding locations for all speeches.
 
-# Install poldis
+# To install poldis run:
 # devtools::install_github("henriquesposito/poldis")
 library(poldis)
 library(dplyr)
@@ -12,12 +12,16 @@ library(readxl)
 BR_Presidential_Speeches <- readRDS("~/Documents/GitHub/amazondef/data/BR_Presidential_Speeches.Rds")
 
 # Replace on title and text
-BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text, " - | -| -", "-")
-BR_Presidential_Speeches$title <- stringr::str_replace_all(BR_Presidential_Speeches$title, " - | -| -", "-")
+BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text,
+                                                          " - | -| -", "-")
+BR_Presidential_Speeches$title <- stringr::str_replace_all(BR_Presidential_Speeches$title,
+                                                           " - | -| -", "-")
 
 # Replace "para" to avoid confusion with state name in Brazil
-BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text,"^para$", "pra")
-BR_Presidential_Speeches$title <- stringr::str_replace_all(BR_Presidential_Speeches$title, "^para$", "pra")
+BR_Presidential_Speeches$text <- stringr::str_replace_all(BR_Presidential_Speeches$text,
+                                                          "^para$", "pra")
+BR_Presidential_Speeches$title <- stringr::str_replace_all(BR_Presidential_Speeches$title,
+                                                           "^para$", "pra")
 
 # Make it lower case, remove extra space, and add coma space
 BR_Presidential_Speeches$text <- tolower(BR_Presidential_Speeches$text)
@@ -32,8 +36,10 @@ BR_Presidential_Speeches$text <- trimws(BR_Presidential_Speeches$text)
 BR_Presidential_Speeches$title <- trimws(BR_Presidential_Speeches$title)
 
 # Make it latin SCII
-BR_Presidential_Speeches$text <- stringi::stri_trans_general(BR_Presidential_Speeches$text, id = "latin-ascii")
-BR_Presidential_Speeches$title <- stringi::stri_trans_general(BR_Presidential_Speeches$title, id = "latin-ascii")
+BR_Presidential_Speeches$text <- stringi::stri_trans_general(BR_Presidential_Speeches$text,
+                                                             id = "latin-ascii")
+BR_Presidential_Speeches$title <- stringi::stri_trans_general(BR_Presidential_Speeches$title,
+                                                              id = "latin-ascii")
 
 # get context and update amazon specific data
 Amazon_speeches <- dplyr::filter(BR_Presidential_Speeches, grepl("amazon", text))
@@ -59,9 +65,12 @@ amazon_speeches_long$location <- poldis::extract_location(amazon_speeches_long$t
 
 # Get location from text if not found
 amazon_speeches_long$location <- ifelse(grepl("^NA$", amazon_speeches_long$location),
-                                            poldis::extract_location(amazon_speeches_long$text),
+                                        poldis::extract_location(amazon_speeches_long$text),
                                         amazon_speeches_long$location)
-#summary(as.factor(amazon_speeches_long$location))
+summary(as.factor(amazon_speeches_long$location))
+amazon_speeches_long2 <- amazon_speeches_long
+
+amazon_speeches_long <- rbind(amazon_speeches_long, amazon_speeches_long2)
 
 # save the data
 #saveRDS(amazon_speeches_long, "amazon_speeches_long.Rds") # 2048 obs
@@ -89,14 +98,16 @@ BR_Presidential_Speeches$location <- ifelse(grepl("^NA$", BR_Presidential_Speech
                                             BR_Presidential_Speeches$location)
 summary(as.factor(BR_Presidential_Speeches$location))
 
-# Get a excel file just to replace NAs
+# Get a excel file just to replace NAs and review things...
 # writexl::write_xlsx(BR_Presidential_Speeches, "BR_presid_speeches_final.xlsx")
 # Most of the NAs left are TV or Radio Announcements in case we want to mark these as such.
-BR_presid_speeches_final <- read_excel("data/BR_presid_speeches_final.xlsx")
+#BR_presid_speeches_final <- read_excel("data/BR_presid_speeches_final.xlsx")
 #summary(as.factor(BR_presid_speeches_final$location))
 
-# Last thing here, let's add a dummy variable for whether certain speech mentions the stem "amazon" or not.
+# Last thing here, let's add a dummy variable for whether certain speech
+# mentions the stem "amazon" or not.
 # As well as let's add a different categorical variable for location.
+BR_presid_speeches_final <- readRDS("~/Documents/GitHub/amazondef/Replication_Files/BR_presid_speeches_final.Rds")
 BR_presid_speeches_final <- BR_presid_speeches_final %>% 
   mutate(amazon_speech = ifelse(grepl("amazon", text), 1, 0),
          location_cat = case_when(grepl("Amazonas|Para|Roraima|Acre|Amapa|Rondonia|Mato-Grosso|Tocantins|Maranhao", location) ~ "Amazonian States",
