@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.28)  16 AUG 2023 11:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.28)  16 AUG 2023 11:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -596,12 +596,12 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 99.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 1348) in paragraph at lines 133--136
+Underfull \hbox (badness 1348) in paragraph at lines 136--139
 []\T1/lmr/m/n/12 Silva-Muller, Livio, and Hen-rique Spos-ito. ``Which Ama-zon Prob-lem? Problem-
  []
 
 
-Underfull \hbox (badness 1902) in paragraph at lines 133--136
+Underfull \hbox (badness 1902) in paragraph at lines 136--139
 \T1/lmr/m/n/12 constructions and Transna-tion-al-ism in Brazil-ian Pres-i-den-tial Dis-course since 1985.''
  []
 
@@ -609,55 +609,55 @@ Underfull \hbox (badness 1902) in paragraph at lines 133--136
 
 {/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 146.
+(Font)              <10.95> on input line 149.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 146.
+(Font)              <8> on input line 149.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 146.
+(Font)              <6> on input line 149.
 
-Overfull \hbox (64.42247pt too wide) in paragraph at lines 146--175
+Overfull \hbox (64.42247pt too wide) in paragraph at lines 149--178
  [][] 
  []
 
 [2
 
 ]
-<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf, id=36, 469.755pt x 325.215pt>
+<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf, id=39, 469.755pt x 325.215pt>
 File: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf Graphic file (type pdf)
 <use Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf>
-Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf  used on input line 181.
+Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf  used on input line 184.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf, id=37, 469.755pt x 325.215pt>
+<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf, id=40, 469.755pt x 325.215pt>
 File: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf Graphic file (type pdf)
 <use Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf>
-Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf  used on input line 187.
+Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf  used on input line 190.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [3
 
  <./Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure speeches-1.pdf>]
-<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf, id=50, 469.755pt x 325.215pt>
+<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf, id=53, 469.755pt x 325.215pt>
 File: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf Graphic file (type pdf)
 <use Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf>
-Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf  used on input line 193.
+Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf  used on input line 196.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [4 <./Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure pure-1.pdf>]
-<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf, id=63, 469.755pt x 325.215pt>
+<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf, id=66, 469.755pt x 325.215pt>
 File: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf Graphic file (type pdf)
 <use Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf>
-Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf  used on input line 201.
+Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf  used on input line 204.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [5 <./Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/Figure mixed-1.pdf>] [6 <./Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/presidents and settings for all-1.pdf>]
-Overfull \hbox (64.12622pt too wide) in paragraph at lines 212--239
+Overfull \hbox (64.12622pt too wide) in paragraph at lines 215--242
  [][] 
  []
 
 [7
 
 ]
-<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf, id=93, 469.755pt x 325.215pt>
+<Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf, id=96, 469.755pt x 325.215pt>
 File: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf Graphic file (type pdf)
 <use Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf>
-Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf  used on input line 245.
+Package pdftex.def Info: Which-Amazon-Problem-article-codes,-models,-and-figures_files/figure-latex/peak years test-1.pdf  used on input line 248.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [8
 
@@ -677,10 +677,10 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  66i,11n,67p,560b,465s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on Which-Amazon-Problem-article-codes,-models,-and-figures.pdf (8 pages, 258281 bytes).
+Output written on Which-Amazon-Problem-article-codes,-models,-and-figures.pdf (8 pages, 258438 bytes).
 PDF statistics:
- 163 PDF objects out of 1000 (max. 8388607)
- 119 compressed objects within 2 object streams
+ 166 PDF objects out of 1000 (max. 8388607)
+ 122 compressed objects within 2 object streams
  19 named destinations out of 1000 (max. 500000)
  42 words of extra memory for PDF output out of 10000 (max. 10000000)
 
